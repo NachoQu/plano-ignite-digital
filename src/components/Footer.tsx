@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Instagram, Linkedin, Mail, Phone } from "lucide-react";
-import planoLogo from "@/assets/plano-logo.png";
+import planoLogo from "@/assets/plano-logo-new.webp";
 
 const Footer = () => {
   const handleWhatsAppClick = () => {
