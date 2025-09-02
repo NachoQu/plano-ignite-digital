@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import planoLogo from "@/assets/plano-logo-new.png";
+import planoLogo from "@/assets/plano-logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
