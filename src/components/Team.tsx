@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Code, Palette, Linkedin, Instagram } from "lucide-react";
+import { Code, Palette, Linkedin } from "lucide-react";
+import ignacioImage from "@/assets/ignacio.jpg";
+import manuelImage from "@/assets/manuel.webp";
 
 const Team = () => {
   const teamMembers = [
@@ -8,19 +10,17 @@ const Team = () => {
       name: "Ignacio Quantin",
       role: "NoCode Specialist",
       description: "Experto en desarrollo no-code y automatización. Especializado en crear soluciones tecnológicas escalables que impulsan el crecimiento de PYMEs y Startups.",
-      icon: Code,
+      image: ignacioImage,
       skills: ["No-Code Development", "Automatización", "Integraciones", "MVP Development"],
-      linkedIn: "#",
-      instagram: "#"
+      linkedIn: "https://www.linkedin.com/in/ignacio-quantin/"
     },
     {
       name: "Manuel Ríos Velar",
-      role: "Diseñador",
+      role: "Diseñador Gráfico",
       description: "Diseñador integral enfocado en branding y experiencia de usuario. Crea identidades visuales que comunican valor y conectan marcas con sus audiencias.",
-      icon: Palette,
+      image: manuelImage,
       skills: ["Branding", "UI/UX Design", "Identidad Visual", "Design Systems"],
-      linkedIn: "#",
-      instagram: "#"
+      linkedIn: "https://www.linkedin.com/in/manuel-rios-velar-34796b196/"
     }
   ];
 
@@ -44,9 +44,14 @@ const Team = () => {
               style={{ animationDelay: `${index * 0.2}s` }}
             >
               <CardContent className="p-8 text-center">
-                {/* Profile placeholder - can be replaced with actual photos */}
-                <div className="mx-auto mb-6 w-32 h-32 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                  <member.icon className="h-16 w-16 text-primary" />
+                {/* Profile photo */}
+                <div className="mx-auto mb-6 w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20">
+                  <img 
+                    src={member.image} 
+                    alt={`${member.name} - ${member.role}`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
                 
                 <h3 className="text-2xl font-bold mb-2 text-foreground">
@@ -76,7 +81,7 @@ const Team = () => {
                 </div>
 
                 {/* Social Links */}
-                <div className="flex justify-center space-x-4">
+                <div className="flex justify-center">
                   <Button
                     variant="outline"
                     size="sm"
@@ -85,16 +90,6 @@ const Team = () => {
                   >
                     <a href={member.linkedIn} target="_blank" rel="noopener noreferrer">
                       <Linkedin className="h-4 w-4" />
-                    </a>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-10 h-10 p-0 rounded-full border-secondary/20 hover:bg-secondary/10"
-                    asChild
-                  >
-                    <a href={member.instagram} target="_blank" rel="noopener noreferrer">
-                      <Instagram className="h-4 w-4" />
                     </a>
                   </Button>
                 </div>

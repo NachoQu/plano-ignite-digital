@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Zap, MessageSquare, Target } from "lucide-react";
 
 const Methodology = () => {
+
   const steps = [
     {
       icon: FileText,
@@ -28,6 +29,8 @@ const Methodology = () => {
       details: "Reportes de rendimiento y KPIs que te permiten medir el impacto real del proyecto."
     }
   ];
+
+
 
   return (
     <section id="metodologia" className="py-20 bg-background">
@@ -75,12 +78,9 @@ const Methodology = () => {
           ))}
         </div>
 
-        {/* Timeline for mobile */}
-        <div className="lg:hidden mt-12 space-y-6">
-          <div className="flex justify-center">
-            <div className="w-0.5 h-full bg-gradient-to-b from-primary to-secondary"></div>
-          </div>
-        </div>
+
+
+
       </div>
     </section>
   );

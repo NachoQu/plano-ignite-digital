@@ -40,24 +40,20 @@ const Hero = () => {
         </div>
 
         {/* Stats or trust indicators */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 animate-fade-in" style={{
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in" style={{
         animationDelay: "0.6s"
       }}>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">10+</div>
-            <div className="text-sm text-muted-foreground">Webs Profesionales</div>
+            <div className="text-2xl font-bold text-primary">+10</div>
+            <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-secondary">80%</div>
-            <div className="text-sm text-muted-foreground">Uso Activo EdTech</div>
+            <div className="text-2xl font-bold text-secondary">100%</div>
+            <div className="text-sm text-muted-foreground">Satisfacción</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">100%</div>
-            <div className="text-sm text-muted-foreground">No-Code</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-secondary">24h</div>
-            <div className="text-sm text-muted-foreground">Tiempo Respuesta</div>
+            <div className="text-2xl font-bold text-primary">+300</div>
+            <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
           </div>
         </div>
       </div>

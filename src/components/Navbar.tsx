@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import planoLogo from "@/assets/plano-logo.png";
+import PlanoLogo from "./PlanoLogo";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,18 +31,7 @@ const Navbar = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <img 
-              src={planoLogo} 
-              alt="Plano - Agencia de desarrollo web y branding" 
-              className="w-8 h-8 object-contain"
-              loading="eager"
-              fetchPriority="high"
-              width="32"
-              height="32"
-            />
-            <span className="text-xl font-bold text-foreground">Plano</span>
-          </div>
+          <PlanoLogo size={64} />
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">

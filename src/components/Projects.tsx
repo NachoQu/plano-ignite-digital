@@ -1,49 +1,89 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink } from "lucide-react";
+import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink, Building2, Palette, Scissors, Key, Zap, School, Store, Calculator } from "lucide-react";
 
 const Projects = () => {
+  const [activeFilter, setActiveFilter] = useState("TODAS");
+
   const projects = [
     {
-      icon: Globe,
-      title: "Más de 10 webs profesionales",
-      description: "Sitios web modernos y optimizados para PYMEs y Startups que buscan aumentar su presencia digital y convertir visitas en clientes.",
-      category: "Desarrollo Web",
-      status: "10+ completados"
+      icon: Building2,
+      title: "Pallets Marcel SRL – Landing Page",
+      description: "Landing institucional para fortalecer presencia digital y captar clientes del sector logístico.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://palletsmarcelsrl.ar"
     },
     {
       icon: Package,
-      title: "ERP para venta de productos",
-      description: "Sistema completo que centraliza gestión de stock, ventas y clientes en una sola plataforma, optimizando procesos operativos.",
-      category: "Herramientas Internas",
+      title: "RHM Aislaciones Avanzadas – Landing Page",
+      description: "Sitio de presentación optimizado para mostrar servicios y generar consultas comerciales.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://rhmaislaciones.com"
+    },
+    {
+      icon: Calculator,
+      title: "Estudio Contable Chiaramonte & Sanchez – Web",
+      description: "Página web institucional para comunicar servicios contables y facilitar el contacto con clientes.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://chiaramontesanchez.com.ar"
+    },
+    {
+      icon: Palette,
+      title: "Sur Interiorismo – Web Corporativa",
+      description: "Plataforma moderna para exhibir proyectos de interiorismo con catálogo visual e integración de contacto.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://surinteriorismo.com"
+    },
+    {
+      icon: Scissors,
+      title: "Street Barber – Web Profesional",
+      description: "Sitio completo con secciones de servicios, galería y contacto, orientado a clientes finales.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://streetbarber.com.ar"
+    },
+    {
+      icon: Key,
+      title: "Key Transaction – Landing Page",
+      description: "Landing enfocada en transmitir propuesta de valor, captar leads y apoyar la comunicación de la marca.",
+      category: "DESARROLLO WEB / CONSULTORÍA",
+      status: "Publicado",
+      link: "https://keytransaction.com.ar"
+    },
+    {
+      icon: Zap,
+      title: "ICE Ingeniería – Web Corporativa",
+      description: "Sitio moderno con secciones técnicas y comerciales para posicionar a la empresa en el mercado industrial.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://iceargentina.com"
+    },
+    {
+      icon: School,
+      title: "New Zealand Pacific School",
+      description: "Mejoras en comunicación interna con familias y automatización de informes docentes. Además, desarrollo y gestión de su sitio institucional.",
+      category: "EDTECH",
+      status: "80% de uso activo",
+      link: "https://nzps.com.ar"
+    },
+    {
+      icon: Package,
+      title: "El Bagual – ERP",
+      description: "Sistema de gestión integral para administración de stock, ventas y procesos internos de la empresa.",
+      category: "HERRAMIENTAS INTERNAS",
       status: "Implementado"
     },
     {
-      icon: BarChart3,
-      title: "App de estado de resultados",
-      description: "Plataforma interna para visualizar KPIs en tiempo real, mejorando la toma de decisiones empresariales con datos actualizados.",
-      category: "Business Intelligence",
-      status: "En producción"
-    },
-    {
-      icon: Calendar,
-      title: "Sistema de reservas de salas",
-      description: "Plataforma diseñada para optimizar recursos internos y gestión de espacios corporativos con calendario integrado.",
-      category: "Gestión Interna",
-      status: "Activo"
-    },
-    {
-      icon: ShoppingCart,
-      title: "E-commerce completo",
-      description: "Tienda online desarrollada desde cero con catálogo, pasarela de pagos y logística integrada para venta directa.",
-      category: "E-commerce",
-      status: "Operativo"
-    },
-    {
-      icon: GraduationCap,
-      title: "New Zealand Pacific School",
-      description: "Digitalización completa de comunicación con familias y automatización de informes docentes para centro educativo.",
-      category: "EdTech",
-      status: "80% uso activo"
+      icon: Store,
+      title: "Picconesi – Tienda Online",
+      description: "Desarrollo de e-commerce con catálogo, pasarela de pagos y logística integrada para venta directa.",
+      category: "E-COMMERCE",
+      status: "Operativo",
+      link: "https://picconesi.com.ar"
     }
   ];
 
@@ -59,8 +99,31 @@ const Projects = () => {
           </p>
         </div>
 
+        {/* Filtros */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {["TODAS", "DESARROLLO WEB", "E-COMMERCE", "EDTECH", "HERRAMIENTAS INTERNAS"].map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                activeFilter === filter
+                  ? "bg-primary text-primary-foreground shadow-lg"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
+          {projects
+            .filter(project => 
+              activeFilter === "TODAS" || 
+              project.category.includes(activeFilter) ||
+              (activeFilter === "DESARROLLO WEB" && project.category === "DESARROLLO WEB / CONSULTORÍA")
+            )
+            .map((project, index) => (
             <Card 
               key={index}
               className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale bg-card group animate-fade-in-up"
@@ -91,10 +154,22 @@ const Projects = () => {
                 </p>
 
                 <div className="mt-4 pt-4 border-t border-border/50">
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <ExternalLink className="h-3 w-3 mr-1" />
-                    Ver detalles
-                  </div>
+                  {project.link ? (
+                    <a 
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center text-xs text-primary hover:text-primary/80 transition-colors cursor-pointer"
+                    >
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      {project.link.replace(/^https?:\/\//, '')}
+                    </a>
+                  ) : (
+                    <div className="flex items-center text-xs text-muted-foreground">
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      Ver detalles
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

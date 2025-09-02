@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Instagram, Linkedin, Mail, Phone } from "lucide-react";
-import planoLogo from "@/assets/plano-logo.png";
+import PlanoLogo from "./PlanoLogo";
 
 const Footer = () => {
   const handleWhatsAppClick = () => {
@@ -24,16 +24,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-3 mb-4">
-              <img 
-                src={planoLogo} 
-                alt="Plano - Agencia de desarrollo web y branding" 
-                className="w-10 h-10 object-contain"
-                loading="lazy"
-                width="40"
-                height="40"
-              />
-              <span className="text-2xl font-bold text-foreground">Plano</span>
+            <div className="mb-4">
+              <PlanoLogo size={64} />
             </div>
             <p className="text-muted-foreground mb-6 max-w-md">
               Agencia integral no-code especializada en branding, desarrollo web y herramientas internas 
@@ -120,7 +112,12 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-secondary" />
-                <span className="text-muted-foreground">info@plano.com</span>
+                <a 
+                  href="mailto:hola@planoweb.com.ar" 
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  hola@planoweb.com.ar
+                </a>
               </li>
             </ul>
 
@@ -137,7 +134,7 @@ const Footer = () => {
                   <Instagram className="h-5 w-5" />
                 </a>
                 <a 
-                  href="https://linkedin.com/company/plano-web" 
+                  href="https://www.linkedin.com/company/plano®/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-primary transition-colors"
