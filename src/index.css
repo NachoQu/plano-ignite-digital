@@ -14,33 +14,33 @@ All colors MUST be HSL.
     --plano-gray: 0 0% 78%;            /* #c8c8c8 */
     --plano-dark: 220 9% 15%;          /* #22242a */
     
-    /* Design System */
-    --background: 0 0% 100%;
-    --foreground: 220 9% 15%;          /* plano-dark */
+    /* Dark Design System */
+    --background: 220 9% 15%;          /* #22242a dark background */
+    --foreground: 0 0% 98%;            /* white text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 9% 15%;
+    --card: 220 9% 18%;                /* slightly lighter than bg */
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 9% 15%;
+    --popover: 220 9% 18%;
+    --popover-foreground: 0 0% 98%;
 
     --primary: 252 100% 60%;           /* plano-purple */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 0 0% 98%;
 
     --secondary: 37 100% 54%;          /* plano-orange */
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 220 9% 15%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 220 9% 25%;               /* muted dark */
+    --muted-foreground: 0 0% 65%;      /* light gray text */
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 220 9% 15%;
+    --accent: 220 9% 25%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
+    --border: 220 9% 30%;              /* dark borders */
+    --input: 220 9% 30%;
     --ring: 252 100% 60%;
 
     --radius: 0.75rem;
