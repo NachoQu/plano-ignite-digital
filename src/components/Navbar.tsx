@@ -31,17 +31,14 @@ const Navbar = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             <img 
               src={planoLogo} 
               alt="Plano - Agencia de desarrollo web y branding" 
-              className="w-8 h-8 object-contain"
+              className="h-10 w-auto object-contain"
               loading="eager"
               fetchPriority="high"
-              width="32"
-              height="32"
             />
-            <span className="text-xl font-bold text-foreground">Plano</span>
           </div>
 
           {/* Desktop Navigation */}
