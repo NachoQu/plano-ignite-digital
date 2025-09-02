@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import planoLogo from "@/assets/plano-logo-new.png";
+
 const Hero = () => {
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/542323550605?text=Hola! Quiero impulsar mi negocio con Plano", "_blank");
