@@ -32,18 +32,15 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-3">
-            <picture>
-              <source srcSet="/src/assets/plano-logo.webp" type="image/webp" />
-              <img 
-                src={planoLogo} 
-                alt="Plano - Agencia de desarrollo web y branding" 
-                className="w-8 h-8 object-contain"
-                loading="eager"
-                fetchPriority="high"
-                width="32"
-                height="32"
-              />
-            </picture>
+            <img 
+              src={planoLogo} 
+              alt="Plano - Agencia de desarrollo web y branding" 
+              className="w-8 h-8 object-contain"
+              loading="eager"
+              fetchPriority="high"
+              width="32"
+              height="32"
+            />
             <span className="text-xl font-bold text-foreground">Plano</span>
           </div>
 

@@ -24,20 +24,17 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-        <div className="flex items-center space-x-3 mb-4">
-          <picture>
-            <source srcSet="/src/assets/plano-logo.webp" type="image/webp" />
-            <img 
-              src={planoLogo} 
-              alt="Plano - Agencia de desarrollo web y branding" 
-              className="w-10 h-10 object-contain"
-              loading="lazy"
-              width="40"
-              height="40"
-            />
-          </picture>
-          <span className="text-2xl font-bold text-foreground">Plano</span>
-        </div>
+            <div className="flex items-center space-x-3 mb-4">
+              <img 
+                src={planoLogo} 
+                alt="Plano - Agencia de desarrollo web y branding" 
+                className="w-10 h-10 object-contain"
+                loading="lazy"
+                width="40"
+                height="40"
+              />
+              <span className="text-2xl font-bold text-foreground">Plano</span>
+            </div>
             <p className="text-muted-foreground mb-6 max-w-md">
               Agencia integral no-code especializada en branding, desarrollo web y herramientas internas 
               para PyMEs y Startups. Resultados medibles desde el inicio.
