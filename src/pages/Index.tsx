@@ -2,9 +2,10 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import ValueProposition from "@/components/ValueProposition";
-import CaseStudies from "@/components/CaseStudies";
+import Projects from "@/components/Projects";
+import Testimonials from "@/components/Testimonials";
 import Methodology from "@/components/Methodology";
-import About from "@/components/About";
+import Team from "@/components/Team";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -15,9 +16,10 @@ const Index = () => {
       <Hero />
       <Services />
       <ValueProposition />
-      <CaseStudies />
+      <Projects />
+      <Testimonials />
       <Methodology />
-      <About />
+      <Team />
       <FinalCTA />
       <Footer />
     </>

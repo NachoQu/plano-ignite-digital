@@ -27,7 +27,7 @@ const ValueProposition = () => {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
             Propuesta de <span className="text-gradient-orange">valor</span>
           </h2>
@@ -41,7 +41,8 @@ const ValueProposition = () => {
           {benefits.map((benefit, index) => (
             <div 
               key={index}
-              className="flex items-start space-x-4 p-6 rounded-xl hover:bg-muted/50 transition-all duration-300"
+              className="flex items-start space-x-4 p-6 rounded-xl hover:bg-muted/50 transition-all duration-300 animate-fade-in-up"
+              style={{ animationDelay: `${index * 0.2}s` }}
             >
               <div className="flex-shrink-0">
                 <div className="p-3 rounded-xl bg-primary/10">

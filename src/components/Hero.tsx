@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import planoLogo from "@/assets/plano-logo.png";
+import planoLogo from "@/assets/plano-logo-new.png";
 
 const Hero = () => {
   const handleWhatsAppClick = () => {

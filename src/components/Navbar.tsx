@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import planoLogo from "@/assets/plano-logo.png";
+import planoLogo from "@/assets/plano-logo-new.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,9 +20,10 @@ const Navbar = () => {
 
   const navItems = [
     { label: "Servicios", href: "servicios" },
-    { label: "Casos de éxito", href: "casos" },
+    { label: "Proyectos", href: "proyectos" },
+    { label: "Testimonios", href: "testimonios" },
     { label: "Metodología", href: "metodologia" },
-    { label: "Sobre Plano", href: "sobre" },
+    { label: "Equipo", href: "equipo" },
   ];
 
   return (

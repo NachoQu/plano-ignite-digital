@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Instagram, Linkedin, Mail, Phone } from "lucide-react";
-import planoLogo from "@/assets/plano-logo.png";
+import planoLogo from "@/assets/plano-logo-new.png";
 
 const Footer = () => {
   const handleWhatsAppClick = () => {
@@ -67,10 +67,18 @@ const Footer = () => {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('casos')}
+                  onClick={() => scrollToSection('proyectos')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Casos de éxito
+                  Proyectos
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('testimonios')}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Testimonios
                 </button>
               </li>
               <li>
@@ -83,10 +91,10 @@ const Footer = () => {
               </li>
               <li>
                 <button 
-                  onClick={() => scrollToSection('sobre')}
+                  onClick={() => scrollToSection('equipo')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Sobre Plano
+                  Equipo
                 </button>
               </li>
             </ul>

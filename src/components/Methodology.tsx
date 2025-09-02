@@ -32,7 +32,7 @@ const Methodology = () => {
   return (
     <section id="metodologia" className="py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
             <span className="text-gradient-orange">Metodología</span>
           </h2>
@@ -44,7 +44,7 @@ const Methodology = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
+            <div key={index} className="relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
               {/* Connection line for desktop */}
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-12 left-full w-8 h-0.5 bg-gradient-to-r from-primary to-secondary transform translate-x-4 z-0"></div>
