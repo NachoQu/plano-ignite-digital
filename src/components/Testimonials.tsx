@@ -1,12 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote, Star, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useInView } from "react-intersection-observer";
+import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
+  
+  const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
+  const satisfactionCount = useCountUp({ end: 100, isVisible: statsInView });
+  const hoursCount = useCountUp({ end: 300, isVisible: statsInView });
 
   const testimonials = [
     {
@@ -80,14 +88,16 @@ const Testimonials = () => {
   return (
     <section id="testimonios" className="py-20 bg-muted/50">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Lo que dicen nuestros <span className="text-gradient-purple">clientes</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Testimonios reales de empresas que confiaron en Plano para impulsar su crecimiento digital
-          </p>
-        </div>
+        <ScrollAnimationWrapper animationType="fade-in">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              Lo que dicen nuestros <span className="text-gradient-purple">clientes</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Testimonios reales de empresas que confiaron en Plano para impulsar su crecimiento digital
+            </p>
+          </div>
+        </ScrollAnimationWrapper>
 
         {/* Carrusel de testimonios */}
         <div 
@@ -131,8 +141,8 @@ const Testimonials = () => {
 
           {/* Testimonio actual */}
           <div className="px-8 md:px-16">
-            <Card className="border-0 shadow-lg bg-background animate-fade-in">
-              <CardContent className="p-4 md:p-8">
+            <Card className="border-0 shadow-lg bg-background h-80 md:h-72 flex items-center">
+              <CardContent className="p-4 md:p-8 w-full flex flex-col justify-center">
                 <div className="flex items-center mb-6">
                   <Quote className="h-12 w-12 text-primary/30 mr-4" />
                   <div className="flex">
@@ -175,24 +185,26 @@ const Testimonials = () => {
         </div>
 
         {/* Trust indicators */}
-        <div className="mt-16 text-center animate-fade-in">
-          <div className="bg-background rounded-2xl p-8 shadow-lg max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-3xl font-bold text-primary mb-2">+10</div>
-                <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-secondary mb-2">100%</div>
-                <div className="text-sm text-muted-foreground">Satisfacción</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary mb-2">+300</div>
-                <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
+        <ScrollAnimationWrapper animationType="scale" delay={200}>
+          <div ref={statsRef} className="mt-16 text-center">
+            <div className="bg-background rounded-2xl p-8 shadow-lg max-w-4xl mx-auto card-hover">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <div className="text-3xl font-bold text-primary mb-2">+{projectsCount}</div>
+                  <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-secondary mb-2">{satisfactionCount}%</div>
+                  <div className="text-sm text-muted-foreground">Satisfacción</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-primary mb-2">+{hoursCount}</div>
+                  <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ScrollAnimationWrapper>
       </div>
     </section>
   );

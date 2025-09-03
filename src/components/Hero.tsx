@@ -1,11 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useInView } from "react-intersection-observer";
 
 const Hero = () => {
+  const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
+  
+  const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
+  const satisfactionCount = useCountUp({ end: 100, isVisible: statsInView });
+  const hoursCount = useCountUp({ end: 300, isVisible: statsInView });
+
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/542323550605?text=Hola! Quiero impulsar mi negocio con Plano", "_blank");
   };
-  return <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden pt-16">
+  return <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden pt-20 pb-12 md:pt-16 md:pb-0">
       {/* Background elements */}
       <div className="absolute top-20 right-10 w-32 h-32 bg-primary/10 rounded-full blur-xl"></div>
       <div className="absolute bottom-20 left-10 w-24 h-24 bg-secondary/10 rounded-full blur-xl"></div>
@@ -40,19 +48,19 @@ const Hero = () => {
         </div>
 
         {/* Stats or trust indicators */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in" style={{
+        <div ref={statsRef} className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in" style={{
         animationDelay: "0.6s"
       }}>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">+10</div>
+            <div className="text-2xl font-bold text-primary">+{projectsCount}</div>
             <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-secondary">100%</div>
+            <div className="text-2xl font-bold text-secondary">{satisfactionCount}%</div>
             <div className="text-sm text-muted-foreground">Satisfacción</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">+300</div>
+            <div className="text-2xl font-bold text-primary">+{hoursCount}</div>
             <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
           </div>
         </div>
