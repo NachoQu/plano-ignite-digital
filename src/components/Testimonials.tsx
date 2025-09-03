@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote, Star } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -7,6 +7,8 @@ import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Testimonials = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const [maxHeight, setMaxHeight] = useState(0);
   const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
   
   const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
@@ -40,32 +42,58 @@ const Testimonials = () => {
     }
   ];
 
-  // Duplicamos los testimonios para el scroll infinito
-  const duplicatedTestimonials = [...testimonials, ...testimonials];
+  // Triplicamos los testimonios para scroll infinito suave
+  const infiniteTestimonials = [...testimonials, ...testimonials, ...testimonials];
 
-  // Auto-scroll del carrusel
+  // Calcular altura máxima de las cards
+  useEffect(() => {
+    const calculateMaxHeight = () => {
+      const cards = document.querySelectorAll('.testimonial-card');
+      let max = 0;
+      cards.forEach(card => {
+        const height = card.getBoundingClientRect().height;
+        if (height > max) max = height;
+      });
+      setMaxHeight(max);
+    };
+
+    // Calcular después de que se rendericen las cards
+    setTimeout(calculateMaxHeight, 100);
+    window.addEventListener('resize', calculateMaxHeight);
+    
+    return () => window.removeEventListener('resize', calculateMaxHeight);
+  }, []);
+
+  // Auto-scroll suave con pausa en interacción del usuario
   useEffect(() => {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
-    let scrollLeft = 0;
-    const scrollWidth = carousel.scrollWidth / 2; // Solo la mitad porque tenemos duplicados
-    const speed = 0.5; // Velocidad del scroll (pixels por frame)
+    let animationId: number;
+    const speed = 0.3;
 
     const autoScroll = () => {
-      scrollLeft += speed;
-      
-      // Si llegamos al final, reseteamos al inicio para el loop infinito
-      if (scrollLeft >= scrollWidth) {
-        scrollLeft = 0;
+      if (!isUserInteracting && carousel) {
+        carousel.scrollLeft += speed;
+        
+        // Si llegamos al final del primer tercio, reseteamos
+        const maxScroll = carousel.scrollWidth / 3;
+        if (carousel.scrollLeft >= maxScroll) {
+          carousel.scrollLeft = 0;
+        }
       }
-      
-      carousel.scrollLeft = scrollLeft;
+      animationId = requestAnimationFrame(autoScroll);
     };
 
-    const interval = setInterval(autoScroll, 16); // ~60fps
-    return () => clearInterval(interval);
-  }, []);
+    animationId = requestAnimationFrame(autoScroll);
+    return () => cancelAnimationFrame(animationId);
+  }, [isUserInteracting]);
+
+  // Manejar interacciones del usuario
+  const handleInteractionStart = () => setIsUserInteracting(true);
+  const handleInteractionEnd = () => {
+    setTimeout(() => setIsUserInteracting(false), 2000); // Reanudar después de 2s
+  };
 
   return (
     <section id="testimonios" className="py-20 bg-muted/50">
@@ -85,31 +113,45 @@ const Testimonials = () => {
         <div className="relative max-w-7xl mx-auto mb-12 overflow-hidden">
           <div 
             ref={carouselRef}
-            className="flex gap-6 overflow-x-hidden scroll-smooth"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex gap-6 overflow-x-auto scroll-smooth cursor-grab active:cursor-grabbing"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch'
+            }}
+            onMouseDown={handleInteractionStart}
+            onMouseUp={handleInteractionEnd}
+            onTouchStart={handleInteractionStart}
+            onTouchEnd={handleInteractionEnd}
+            onScroll={handleInteractionStart}
           >
-            {duplicatedTestimonials.map((testimonial, index) => (
+            {infiniteTestimonials.map((testimonial, index) => (
               <div 
                 key={index} 
                 className="flex-shrink-0 w-full max-w-4xl mx-auto"
                 style={{ minWidth: '100%' }}
               >
-                <Card className="border-0 shadow-lg bg-background card-hover min-h-fit">
-                  <CardContent className="p-6 md:p-8">
-                    <div className="flex items-center mb-6">
-                      <Quote className="h-12 w-12 text-primary/30 mr-4 flex-shrink-0" />
-                      <div className="flex">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="h-5 w-5 text-secondary fill-current" />
-                        ))}
+                <Card 
+                  className="testimonial-card border-0 shadow-lg bg-background card-hover"
+                  style={{ height: maxHeight > 0 ? `${maxHeight}px` : 'auto' }}
+                >
+                  <CardContent className="p-6 md:p-8 h-full flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center mb-6">
+                        <Quote className="h-12 w-12 text-primary/30 mr-4 flex-shrink-0" />
+                        <div className="flex">
+                          {[...Array(testimonial.rating)].map((_, i) => (
+                            <Star key={i} className="h-5 w-5 text-secondary fill-current" />
+                          ))}
+                        </div>
                       </div>
+                      
+                      <blockquote className="text-foreground leading-relaxed mb-6 md:mb-8 italic text-base md:text-lg flex-grow">
+                        "{testimonial.quote}"
+                      </blockquote>
                     </div>
                     
-                    <blockquote className="text-foreground leading-relaxed mb-6 md:mb-8 italic text-base md:text-lg min-h-[120px] md:min-h-[100px]">
-                      "{testimonial.quote}"
-                    </blockquote>
-                    
-                    <div className="border-t border-border/50 pt-4 md:pt-6">
+                    <div className="border-t border-border/50 pt-4 md:pt-6 mt-auto">
                       <div className="font-semibold text-foreground text-lg md:text-xl">
                         {testimonial.author}
                       </div>
