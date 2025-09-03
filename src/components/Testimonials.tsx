@@ -1,14 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Quote, Star, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "react-intersection-observer";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Testimonials = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
   
@@ -43,47 +40,32 @@ const Testimonials = () => {
     }
   ];
 
-  // Función para avanzar al siguiente testimonio
-  const nextTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  };
+  // Duplicamos los testimonios para el scroll infinito
+  const duplicatedTestimonials = [...testimonials, ...testimonials];
 
-  // Función para retroceder al testimonio anterior
-  const prevTestimonial = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
-    );
-  };
-
-  // Función para pausar/reanudar el carrusel
-  const togglePlayPause = () => {
-    setIsPaused(!isPaused);
-  };
-
-  // Función para ir a un testimonio específico
-  const goToTestimonial = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  // Auto-play del carrusel
+  // Auto-scroll del carrusel
   useEffect(() => {
-    if (!isPaused && isPlaying) {
-      const interval = setInterval(() => {
-        nextTestimonial();
-      }, 5000); // Cambia cada 5 segundos
+    const carousel = carouselRef.current;
+    if (!carousel) return;
 
-      return () => clearInterval(interval);
-    }
-  }, [isPaused, isPlaying, currentIndex]);
+    let scrollLeft = 0;
+    const scrollWidth = carousel.scrollWidth / 2; // Solo la mitad porque tenemos duplicados
+    const speed = 0.5; // Velocidad del scroll (pixels por frame)
 
-  // Pausar cuando el usuario hace hover sobre el carrusel
-  const handleMouseEnter = () => {
-    setIsPaused(true);
-  };
+    const autoScroll = () => {
+      scrollLeft += speed;
+      
+      // Si llegamos al final, reseteamos al inicio para el loop infinito
+      if (scrollLeft >= scrollWidth) {
+        scrollLeft = 0;
+      }
+      
+      carousel.scrollLeft = scrollLeft;
+    };
 
-  const handleMouseLeave = () => {
-    setIsPaused(false);
-  };
+    const interval = setInterval(autoScroll, 16); // ~60fps
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section id="testimonios" className="py-20 bg-muted/50">
@@ -100,85 +82,53 @@ const Testimonials = () => {
         </ScrollAnimationWrapper>
 
         {/* Carrusel de testimonios */}
-        <div 
-          className="relative max-w-6xl mx-auto mb-12"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          ref={carouselRef}
-        >
-          {/* Controles de navegación */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-2 md:left-4 z-10">
-            <button
-              onClick={prevTestimonial}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-all duration-200 flex items-center justify-center"
-            >
-              <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-            </button>
+        <div className="relative max-w-7xl mx-auto mb-12 overflow-hidden">
+          <div 
+            ref={carouselRef}
+            className="flex gap-6 overflow-x-hidden scroll-smooth"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {duplicatedTestimonials.map((testimonial, index) => (
+              <div 
+                key={index} 
+                className="flex-shrink-0 w-full max-w-4xl mx-auto"
+                style={{ minWidth: '100%' }}
+              >
+                <Card className="border-0 shadow-lg bg-background card-hover min-h-fit">
+                  <CardContent className="p-6 md:p-8">
+                    <div className="flex items-center mb-6">
+                      <Quote className="h-12 w-12 text-primary/30 mr-4 flex-shrink-0" />
+                      <div className="flex">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-5 w-5 text-secondary fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <blockquote className="text-foreground leading-relaxed mb-6 md:mb-8 italic text-base md:text-lg min-h-[120px] md:min-h-[100px]">
+                      "{testimonial.quote}"
+                    </blockquote>
+                    
+                    <div className="border-t border-border/50 pt-4 md:pt-6">
+                      <div className="font-semibold text-foreground text-lg md:text-xl">
+                        {testimonial.author}
+                      </div>
+                      <div className="text-muted-foreground text-sm md:text-base">
+                        {testimonial.company}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
           </div>
-
-          <div className="absolute top-1/2 -translate-y-1/2 right-2 md:right-4 z-10">
-            <button
-              onClick={nextTestimonial}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-all duration-200 flex items-center justify-center"
-            >
-              <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-            </button>
-          </div>
-
-          {/* Botón de play/pause */}
-          <div className="absolute top-2 md:top-4 right-2 md:right-4 z-10">
-            <button
-              onClick={togglePlayPause}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-all duration-200 flex items-center justify-center"
-            >
-              {isPaused ? (
-                <Play className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-              ) : (
-                <Pause className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-              )}
-            </button>
-          </div>
-
-          {/* Testimonio actual */}
-          <div className="px-8 md:px-16">
-            <Card className="border-0 shadow-lg bg-background h-80 md:h-72 flex items-center">
-              <CardContent className="p-4 md:p-8 w-full flex flex-col justify-center">
-                <div className="flex items-center mb-6">
-                  <Quote className="h-12 w-12 text-primary/30 mr-4" />
-                  <div className="flex">
-                    {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-secondary fill-current" />
-                    ))}
-                  </div>
-                </div>
-                
-                <blockquote className="text-foreground leading-relaxed mb-6 md:mb-8 italic text-base md:text-lg">
-                  "{testimonials[currentIndex].quote}"
-                </blockquote>
-                
-                <div className="border-t border-border/50 pt-4 md:pt-6">
-                  <div className="font-semibold text-foreground text-lg md:text-xl">
-                    {testimonials[currentIndex].author}
-                  </div>
-                  <div className="text-muted-foreground text-sm md:text-base">
-                    {testimonials[currentIndex].company}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
+          
           {/* Indicadores de posición */}
           <div className="flex justify-center mt-8 space-x-2">
             {testimonials.map((_, index) => (
-              <button
+              <div
                 key={index}
-                onClick={() => goToTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                  index === currentIndex
-                    ? "bg-primary scale-125"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
+                className="w-3 h-3 rounded-full bg-primary/30"
               />
             ))}
           </div>
