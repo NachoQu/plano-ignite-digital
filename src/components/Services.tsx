@@ -57,7 +57,6 @@ const Services = () => {
               key={index}
               animationType="fade-in"
               delay={index * 100}
->>>>>>> 4e3aac1dfa9fdf6b754e609b4767d41a1338ac6c
             >
               <Card className="border-0 shadow-lg bg-background card-hover h-full">
               <CardHeader className="text-center pb-4">

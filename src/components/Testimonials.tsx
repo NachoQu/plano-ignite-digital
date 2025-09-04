@@ -9,6 +9,9 @@ const Testimonials = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [maxHeight, setMaxHeight] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [startScrollLeft, setStartScrollLeft] = useState(0);
   const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
   
   const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
@@ -57,7 +60,6 @@ const Testimonials = () => {
       setMaxHeight(max);
     };
 
-    // Calcular después de que se rendericen las cards
     setTimeout(calculateMaxHeight, 100);
     window.addEventListener('resize', calculateMaxHeight);
     
@@ -70,7 +72,7 @@ const Testimonials = () => {
     if (!carousel) return;
 
     let animationId: number;
-    const speed = 0.3;
+    const speed = 0.5;
 
     const autoScroll = () => {
       if (!isUserInteracting && carousel) {
@@ -85,63 +87,49 @@ const Testimonials = () => {
       animationId = requestAnimationFrame(autoScroll);
     };
 
+    // Posicionar el scroll en el centro inicialmente
+    carousel.scrollLeft = carousel.scrollWidth / 3;
+    
     animationId = requestAnimationFrame(autoScroll);
     return () => cancelAnimationFrame(animationId);
   }, [isUserInteracting]);
 
-  // Manejar interacciones del usuario
-  const handleInteractionStart = () => setIsUserInteracting(true);
-  const handleInteractionEnd = () => {
-    setTimeout(() => setIsUserInteracting(false), 2000); // Reanudar después de 2s
-  };
-
-  // Funciones para swipe
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX);
-    setIsDragging(true);
-    setIsPaused(true);
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    
-    const endX = e.changedTouches[0].clientX;
-    const diff = startX - endX;
-    
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        nextTestimonial();
-      } else {
-        prevTestimonial();
-      }
-    }
-    
-    setIsDragging(false);
-    setIsPaused(false);
-  };
-
+  // Manejar arrastre del mouse
   const handleMouseDown = (e: React.MouseEvent) => {
-    setStartX(e.clientX);
     setIsDragging(true);
-    setIsPaused(true);
+    setIsUserInteracting(true);
+    setStartX(e.clientX);
+    setStartScrollLeft(carouselRef.current?.scrollLeft || 0);
   };
 
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    
-    const endX = e.clientX;
-    const diff = startX - endX;
-    
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        nextTestimonial();
-      } else {
-        prevTestimonial();
-      }
-    }
-    
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !carouselRef.current) return;
+    const x = e.clientX;
+    const walk = (x - startX) * 2;
+    carouselRef.current.scrollLeft = startScrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
     setIsDragging(false);
-    setIsPaused(false);
+    setTimeout(() => setIsUserInteracting(false), 2000);
+  };
+
+  // Manejar toque en mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsUserInteracting(true);
+    setStartX(e.touches[0].clientX);
+    setStartScrollLeft(carouselRef.current?.scrollLeft || 0);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!carouselRef.current) return;
+    const x = e.touches[0].clientX;
+    const walk = (x - startX) * 2;
+    carouselRef.current.scrollLeft = startScrollLeft - walk;
+  };
+
+  const handleTouchEnd = () => {
+    setTimeout(() => setIsUserInteracting(false), 2000);
   };
 
   return (
@@ -159,73 +147,6 @@ const Testimonials = () => {
         </ScrollAnimationWrapper>
 
         {/* Carrusel de testimonios */}
-        <div 
-          className="relative max-w-6xl mx-auto mb-12"
-          ref={carouselRef}
-        >
-          {/* Controles de navegación */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-2 md:left-4 z-10">
-            <button
-              onClick={prevTestimonial}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-all duration-200 flex items-center justify-center"
-            >
-              <ChevronLeft className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-            </button>
-          </div>
-
-          <div className="absolute top-1/2 -translate-y-1/2 right-2 md:right-4 z-10">
-            <button
-              onClick={nextTestimonial}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-all duration-200 flex items-center justify-center"
-            >
-              <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-            </button>
-          </div>
-
-          {/* Botón de play/pause */}
-          <div className="absolute top-2 md:top-4 right-2 md:right-4 z-10">
-            <button
-              onClick={togglePlayPause}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border shadow-lg hover:bg-background transition-all duration-200 flex items-center justify-center"
-            >
-              {isPaused ? (
-                <Play className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-              ) : (
-                <Pause className="h-4 w-4 md:h-5 md:w-5 text-foreground" />
-              )}
-            </button>
-          </div>
-
-          {/* Testimonio actual */}
-          <div className="px-8 md:px-16 h-full flex items-center">
-            <Card className="border-0 shadow-lg bg-background w-full transition-all duration-500 ease-in-out transform">
-              <CardContent className="p-4 md:p-8 h-full flex flex-col justify-center">
-                <div className="flex items-center mb-6">
-                  <Quote className="h-12 w-12 text-primary/30 mr-4" />
-                  <div className="flex">
-                    {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 text-secondary fill-current" />
-                    ))}
-                  </div>
-                </div>
-                
-                <blockquote className="text-foreground leading-relaxed mb-6 md:mb-8 italic text-base md:text-lg">
-                  "{testimonials[currentIndex].quote}"
-                </blockquote>
-                
-                <div className="border-t border-border/50 pt-4 md:pt-6">
-                  <div className="font-semibold text-foreground text-lg md:text-xl">
-                    {testimonials[currentIndex].author}
-                  </div>
-                  <div className="text-muted-foreground text-sm md:text-base">
-                    {testimonials[currentIndex].company}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-=======
         <div className="relative max-w-7xl mx-auto mb-12 overflow-hidden">
           <div 
             ref={carouselRef}
@@ -235,11 +156,13 @@ const Testimonials = () => {
               msOverflowStyle: 'none',
               WebkitOverflowScrolling: 'touch'
             }}
-            onMouseDown={handleInteractionStart}
-            onMouseUp={handleInteractionEnd}
-            onTouchStart={handleInteractionStart}
-            onTouchEnd={handleInteractionEnd}
-            onScroll={handleInteractionStart}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             {infiniteTestimonials.map((testimonial, index) => (
               <div 
@@ -278,17 +201,6 @@ const Testimonials = () => {
                   </CardContent>
                 </Card>
               </div>
-            ))}
-          </div>
-          
->>>>>>> 4e3aac1dfa9fdf6b754e609b4767d41a1338ac6c
-          {/* Indicadores de posición */}
-          <div className="flex justify-center mt-8 space-x-2">
-            {testimonials.map((_, index) => (
-              <div
-                key={index}
-                className="w-3 h-3 rounded-full bg-primary/30"
-              />
             ))}
           </div>
         </div>
