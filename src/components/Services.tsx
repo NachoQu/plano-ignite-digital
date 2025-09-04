@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Palette, Globe, Settings, Rocket, GraduationCap } from "lucide-react";
+import { Palette, Globe, Settings, Rocket, GraduationCap, Share2 } from "lucide-react";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Services = () => {
@@ -34,6 +34,12 @@ const Services = () => {
       title: "EdTech probado en colegios",
       description: "Digitalizamos la comunicación con familias y automatizamos informes para docentes.",
       color: "text-primary"
+    },
+    {
+      icon: Share2,
+      title: "Contenido para redes",
+      description: "Diseño de piezas visuales y estrategias para redes sociales que generan impacto, refuerzan tu identidad y atraen a tu audiencia ideal.",
+      color: "text-secondary"
     }
   ];
 
