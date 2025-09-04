@@ -6,6 +6,8 @@ const Testimonials = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const testimonials = [
@@ -77,6 +79,55 @@ const Testimonials = () => {
     setIsPaused(false);
   };
 
+  // Funciones para swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartX(e.touches[0].clientX);
+    setIsDragging(true);
+    setIsPaused(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextTestimonial();
+      } else {
+        prevTestimonial();
+      }
+    }
+    
+    setIsDragging(false);
+    setIsPaused(false);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setStartX(e.clientX);
+    setIsDragging(true);
+    setIsPaused(true);
+  };
+
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    
+    const endX = e.clientX;
+    const diff = startX - endX;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextTestimonial();
+      } else {
+        prevTestimonial();
+      }
+    }
+    
+    setIsDragging(false);
+    setIsPaused(false);
+  };
+
   return (
     <section id="testimonios" className="py-20 bg-muted/50">
       <div className="container mx-auto px-6">
@@ -91,9 +142,13 @@ const Testimonials = () => {
 
         {/* Carrusel de testimonios */}
         <div 
-          className="relative max-w-6xl mx-auto mb-12"
+          className="relative max-w-6xl mx-auto mb-12 h-80 md:h-96"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
           ref={carouselRef}
         >
           {/* Controles de navegación */}
@@ -130,9 +185,9 @@ const Testimonials = () => {
           </div>
 
           {/* Testimonio actual */}
-          <div className="px-8 md:px-16">
-            <Card className="border-0 shadow-lg bg-background animate-fade-in">
-              <CardContent className="p-4 md:p-8">
+          <div className="px-8 md:px-16 h-full flex items-center">
+            <Card className="border-0 shadow-lg bg-background w-full transition-all duration-500 ease-in-out transform">
+              <CardContent className="p-4 md:p-8 h-full flex flex-col justify-center">
                 <div className="flex items-center mb-6">
                   <Quote className="h-12 w-12 text-primary/30 mr-4" />
                   <div className="flex">

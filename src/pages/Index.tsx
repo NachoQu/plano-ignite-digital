@@ -6,6 +6,7 @@ import Projects from "@/components/Projects";
 import Testimonials from "@/components/Testimonials";
 import Methodology from "@/components/Methodology";
 import Team from "@/components/Team";
+import WorkTogether from "@/components/WorkTogether";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -20,6 +21,7 @@ const Index = () => {
       <Testimonials />
       <Methodology />
       <Team />
+      <WorkTogether />
       <FinalCTA />
       <Footer />
     </>

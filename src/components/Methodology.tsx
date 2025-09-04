@@ -50,10 +50,10 @@ const Methodology = () => {
             <div key={index} className="relative animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
               {/* Connection line for desktop */}
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-12 left-full w-8 h-0.5 bg-gradient-to-r from-primary to-secondary transform translate-x-4 z-0"></div>
+                <div className="hidden lg:block absolute top-12 left-full w-12 h-1 bg-gradient-to-r from-primary to-secondary transform translate-x-6 z-0 shadow-lg"></div>
               )}
               
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale bg-background relative z-10">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale hover-lift bg-background relative z-10">
                 <CardContent className="p-6 text-center">
                   <div className="mx-auto mb-4 p-4 rounded-xl bg-primary/10 w-fit">
                     <step.icon className="h-8 w-8 text-primary" />

@@ -24,7 +24,7 @@ const FinalCTA = () => {
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8 py-4 text-lg font-semibold rounded-xl hover-scale group"
             >
               <MessageCircle className="mr-2 h-5 w-5" />
-              Hablemos en WhatsApp
+              Hablemos hoy de tu proyecto
             </Button>
           </div>
 

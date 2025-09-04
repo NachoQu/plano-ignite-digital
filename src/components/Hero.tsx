@@ -1,11 +1,58 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const Hero = () => {
+  const [counters, setCounters] = useState({ projects: 0, satisfaction: 0, hours: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+
   const handleWhatsAppClick = () => {
     window.open("https://wa.me/542323550605?text=Hola! Quiero impulsar mi negocio con Plano", "_blank");
   };
-  return <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden pt-16">
+
+  // Efecto para animar los contadores
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isVisible) {
+          setIsVisible(true);
+          animateCounters();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    const statsElement = document.getElementById('stats-section');
+    if (statsElement) {
+      observer.observe(statsElement);
+    }
+
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  const animateCounters = () => {
+    const duration = 2000; // 2 segundos
+    const steps = 60;
+    const stepDuration = duration / steps;
+
+    let step = 0;
+    const timer = setInterval(() => {
+      step++;
+      const progress = step / steps;
+      
+      setCounters({
+        projects: Math.floor(10 * progress),
+        satisfaction: Math.floor(100 * progress),
+        hours: Math.floor(300 * progress)
+      });
+
+      if (step >= steps) {
+        clearInterval(timer);
+        setCounters({ projects: 10, satisfaction: 100, hours: 300 });
+      }
+    }, stepDuration);
+  };
+  return <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden pt-16 pb-8 md:pb-0">
       {/* Background elements */}
       <div className="absolute top-20 right-10 w-32 h-32 bg-primary/10 rounded-full blur-xl"></div>
       <div className="absolute bottom-20 left-10 w-24 h-24 bg-secondary/10 rounded-full blur-xl"></div>
@@ -40,20 +87,20 @@ const Hero = () => {
         </div>
 
         {/* Stats or trust indicators */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in" style={{
+        <div id="stats-section" className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 animate-fade-in" style={{
         animationDelay: "0.6s"
       }}>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">+10</div>
-            <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
+            <div className="text-4xl md:text-5xl font-bold text-primary transition-all duration-500">+{counters.projects}</div>
+            <div className="text-sm md:text-base text-muted-foreground mt-2">Proyectos Finalizados</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-secondary">100%</div>
-            <div className="text-sm text-muted-foreground">Satisfacción</div>
+            <div className="text-4xl md:text-5xl font-bold text-secondary transition-all duration-500">{counters.satisfaction}%</div>
+            <div className="text-sm md:text-base text-muted-foreground mt-2">Satisfacción</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">+300</div>
-            <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
+            <div className="text-4xl md:text-5xl font-bold text-primary transition-all duration-500">+{counters.hours}</div>
+            <div className="text-sm md:text-base text-muted-foreground mt-2">Horas Ahorradas</div>
           </div>
         </div>
       </div>
