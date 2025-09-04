@@ -38,7 +38,7 @@ const Services = () => {
     {
       icon: Share2,
       title: "Contenido para redes",
-      description: "Diseño de piezas visuales y estrategias para redes sociales que generan impacto, refuerzan tu identidad y atraen a tu audiencia ideal.",
+      description: "Diseño de piezas visuales que transmiten tu marca y atraen a tu audiencia.",
       color: "text-secondary"
     }
   ];
