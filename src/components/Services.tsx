@@ -1,9 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette, Globe, Settings, Rocket, GraduationCap } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Services = () => {
-  const [sectionRef, isVisible] = useScrollReveal(0.1);
   
   const services = [
     {
@@ -39,24 +38,28 @@ const Services = () => {
   ];
 
   return (
-    <section ref={sectionRef} id="servicios" className="py-20 bg-muted/50">
+    <section id="servicios" className="py-20 bg-muted/50">
       <div className="container mx-auto px-6">
-        <div className={`text-center mb-16 transition-all duration-1000 ${isVisible ? 'animate-fade-in' : 'opacity-0'}`}>
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Servicios <span className="text-gradient-purple">integrales</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Ofrecemos soluciones completas que cubren todas las necesidades digitales de tu negocio
-          </p>
-        </div>
+        <ScrollAnimationWrapper animationType="fade-in">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              Servicios <span className="text-gradient-purple">integrales</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Ofrecemos soluciones completas que cubren todas las necesidades digitales de tu negocio
+            </p>
+          </div>
+        </ScrollAnimationWrapper>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card 
-              key={index} 
-              className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale hover-lift bg-background ${isVisible ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`}
-              style={{ animationDelay: isVisible ? `${index * 0.1}s` : '0s' }}
+            <ScrollAnimationWrapper 
+              key={index}
+              animationType="fade-in"
+              delay={index * 100}
+>>>>>>> 4e3aac1dfa9fdf6b754e609b4767d41a1338ac6c
             >
+              <Card className="border-0 shadow-lg bg-background card-hover h-full">
               <CardHeader className="text-center pb-4">
                 <div className="mx-auto mb-4 p-3 rounded-xl bg-muted/50 w-fit">
                   <service.icon className={`h-8 w-8 ${service.color}`} />
@@ -71,6 +74,7 @@ const Services = () => {
                 </p>
               </CardContent>
             </Card>
+            </ScrollAnimationWrapper>
           ))}
         </div>
       </div>

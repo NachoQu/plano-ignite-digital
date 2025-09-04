@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink, Building2, Palette, Scissors, Key, Zap, School, Store, Calculator } from "lucide-react";
+import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Projects = () => {
   const [activeFilter, setActiveFilter] = useState("TODAS");
@@ -90,14 +91,16 @@ const Projects = () => {
   return (
     <section id="proyectos" className="py-20 bg-background">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Proyectos <span className="text-gradient-purple">finalizados</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Resultados reales que han transformado negocios y generado impacto medible en PYMEs y Startups
-          </p>
-        </div>
+        <ScrollAnimationWrapper animationType="fade-in">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              Proyectos <span className="text-gradient-purple">finalizados</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Resultados reales que han transformado negocios y generado impacto medible en PYMEs y Startups
+            </p>
+          </div>
+        </ScrollAnimationWrapper>
 
         {/* Filtros */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -124,11 +127,12 @@ const Projects = () => {
               (activeFilter === "DESARROLLO WEB" && project.category === "DESARROLLO WEB / CONSULTORÍA")
             )
             .map((project, index) => (
-            <Card 
+            <ScrollAnimationWrapper
               key={index}
-              className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-scale hover-lift bg-card group animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              animationType="scale"
+              delay={index * 100}
             >
+              <Card className="border-0 shadow-lg bg-card group card-hover h-full">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-primary/10">
@@ -173,6 +177,7 @@ const Projects = () => {
                 </div>
               </CardContent>
             </Card>
+            </ScrollAnimationWrapper>
           ))}
         </div>
       </div>

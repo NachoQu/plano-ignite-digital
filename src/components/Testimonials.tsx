@@ -1,14 +1,19 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Quote, Star, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { Quote, Star } from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
+import { useInView } from "react-intersection-observer";
+import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 
 const Testimonials = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [isUserInteracting, setIsUserInteracting] = useState(false);
+  const [maxHeight, setMaxHeight] = useState(0);
+  const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
+  
+  const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
+  const satisfactionCount = useCountUp({ end: 100, isVisible: statsInView });
+  const hoursCount = useCountUp({ end: 300, isVisible: statsInView });
 
   const testimonials = [
     {
@@ -37,46 +42,57 @@ const Testimonials = () => {
     }
   ];
 
-  // Función para avanzar al siguiente testimonio
-  const nextTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
-  };
+  // Triplicamos los testimonios para scroll infinito suave
+  const infiniteTestimonials = [...testimonials, ...testimonials, ...testimonials];
 
-  // Función para retroceder al testimonio anterior
-  const prevTestimonial = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
-    );
-  };
-
-  // Función para pausar/reanudar el carrusel
-  const togglePlayPause = () => {
-    setIsPaused(!isPaused);
-  };
-
-  // Función para ir a un testimonio específico
-  const goToTestimonial = (index: number) => {
-    setCurrentIndex(index);
-  };
-
-  // Auto-play del carrusel
+  // Calcular altura máxima de las cards
   useEffect(() => {
-    if (!isPaused && isPlaying) {
-      const interval = setInterval(() => {
-        nextTestimonial();
-      }, 5000); // Cambia cada 5 segundos
+    const calculateMaxHeight = () => {
+      const cards = document.querySelectorAll('.testimonial-card');
+      let max = 0;
+      cards.forEach(card => {
+        const height = card.getBoundingClientRect().height;
+        if (height > max) max = height;
+      });
+      setMaxHeight(max);
+    };
 
-      return () => clearInterval(interval);
-    }
-  }, [isPaused, isPlaying, currentIndex]);
+    // Calcular después de que se rendericen las cards
+    setTimeout(calculateMaxHeight, 100);
+    window.addEventListener('resize', calculateMaxHeight);
+    
+    return () => window.removeEventListener('resize', calculateMaxHeight);
+  }, []);
 
-  // Pausar cuando el usuario hace hover sobre el carrusel
-  const handleMouseEnter = () => {
-    setIsPaused(true);
-  };
+  // Auto-scroll suave con pausa en interacción del usuario
+  useEffect(() => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
 
-  const handleMouseLeave = () => {
-    setIsPaused(false);
+    let animationId: number;
+    const speed = 0.3;
+
+    const autoScroll = () => {
+      if (!isUserInteracting && carousel) {
+        carousel.scrollLeft += speed;
+        
+        // Si llegamos al final del primer tercio, reseteamos
+        const maxScroll = carousel.scrollWidth / 3;
+        if (carousel.scrollLeft >= maxScroll) {
+          carousel.scrollLeft = 0;
+        }
+      }
+      animationId = requestAnimationFrame(autoScroll);
+    };
+
+    animationId = requestAnimationFrame(autoScroll);
+    return () => cancelAnimationFrame(animationId);
+  }, [isUserInteracting]);
+
+  // Manejar interacciones del usuario
+  const handleInteractionStart = () => setIsUserInteracting(true);
+  const handleInteractionEnd = () => {
+    setTimeout(() => setIsUserInteracting(false), 2000); // Reanudar después de 2s
   };
 
   // Funciones para swipe
@@ -131,24 +147,20 @@ const Testimonials = () => {
   return (
     <section id="testimonios" className="py-20 bg-muted/50">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16 animate-fade-in">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Lo que dicen nuestros <span className="text-gradient-purple">clientes</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Testimonios reales de empresas que confiaron en Plano para impulsar su crecimiento digital
-          </p>
-        </div>
+        <ScrollAnimationWrapper animationType="fade-in">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+              Lo que dicen nuestros <span className="text-gradient-purple">clientes</span>
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Testimonios reales de empresas que confiaron en Plano para impulsar su crecimiento digital
+            </p>
+          </div>
+        </ScrollAnimationWrapper>
 
         {/* Carrusel de testimonios */}
         <div 
-          className="relative max-w-6xl mx-auto mb-12 h-80 md:h-96"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
+          className="relative max-w-6xl mx-auto mb-12"
           ref={carouselRef}
         >
           {/* Controles de navegación */}
@@ -213,41 +225,95 @@ const Testimonials = () => {
             </Card>
           </div>
 
+=======
+        <div className="relative max-w-7xl mx-auto mb-12 overflow-hidden">
+          <div 
+            ref={carouselRef}
+            className="flex gap-6 overflow-x-auto scroll-smooth cursor-grab active:cursor-grabbing"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch'
+            }}
+            onMouseDown={handleInteractionStart}
+            onMouseUp={handleInteractionEnd}
+            onTouchStart={handleInteractionStart}
+            onTouchEnd={handleInteractionEnd}
+            onScroll={handleInteractionStart}
+          >
+            {infiniteTestimonials.map((testimonial, index) => (
+              <div 
+                key={index} 
+                className="flex-shrink-0 w-full max-w-4xl mx-auto"
+                style={{ minWidth: '100%' }}
+              >
+                <Card 
+                  className="testimonial-card border-0 shadow-lg bg-background card-hover"
+                  style={{ height: maxHeight > 0 ? `${maxHeight}px` : 'auto' }}
+                >
+                  <CardContent className="p-6 md:p-8 h-full flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center mb-6">
+                        <Quote className="h-12 w-12 text-primary/30 mr-4 flex-shrink-0" />
+                        <div className="flex">
+                          {[...Array(testimonial.rating)].map((_, i) => (
+                            <Star key={i} className="h-5 w-5 text-secondary fill-current" />
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <blockquote className="text-foreground leading-relaxed mb-6 md:mb-8 italic text-base md:text-lg flex-grow">
+                        "{testimonial.quote}"
+                      </blockquote>
+                    </div>
+                    
+                    <div className="border-t border-border/50 pt-4 md:pt-6 mt-auto">
+                      <div className="font-semibold text-foreground text-lg md:text-xl">
+                        {testimonial.author}
+                      </div>
+                      <div className="text-muted-foreground text-sm md:text-base">
+                        {testimonial.company}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </div>
+          
+>>>>>>> 4e3aac1dfa9fdf6b754e609b4767d41a1338ac6c
           {/* Indicadores de posición */}
           <div className="flex justify-center mt-8 space-x-2">
             {testimonials.map((_, index) => (
-              <button
+              <div
                 key={index}
-                onClick={() => goToTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                  index === currentIndex
-                    ? "bg-primary scale-125"
-                    : "bg-muted hover:bg-muted/80"
-                }`}
+                className="w-3 h-3 rounded-full bg-primary/30"
               />
             ))}
           </div>
         </div>
 
         {/* Trust indicators */}
-        <div className="mt-16 text-center animate-fade-in">
-          <div className="bg-background rounded-2xl p-8 shadow-lg max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-3xl font-bold text-primary mb-2">+10</div>
-                <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-secondary mb-2">100%</div>
-                <div className="text-sm text-muted-foreground">Satisfacción</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary mb-2">+300</div>
-                <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
+        <ScrollAnimationWrapper animationType="scale" delay={200}>
+          <div ref={statsRef} className="mt-16 text-center">
+            <div className="bg-background rounded-2xl p-8 shadow-lg max-w-4xl mx-auto card-hover">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <div className="text-3xl font-bold text-primary mb-2">+{projectsCount}</div>
+                  <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-secondary mb-2">{satisfactionCount}%</div>
+                  <div className="text-sm text-muted-foreground">Satisfacción</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-primary mb-2">+{hoursCount}</div>
+                  <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ScrollAnimationWrapper>
       </div>
     </section>
   );
