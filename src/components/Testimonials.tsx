@@ -12,6 +12,7 @@ const Testimonials = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startScrollLeft, setStartScrollLeft] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
   const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
   
   const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
@@ -45,8 +46,8 @@ const Testimonials = () => {
     }
   ];
 
-  // Triplicamos los testimonios para scroll infinito suave
-  const infiniteTestimonials = [...testimonials, ...testimonials, ...testimonials];
+  // Duplicamos múltiples veces para marquee infinito suave
+  const infiniteTestimonials = [...testimonials, ...testimonials, ...testimonials, ...testimonials];
 
   // Calcular altura máxima de las cards
   useEffect(() => {
@@ -66,30 +67,30 @@ const Testimonials = () => {
     return () => window.removeEventListener('resize', calculateMaxHeight);
   }, []);
 
-  // Auto-scroll suave con pausa en interacción del usuario
+  // Marquee infinito con transform
   useEffect(() => {
-    const carousel = carouselRef.current;
-    if (!carousel) return;
-
     let animationId: number;
-    const speed = 0.8; // Velocidad más notoria
+    const speed = 1; // pixels por frame
 
-    const autoScroll = () => {
-      if (!isUserInteracting && carousel) {
-        carousel.scrollLeft += speed;
-        
-        // Loop infinito: cuando llegamos al final del primer set, volvemos al inicio
-        if (carousel.scrollLeft >= carousel.scrollWidth / 3) {
-          carousel.scrollLeft = 0;
-        }
+    const marqueeAnimation = () => {
+      if (!isUserInteracting) {
+        setTranslateX(prev => {
+          const cardWidth = 400; // ancho aproximado de cada card + gap
+          const totalWidth = cardWidth * testimonials.length;
+          
+          // Si llegamos al final del primer set, reseteamos
+          if (prev <= -totalWidth) {
+            return 0;
+          }
+          return prev - speed;
+        });
       }
-      animationId = requestAnimationFrame(autoScroll);
+      animationId = requestAnimationFrame(marqueeAnimation);
     };
 
-    // Iniciar animación
-    animationId = requestAnimationFrame(autoScroll);
+    animationId = requestAnimationFrame(marqueeAnimation);
     return () => cancelAnimationFrame(animationId);
-  }, [isUserInteracting]);
+  }, [isUserInteracting, testimonials.length]);
 
   // Pausar auto-scroll al pasar el cursor por encima
   const handleMouseEnter = () => {
@@ -105,14 +106,14 @@ const Testimonials = () => {
     setIsDragging(true);
     setIsUserInteracting(true);
     setStartX(e.clientX);
-    setStartScrollLeft(carouselRef.current?.scrollLeft || 0);
+    setStartScrollLeft(translateX);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !carouselRef.current) return;
+    if (!isDragging) return;
     const x = e.clientX;
     const walk = (x - startX) * 2;
-    carouselRef.current.scrollLeft = startScrollLeft - walk;
+    setTranslateX(startScrollLeft + walk);
   };
 
   const handleMouseUp = () => {
@@ -124,14 +125,13 @@ const Testimonials = () => {
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsUserInteracting(true);
     setStartX(e.touches[0].clientX);
-    setStartScrollLeft(carouselRef.current?.scrollLeft || 0);
+    setStartScrollLeft(translateX);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!carouselRef.current) return;
     const x = e.touches[0].clientX;
     const walk = (x - startX) * 2;
-    carouselRef.current.scrollLeft = startScrollLeft - walk;
+    setTranslateX(startScrollLeft + walk);
   };
 
   const handleTouchEnd = () => {
@@ -160,11 +160,10 @@ const Testimonials = () => {
         >
           <div 
             ref={carouselRef}
-            className="flex gap-6 overflow-x-auto scroll-smooth cursor-grab active:cursor-grabbing"
+            className="flex gap-6 cursor-grab active:cursor-grabbing"
             style={{ 
-              scrollbarWidth: 'none', 
-              msOverflowStyle: 'none',
-              WebkitOverflowScrolling: 'touch'
+              transform: `translateX(${translateX}px)`,
+              transition: isDragging ? 'none' : 'transform 0.1s linear'
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -176,8 +175,7 @@ const Testimonials = () => {
             {infiniteTestimonials.map((testimonial, index) => (
               <div 
                 key={index} 
-                className="flex-shrink-0 w-full max-w-4xl mx-auto"
-                style={{ minWidth: '100%' }}
+                className="flex-shrink-0 w-80 md:w-96"
               >
                 <Card 
                   className="testimonial-card border-0 shadow-lg bg-background card-hover"
