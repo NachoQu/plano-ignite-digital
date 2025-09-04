@@ -72,27 +72,33 @@ const Testimonials = () => {
     if (!carousel) return;
 
     let animationId: number;
-    const speed = 0.5;
+    const speed = 0.8; // Velocidad más notoria
 
     const autoScroll = () => {
       if (!isUserInteracting && carousel) {
         carousel.scrollLeft += speed;
         
-        // Si llegamos al final del primer tercio, reseteamos
-        const maxScroll = carousel.scrollWidth / 3;
-        if (carousel.scrollLeft >= maxScroll) {
+        // Loop infinito: cuando llegamos al final del primer set, volvemos al inicio
+        if (carousel.scrollLeft >= carousel.scrollWidth / 3) {
           carousel.scrollLeft = 0;
         }
       }
       animationId = requestAnimationFrame(autoScroll);
     };
 
-    // Posicionar el scroll en el centro inicialmente
-    carousel.scrollLeft = carousel.scrollWidth / 3;
-    
+    // Iniciar animación
     animationId = requestAnimationFrame(autoScroll);
     return () => cancelAnimationFrame(animationId);
   }, [isUserInteracting]);
+
+  // Pausar auto-scroll al pasar el cursor por encima
+  const handleMouseEnter = () => {
+    setIsUserInteracting(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsUserInteracting(false);
+  };
 
   // Manejar arrastre del mouse
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -147,7 +153,11 @@ const Testimonials = () => {
         </ScrollAnimationWrapper>
 
         {/* Carrusel de testimonios */}
-        <div className="relative max-w-7xl mx-auto mb-12 overflow-hidden">
+        <div 
+          className="relative max-w-7xl mx-auto mb-12 overflow-hidden"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <div 
             ref={carouselRef}
             className="flex gap-6 overflow-x-auto scroll-smooth cursor-grab active:cursor-grabbing"
@@ -159,7 +169,6 @@ const Testimonials = () => {
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
