@@ -80,11 +80,11 @@ const Projects = () => {
     },
     {
       icon: Store,
-      title: "Picconesi – Tienda Online",
-      description: "Desarrollo de e-commerce con catálogo, pasarela de pagos y logística integrada para venta directa.",
-      category: "E-COMMERCE",
-      status: "Operativo",
-      link: "https://picconesi.com.ar"
+      title: "Agrogy – Desarrollo Web",
+      description: "Sitio web profesional con catálogo de productos para comunicar la propuesta de valor de la empresa.",
+      category: "DESARROLLO WEB",
+      status: "Publicado",
+      link: "https://www.agrogy.com"
     }
   ];
 

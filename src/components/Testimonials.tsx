@@ -43,6 +43,12 @@ const Testimonials = () => {
       author: "Daniela Chiaramonte",
       company: "Chiaramonte & Sánchez",
       rating: 5
+    },
+    {
+      quote: "Trabajar con Plano fue muy ágil, descontracturado y profesional. Su metodología fue clave para lograr exactamente lo que la empresa necesitaba transmitir. Logramos una web que nos representa y transmite nuestra identidad a la perfección. Por primera vez pude plasmar lo que tenía en mente en el producto final.",
+      author: "Sergio Scravaglieri",
+      company: "Agrogy",
+      rating: 5
     }
   ];
 
