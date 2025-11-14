@@ -1,0 +1,268 @@
+{
+  "navbar": {
+    "services": "Services",
+    "projects": "Projects",
+    "testimonials": "Testimonials",
+    "methodology": "Methodology",
+    "team": "Team",
+    "contact": "Contact Us"
+  },
+  "hero": {
+    "title": {
+      "part1": "Web development",
+      "part2": "internal tools",
+      "part3": "at the service of your SME or Startup."
+    },
+    "subtitle": "At Plano we combine design, no-code, and artificial intelligence to create solid brands, websites that generate clients, and digital solutions that organize your business.",
+    "cta": "I want to boost my business",
+    "whatsappMessage": "Hi! I want to boost my business with Plano",
+    "stats": {
+      "projects": "Completed Projects",
+      "satisfaction": "Satisfaction",
+      "hours": "Hours Saved"
+    }
+  },
+  "services": {
+    "title": "Comprehensive",
+    "titleHighlight": "services",
+    "subtitle": "We offer complete solutions that cover all the digital needs of your business",
+    "items": {
+      "branding": {
+        "title": "Brand identity that inspires trust",
+        "description": "Logos, manuals, and graphic pieces that position your company as a reference."
+      },
+      "web": {
+        "title": "Websites that convert visits into clients",
+        "description": "Modern, fast, and SEO-optimized sites, designed for real sales."
+      },
+      "tools": {
+        "title": "Internal tools for your SME",
+        "description": "ERP for product sales, performance dashboards, booking systems, and inventory management to organize your operation."
+      },
+      "mvp": {
+        "title": "Fast MVPs for Startups",
+        "description": "Functional prototypes in weeks, ready to validate."
+      },
+      "edtech": {
+        "title": "EdTech proven in schools",
+        "description": "We digitize communication with families and automate reports for teachers."
+      },
+      "social": {
+        "title": "Social media content",
+        "description": "Visual piece design that conveys your brand and attracts your audience."
+      }
+    }
+  },
+  "valueProposition": {
+    "title": "Value",
+    "titleHighlight": "proposition",
+    "quote": "Your SME or Startup needs a solid brand, a professional website, and clear internal tools:",
+    "quoteHighlight": "that's what we do at Plano.",
+    "benefits": {
+      "results": {
+        "title": "Measurable results from the start",
+        "description": "Clear KPIs and metrics that matter for your business"
+      },
+      "scale": {
+        "title": "We scale with you, without technical friction",
+        "description": "Technology that grows with your company, without complications"
+      },
+      "support": {
+        "title": "Close and simple support",
+        "description": "Direct and understandable communication at every step"
+      },
+      "tracking": {
+        "title": "Clear KPIs and constant monitoring",
+        "description": "Transparent reports for better decision-making"
+      }
+    }
+  },
+  "projects": {
+    "title": "Completed",
+    "titleHighlight": "projects",
+    "subtitle": "Real cases of SMEs and Startups that have already improved their digital presence and internal operations",
+    "filters": {
+      "all": "ALL",
+      "web": "WEB DEVELOPMENT",
+      "ecommerce": "E-COMMERCE",
+      "tools": "INTERNAL TOOLS",
+      "edtech": "EDTECH",
+      "consulting": "CONSULTING"
+    },
+    "items": {
+      "pallets": {
+        "title": "Pallets Marcel SRL – Landing Page",
+        "description": "Institutional landing page to strengthen digital presence and attract clients from the logistics sector."
+      },
+      "rhm": {
+        "title": "RHM Advanced Insulation – Landing Page",
+        "description": "Presentation site optimized to showcase services and generate commercial inquiries."
+      },
+      "chiaramonte": {
+        "title": "Chiaramonte & Sanchez Accounting Firm – Website",
+        "description": "Institutional website to communicate accounting services and facilitate client contact."
+      },
+      "sur": {
+        "title": "Sur Interior Design – Corporate Website",
+        "description": "Modern platform to showcase interior design projects with a visual catalog and contact integration."
+      },
+      "streetbarber": {
+        "title": "Street Barber – Professional Website",
+        "description": "Complete site with service sections, gallery, and contact, aimed at end clients."
+      },
+      "keytransaction": {
+        "title": "Key Transaction – Landing Page",
+        "description": "Landing page focused on conveying value proposition, capturing leads, and supporting brand communication."
+      },
+      "ice": {
+        "title": "ICE Engineering – Corporate Website",
+        "description": "Modern site with technical and commercial sections to position the company in the industrial market."
+      },
+      "nzps": {
+        "title": "New Zealand Pacific School",
+        "description": "Improvements in internal communication with families and automation of teacher reports. Also, development and management of their institutional site."
+      },
+      "bagual": {
+        "title": "El Bagual – ERP",
+        "description": "Comprehensive management system for inventory administration, sales, and internal company processes."
+      },
+      "agrogy": {
+        "title": "Agrogy – Web Development",
+        "description": "Professional website with product catalog to communicate the company's value proposition."
+      }
+    },
+    "status": {
+      "published": "Published",
+      "operational": "Operational",
+      "implemented": "Implemented",
+      "active": "80% active use"
+    }
+  },
+  "testimonials": {
+    "title": "Real",
+    "titleHighlight": "testimonials",
+    "subtitle": "The word from those who have already trusted us",
+    "items": {
+      "sofia": {
+        "quote": "From the start, the Plano team understood my vision and created a modern and functional website. Communication was excellent, they met deadlines and allowed updates. Recommended for those looking for quality and professionalism. Thank you, Plano!",
+        "author": "Sofía Ubertino Rosso",
+        "company": "SUR Interior Design"
+      },
+      "juan": {
+        "quote": "Working with Plano was a great success in solving our digital needs. Their professionalism, commitment, and constant communication, as well as the personalized solutions provided, exceeded our expectations. Thank you Plano!",
+        "author": "Juan Manuel Tripi",
+        "company": "ICE - Electrical Engineering and Construction S.A."
+      },
+      "lucas": {
+        "quote": "Plano digitized our barbershop with a modern and intuitive website. Now, our clients can easily book appointments at both branches, improving organization and experience. Great work and 100% recommended!",
+        "author": "Lucas Ledesma",
+        "company": "Street Barber"
+      },
+      "daniela": {
+        "quote": "We are very happy and satisfied with PLANO WEB's work. They understood exactly what we needed for our accounting firm and created a professional, modern, and easy-to-navigate website. Also, always attentive and resolute at every stage of the process. Thanks for empowering us and positioning us digitally in the market!",
+        "author": "Daniela Chiaramonte",
+        "company": "Chiaramonte & Sánchez"
+      },
+      "sergio": {
+        "quote": "Working with Plano was very agile, relaxed, and professional. Their methodology was key to achieving exactly what the company needed to convey. We achieved a website that represents us and transmits our identity perfectly. For the first time I was able to capture what I had in mind in the final product.",
+        "author": "Sergio Scravaglieri",
+        "company": "Agrogy"
+      }
+    }
+  },
+  "methodology": {
+    "title": "Methodology",
+    "subtitle": "We know your time is gold. That's why we work",
+    "subtitleHighlight": "simple and agile.",
+    "steps": {
+      "brief": {
+        "title": "Brief",
+        "description": "We understand your need",
+        "details": "Discovery session to understand objectives, audience, and specific requirements."
+      },
+      "sprint": {
+        "title": "Sprint",
+        "description": "Weekly progress",
+        "details": "Agile development with constant deliveries so you can see progress in real time."
+      },
+      "feedback": {
+        "title": "Feedback",
+        "description": "Adjustments based on your vision",
+        "details": "Collaborative reviews to ensure the result matches your expectations."
+      },
+      "results": {
+        "title": "Results",
+        "description": "Clear metrics for decision-making",
+        "details": "Performance reports and KPIs that allow you to measure the real impact of the project."
+      }
+    },
+    "stepLabel": "Step"
+  },
+  "team": {
+    "title": "Who",
+    "titleHighlight": "we are",
+    "subtitle": "The team that makes it possible for SMEs and Startups to compete with cutting-edge technology",
+    "members": {
+      "ignacio": {
+        "name": "Ignacio Quantin",
+        "role": "NoCode Specialist",
+        "description": "Expert in no-code development and automation. Specialized in creating scalable technological solutions that drive the growth of SMEs and Startups.",
+        "skills": ["No-Code Development", "Automation", "Integrations", "MVP Development"]
+      },
+      "manuel": {
+        "name": "Manuel Ríos Velar",
+        "role": "Graphic Designer",
+        "description": "Comprehensive designer focused on branding and user experience. Creates visual identities that communicate value and connect brands with their audiences.",
+        "skills": ["Branding", "UI/UX Design", "Visual Identity", "Design Systems"]
+      }
+    },
+    "mission": {
+      "title": "Our mission",
+      "description": "To democratize access to quality technology so that any company, regardless of its size, can compete and grow in the digital world."
+    }
+  },
+  "workTogether": {
+    "title": "Let's work together if...",
+    "subtitle": "If you identify with any of these situations, we are the perfect team for your project",
+    "reasons": [
+      "You want to grow your business with a clear and professional digital presence.",
+      "You have manual internal processes and are looking to automate them to save time.",
+      "You know your brand needs a quality leap in design and identity.",
+      "You value working with a team that speaks plainly, without unnecessary jargon.",
+      "You want measurable and concrete results (more leads, lower costs, more efficiency).",
+      "You're motivated by the idea of a close technological partner, not just a provider.",
+      "You're open to innovating with no-code tools and artificial intelligence."
+    ]
+  },
+  "finalCTA": {
+    "title": "Do you want your SME or Startup to take the next",
+    "titleHighlight": "digital leap",
+    "titleEnd": "with a strong brand, a professional website, and clear internal tools?",
+    "cta": "Let's talk about your project today",
+    "whatsappMessage": "Hi! We want our company to take the next digital leap with Plano",
+    "follow": "Follow us:",
+    "contact": "Contact:",
+    "copyright": "© 2024 Plano. Comprehensive no-code agency for SMEs and Startups."
+  },
+  "footer": {
+    "description": "Comprehensive no-code agency specialized in branding, web development, and internal tools for SMEs and Startups. Measurable results from the start.",
+    "cta": "Let's talk on WhatsApp",
+    "navigation": {
+      "title": "Navigation",
+      "home": "Home",
+      "services": "Services",
+      "projects": "Projects",
+      "testimonials": "Testimonials",
+      "methodology": "Methodology",
+      "team": "Team"
+    },
+    "contact": {
+      "title": "Contact"
+    },
+    "social": {
+      "title": "Social Media"
+    },
+    "copyright": "All rights reserved",
+    "whatsappMessage": "Hi! I want to boost my business with Plano"
+  }
+}

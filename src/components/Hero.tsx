@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "react-intersection-observer";
+import { useTranslation } from "react-i18next";
 
 const Hero = () => {
+  const { t } = useTranslation();
   const { ref: statsRef, inView: statsInView } = useInView({ threshold: 0.3, triggerOnce: true });
   
   const projectsCount = useCountUp({ end: 10, isVisible: statsInView });
@@ -11,7 +13,8 @@ const Hero = () => {
   const hoursCount = useCountUp({ end: 300, isVisible: statsInView });
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/542323550605?text=Hola! Quiero impulsar mi negocio con Plano", "_blank");
+    const message = t('hero.whatsappMessage');
+    window.open(`https://wa.me/542323550605?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return <section id="inicio" className="relative min-h-screen flex items-center justify-center bg-background overflow-hidden pt-16 pb-8 md:pb-0">
@@ -20,22 +23,18 @@ const Hero = () => {
       <div className="absolute bottom-20 left-10 w-24 h-24 bg-secondary/10 rounded-full blur-xl"></div>
       
       <div className="container mx-auto px-6 text-center relative z-10">
-        {/* Logo */}
-        
-
         {/* Main heading */}
         <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight animate-fade-up">
-          <span className="text-gradient-purple">Desarrollo web</span>, branding y{" "}
-          <span className="text-gradient-orange">herramientas internas</span>{" "}
-          al servicio de tu PyME o Startup.
+          <span className="text-gradient-purple">{t('hero.title.part1')}</span>, branding y{" "}
+          <span className="text-gradient-orange">{t('hero.title.part2')}</span>{" "}
+          {t('hero.title.part3')}
         </h1>
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed animate-fade-up" style={{
         animationDelay: "0.2s"
       }}>
-          En Plano combinamos diseño, no-code e inteligencia artificial para crear marcas sólidas, 
-          webs que generan clientes y soluciones digitales que ordenan tu negocio.
+          {t('hero.subtitle')}
         </p>
 
         {/* CTA Button */}
@@ -43,7 +42,7 @@ const Hero = () => {
         animationDelay: "0.4s"
       }}>
           <Button onClick={handleWhatsAppClick} size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold rounded-xl hover-scale group">
-            Quiero impulsar mi negocio
+            {t('hero.cta')}
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
@@ -54,15 +53,15 @@ const Hero = () => {
       }}>
           <div className="text-center">
             <div className="text-4xl md:text-5xl font-bold text-primary transition-all duration-500">+{projectsCount}</div>
-            <div className="text-sm md:text-base text-muted-foreground mt-2">Proyectos Finalizados</div>
+            <div className="text-sm md:text-base text-muted-foreground mt-2">{t('hero.stats.projects')}</div>
           </div>
           <div className="text-center">
             <div className="text-4xl md:text-5xl font-bold text-secondary transition-all duration-500">{satisfactionCount}%</div>
-            <div className="text-sm md:text-base text-muted-foreground mt-2">Satisfacción</div>
+            <div className="text-sm md:text-base text-muted-foreground mt-2">{t('hero.stats.satisfaction')}</div>
           </div>
           <div className="text-center">
             <div className="text-4xl md:text-5xl font-bold text-primary transition-all duration-500">+{hoursCount}</div>
-            <div className="text-sm md:text-base text-muted-foreground mt-2">Horas Ahorradas</div>
+            <div className="text-sm md:text-base text-muted-foreground mt-2">{t('hero.stats.hours')}</div>
           </div>
         </div>
       </div>

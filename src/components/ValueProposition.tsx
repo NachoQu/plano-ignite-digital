@@ -1,26 +1,29 @@
 import { CheckCircle, Zap, Users, BarChart3 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const ValueProposition = () => {
+  const { t } = useTranslation();
+
   const benefits = [
     {
       icon: CheckCircle,
-      title: "Resultados medibles desde el inicio",
-      description: "KPIs claros y métricas que importan para tu negocio"
+      title: t('valueProposition.benefits.results.title'),
+      description: t('valueProposition.benefits.results.description')
     },
     {
       icon: Zap,
-      title: "Escalamos contigo, sin fricción técnica",
-      description: "Tecnología que crece con tu empresa, sin complicaciones"
+      title: t('valueProposition.benefits.scale.title'),
+      description: t('valueProposition.benefits.scale.description')
     },
     {
       icon: Users,
-      title: "Acompañamiento cercano y simple",
-      description: "Comunicación directa y comprensible en cada paso"
+      title: t('valueProposition.benefits.support.title'),
+      description: t('valueProposition.benefits.support.description')
     },
     {
       icon: BarChart3,
-      title: "KPIs claros y seguimiento constante",
-      description: "Reportes transparentes para tomar mejores decisiones"
+      title: t('valueProposition.benefits.tracking.title'),
+      description: t('valueProposition.benefits.tracking.description')
     }
   ];
 
@@ -29,11 +32,11 @@ const ValueProposition = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Propuesta de <span className="text-gradient-orange">valor</span>
+            {t('valueProposition.title')} <span className="text-gradient-orange">{t('valueProposition.titleHighlight')}</span>
           </h2>
           <p className="text-xl md:text-2xl font-semibold text-foreground max-w-4xl mx-auto leading-relaxed">
-            "Tu PyME o Startup necesita una marca sólida, una web profesional y herramientas internas claras: 
-            <span className="text-primary"> eso hacemos en Plano.</span>"
+            "{t('valueProposition.quote')}
+            <span className="text-primary"> {t('valueProposition.quoteHighlight')}</span>"
           </p>
         </div>
 

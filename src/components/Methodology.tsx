@@ -1,32 +1,34 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, Zap, MessageSquare, Target } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Methodology = () => {
+  const { t } = useTranslation();
 
   const steps = [
     {
       icon: FileText,
-      title: "Brief",
-      description: "Entendemos tu necesidad",
-      details: "Sesión de descubrimiento para comprender objetivos, audiencia y requerimientos específicos."
+      title: t('methodology.steps.brief.title'),
+      description: t('methodology.steps.brief.description'),
+      details: t('methodology.steps.brief.details')
     },
     {
       icon: Zap,
-      title: "Sprint",
-      description: "Avances semanales",
-      details: "Desarrollo ágil con entregas constantes para que veas el progreso en tiempo real."
+      title: t('methodology.steps.sprint.title'),
+      description: t('methodology.steps.sprint.description'),
+      details: t('methodology.steps.sprint.details')
     },
     {
       icon: MessageSquare,
-      title: "Feedback",
-      description: "Ajustes en base a tu visión",
-      details: "Revisiones colaborativas para asegurar que el resultado coincida con tus expectativas."
+      title: t('methodology.steps.feedback.title'),
+      description: t('methodology.steps.feedback.description'),
+      details: t('methodology.steps.feedback.details')
     },
     {
       icon: Target,
-      title: "Resultados",
-      description: "Métricas claras para tomar decisiones",
-      details: "Reportes de rendimiento y KPIs que te permiten medir el impacto real del proyecto."
+      title: t('methodology.steps.results.title'),
+      description: t('methodology.steps.results.description'),
+      details: t('methodology.steps.results.details')
     }
   ];
 
@@ -37,11 +39,11 @@ const Methodology = () => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            <span className="text-gradient-orange">Metodología</span>
+            <span className="text-gradient-orange">{t('methodology.title')}</span>
           </h2>
           <p className="text-xl md:text-2xl font-semibold text-foreground max-w-3xl mx-auto leading-relaxed">
-            "Sabemos que tu tiempo vale oro. Por eso trabajamos 
-            <span className="text-secondary"> simple y ágil.</span>"
+            "{t('methodology.subtitle')}
+            <span className="text-secondary"> {t('methodology.subtitleHighlight')}</span>"
           </p>
         </div>
 
@@ -60,7 +62,7 @@ const Methodology = () => {
                   </div>
                   
                   <div className="text-sm font-semibold text-primary mb-2">
-                    Paso {index + 1}
+                    {t('methodology.stepLabel')} {index + 1}
                   </div>
                   
                   <h3 className="text-xl font-bold mb-2">{step.title}</h3>
