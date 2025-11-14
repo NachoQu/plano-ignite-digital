@@ -1,10 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Instagram, Linkedin, Mail, Phone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import PlanoLogo from "./PlanoLogo";
 
 const Footer = () => {
+  const { t } = useTranslation();
+  
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/542323550605?text=Hola! Quiero impulsar mi negocio con Plano", "_blank");
+    const message = t('footer.whatsappMessage');
+    window.open(`https://wa.me/542323550605?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const scrollToSection = (sectionId: string) => {
@@ -28,28 +32,27 @@ const Footer = () => {
               <PlanoLogo size={64} />
             </div>
             <p className="text-muted-foreground mb-6 max-w-md">
-              Agencia integral no-code especializada en branding, desarrollo web y herramientas internas 
-              para PyMEs y Startups. Resultados medibles desde el inicio.
+              {t('footer.description')}
             </p>
             <Button 
               onClick={handleWhatsAppClick}
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
             >
               <MessageCircle className="mr-2 h-4 w-4" />
-              Hablemos en WhatsApp
+              {t('footer.cta')}
             </Button>
           </div>
 
           {/* Navigation */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Navegación</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('footer.navigation.title')}</h3>
             <ul className="space-y-3">
               <li>
                 <button 
                   onClick={scrollToTop}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Inicio
+                  {t('footer.navigation.home')}
                 </button>
               </li>
               <li>
@@ -57,7 +60,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('servicios')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Servicios
+                  {t('footer.navigation.services')}
                 </button>
               </li>
               <li>
@@ -65,7 +68,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('proyectos')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Proyectos
+                  {t('footer.navigation.projects')}
                 </button>
               </li>
               <li>
@@ -73,7 +76,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('testimonios')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Testimonios
+                  {t('footer.navigation.testimonials')}
                 </button>
               </li>
               <li>
@@ -81,7 +84,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('metodologia')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Metodología
+                  {t('footer.navigation.methodology')}
                 </button>
               </li>
               <li>
@@ -89,7 +92,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('equipo')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Equipo
+                  {t('footer.navigation.team')}
                 </button>
               </li>
             </ul>
@@ -97,7 +100,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-4">Contacto</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-4">{t('footer.contact.title')}</h3>
             <ul className="space-y-3">
               <li className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-secondary" />
@@ -123,7 +126,7 @@ const Footer = () => {
 
             {/* Social Media */}
             <div className="mt-6">
-              <h4 className="text-sm font-semibold text-foreground mb-3">Síguenos</h4>
+              <h4 className="text-sm font-semibold text-foreground mb-3">{t('footer.social.title')}</h4>
               <div className="flex space-x-4">
                 <a 
                   href="https://instagram.com/plano.web" 
@@ -150,7 +153,7 @@ const Footer = () => {
         <div className="border-t border-border mt-12 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground">
-              © 2024 Plano. Agencia integral no-code para PyMEs y Startups.
+              {t('finalCTA.copyright')}
             </p>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">

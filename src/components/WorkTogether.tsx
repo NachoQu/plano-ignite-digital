@@ -1,16 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const WorkTogether = () => {
-  const reasons = [
-    "Querés hacer crecer tu negocio con una presencia digital clara y profesional.",
-    "Tenés procesos internos manuales y buscás automatizarlos para ganar tiempo.",
-    "Sabés que tu marca necesita un salto de calidad en diseño e identidad.",
-    "Valorás trabajar con un equipo que habla en simple, sin tecnicismos innecesarios.",
-    "Querés resultados medibles y concretos (más leads, menos costos, más eficiencia).",
-    "Te motiva la idea de un partner tecnológico cercano, no solo un proveedor.",
-    "Estás abierto a innovar con herramientas no-code e inteligencia artificial."
-  ];
+  const { t } = useTranslation();
+  const reasons = t('workTogether.reasons', { returnObjects: true }) as string[];
 
   return (
     <section className="py-20 bg-muted/30">
@@ -19,11 +13,11 @@ const WorkTogether = () => {
           <div className="flex items-center justify-center mb-6">
             <Sparkles className="h-8 w-8 text-primary mr-3" />
             <h2 className="text-3xl md:text-5xl font-bold">
-              Trabajemos juntos si...
+              {t('workTogether.title')}
             </h2>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Si te identificás con alguna de estas situaciones, somos el equipo perfecto para tu proyecto
+            {t('workTogether.subtitle')}
           </p>
         </div>
 
