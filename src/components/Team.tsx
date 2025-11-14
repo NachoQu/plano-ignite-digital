@@ -1,32 +1,36 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Code, Palette, Linkedin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ignacioImage from "@/assets/ignacio.jpg";
 import manuelImage from "@/assets/manuel.webp";
+
 const Team = () => {
+  const { t } = useTranslation();
+  
   const teamMembers = [{
-    name: "Ignacio Quantin",
-    role: "NoCode Specialist",
-    description: "Experto en desarrollo no-code y automatización. Especializado en crear soluciones tecnológicas escalables que impulsan el crecimiento de PYMEs y Startups.",
+    name: t('team.members.ignacio.name'),
+    role: t('team.members.ignacio.role'),
+    description: t('team.members.ignacio.description'),
     image: ignacioImage,
-    skills: ["No-Code Development", "Automatización", "Integraciones", "MVP Development"],
+    skills: t('team.members.ignacio.skills', { returnObjects: true }) as string[],
     linkedIn: "https://www.linkedin.com/in/ignacio-quantin/"
   }, {
-    name: "Manuel Ríos Velar",
-    role: "Diseñador Gráfico",
-    description: "Diseñador integral enfocado en branding y experiencia de usuario. Crea identidades visuales que comunican valor y conectan marcas con sus audiencias.",
+    name: t('team.members.manuel.name'),
+    role: t('team.members.manuel.role'),
+    description: t('team.members.manuel.description'),
     image: manuelImage,
-    skills: ["Branding", "UI/UX Design", "Identidad Visual", "Design Systems"],
+    skills: t('team.members.manuel.skills', { returnObjects: true }) as string[],
     linkedIn: "https://www.linkedin.com/in/manuel-rios-velar-34796b196/"
   }];
   return <section id="equipo" className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Quiénes <span className="text-gradient-purple">somos</span>
+            {t('team.title')} <span className="text-gradient-purple">{t('team.titleHighlight')}</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            El equipo que hace posible que PYMEs y Startups compitan con tecnología de vanguardia
+            {t('team.subtitle')}
           </p>
         </div>
 
@@ -77,11 +81,10 @@ const Team = () => {
         <div className="mt-16 text-center animate-fade-in">
           <div className="bg-muted/50 rounded-2xl p-8 shadow-lg max-w-4xl mx-auto">
             <h3 className="text-xl font-bold mb-4 text-foreground">
-              Nuestra misión
+              {t('team.mission.title')}
             </h3>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              "Democratizar el acceso a tecnología de calidad para que cualquier empresa, 
-              sin importar su tamaño, pueda competir y crecer en el mundo digital."
+              "{t('team.mission.description')}"
             </p>
             
           </div>

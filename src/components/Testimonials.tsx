@@ -4,8 +4,10 @@ import { Quote, Star } from "lucide-react";
 import { useCountUp } from "@/hooks/useCountUp";
 import { useInView } from "react-intersection-observer";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
+import { useTranslation } from "react-i18next";
 
 const Testimonials = () => {
+  const { t } = useTranslation();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isUserInteracting, setIsUserInteracting] = useState(false);
   const [maxHeight, setMaxHeight] = useState(0);
@@ -21,33 +23,33 @@ const Testimonials = () => {
 
   const testimonials = [
     {
-      quote: "Desde el inicio, el equipo de Plano entendió mi visión y creó un sitio web moderno y funcional. La comunicación fue excelente, cumplieron plazos y permitieron actualizaciones. Recomendados para quienes buscan calidad y profesionalismo. ¡Gracias, Plano!",
-      author: "Sofía Ubertino Rosso",
-      company: "SUR Interiorismo",
+      quote: t('testimonials.items.sofia.quote'),
+      author: t('testimonials.items.sofia.author'),
+      company: t('testimonials.items.sofia.company'),
       rating: 5
     },
     {
-      quote: "Trabajar con plano fue un gran acierto para resolver nuestras necesidades digitales. Su profesionalismo, compromiso y comunicación constante así como las soluciones personalizadas brindadas superaron nuestras expectativas. ¡Gracias Plano!",
-      author: "Juan Manuel Tripi",
-      company: "ICE - Ingeniería y Construcciones Eléctricas S.A.",
+      quote: t('testimonials.items.juan.quote'),
+      author: t('testimonials.items.juan.author'),
+      company: t('testimonials.items.juan.company'),
       rating: 5
     },
     {
-      quote: "Plano digitalizó nuestra barbería con una web moderna e intuitiva. Ahora, nuestros clientes pueden reservar turnos fácilmente en ambas sucursales, mejorando la organización y la experiencia. ¡Gran trabajo y 100% recomendados!",
-      author: "Lucas Ledesma",
-      company: "Street Barber",
+      quote: t('testimonials.items.lucas.quote'),
+      author: t('testimonials.items.lucas.author'),
+      company: t('testimonials.items.lucas.company'),
       rating: 5
     },
     {
-      quote: "Estamos muy felices y satisfechas con el trabajo de PLANO WEB. Supieron interpretar exactamente lo que necesitábamos para nuestro estudio contable y crearon una web profesional, moderna y fácil de navegar. Además, siempre atentos y resolutivos en cada etapa del proceso. Gracias por potenciarnos y posicionarnos digitalmente en el mercado!",
-      author: "Daniela Chiaramonte",
-      company: "Chiaramonte & Sánchez",
+      quote: t('testimonials.items.daniela.quote'),
+      author: t('testimonials.items.daniela.author'),
+      company: t('testimonials.items.daniela.company'),
       rating: 5
     },
     {
-      quote: "Trabajar con Plano fue muy ágil, descontracturado y profesional. Su metodología fue clave para lograr exactamente lo que la empresa necesitaba transmitir. Logramos una web que nos representa y transmite nuestra identidad a la perfección. Por primera vez pude plasmar lo que tenía en mente en el producto final.",
-      author: "Sergio Scravaglieri",
-      company: "Agrogy",
+      quote: t('testimonials.items.sergio.quote'),
+      author: t('testimonials.items.sergio.author'),
+      company: t('testimonials.items.sergio.company'),
       rating: 5
     }
   ];
@@ -150,10 +152,10 @@ const Testimonials = () => {
         <ScrollAnimationWrapper animationType="fade-in">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Lo que dicen nuestros <span className="text-gradient-purple">clientes</span>
+              {t('testimonials.title')} <span className="text-gradient-purple">{t('testimonials.titleHighlight')}</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Testimonios reales de empresas que confiaron en Plano para impulsar su crecimiento digital
+              {t('testimonials.subtitle')}
             </p>
           </div>
         </ScrollAnimationWrapper>
@@ -225,15 +227,15 @@ const Testimonials = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">+{projectsCount}</div>
-                  <div className="text-sm text-muted-foreground">Proyectos Finalizados</div>
+                  <div className="text-sm text-muted-foreground">{t('hero.stats.projects')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-secondary mb-2">{satisfactionCount}%</div>
-                  <div className="text-sm text-muted-foreground">Satisfacción</div>
+                  <div className="text-sm text-muted-foreground">{t('hero.stats.satisfaction')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">+{hoursCount}</div>
-                  <div className="text-sm text-muted-foreground">Horas Ahorradas</div>
+                  <div className="text-sm text-muted-foreground">{t('hero.stats.hours')}</div>
                 </div>
               </div>
             </div>

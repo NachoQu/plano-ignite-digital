@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Instagram, Linkedin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const FinalCTA = () => {
+  const { t } = useTranslation();
+  
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/542323550605?text=Hola! Queremos que nuestra empresa dé el próximo salto digital con Plano", "_blank");
+    const message = t('finalCTA.whatsappMessage');
+    window.open(`https://wa.me/542323550605?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return (
@@ -13,9 +17,8 @@ const FinalCTA = () => {
           {/* Main CTA */}
           <div className="mb-12">
             <h2 className="text-3xl md:text-5xl font-bold mb-8 leading-tight">
-              ¿Querés que tu PyME o Startup dé el próximo{" "}
-              <span className="text-gradient-purple">salto digital</span> con una marca fuerte, 
-              una web profesional y herramientas internas claras?
+              {t('finalCTA.title')}{" "}
+              <span className="text-gradient-purple">{t('finalCTA.titleHighlight')}</span> {t('finalCTA.titleEnd')}
             </h2>
 
             <Button 
@@ -24,7 +27,7 @@ const FinalCTA = () => {
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground px-8 py-4 text-lg font-semibold rounded-xl hover-scale group"
             >
               <MessageCircle className="mr-2 h-5 w-5" />
-              Hablemos hoy de tu proyecto
+              {t('finalCTA.cta')}
             </Button>
           </div>
 
@@ -33,7 +36,7 @@ const FinalCTA = () => {
             <div className="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
               {/* Social Media */}
               <div className="flex items-center space-x-6">
-                <span className="text-muted-foreground font-medium">Síguenos:</span>
+                <span className="text-muted-foreground font-medium">{t('finalCTA.follow')}</span>
                 <div className="flex items-center space-x-4">
                   <a 
                     href="https://instagram.com/plano.web" 
@@ -49,7 +52,7 @@ const FinalCTA = () => {
 
               {/* Contact */}
               <div className="flex items-center space-x-6">
-                <span className="text-muted-foreground font-medium">Contacto:</span>
+                <span className="text-muted-foreground font-medium">{t('finalCTA.contact')}</span>
                 <a 
                   href="https://wa.me/542323550605" 
                   target="_blank" 
@@ -65,7 +68,7 @@ const FinalCTA = () => {
             {/* Footer */}
             <div className="mt-12 pt-8 border-t border-border">
               <p className="text-sm text-muted-foreground">
-                © 2024 Plano. Agencia integral no-code para PyMEs y Startups.
+                {t('finalCTA.copyright')}
               </p>
             </div>
           </div>
