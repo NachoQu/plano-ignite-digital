@@ -1,0 +1,268 @@
+{
+  "navbar": {
+    "services": "Servicios",
+    "projects": "Proyectos",
+    "testimonials": "Testimonios",
+    "methodology": "Metodología",
+    "team": "Equipo",
+    "contact": "Contactar"
+  },
+  "hero": {
+    "title": {
+      "part1": "Desarrollo web",
+      "part2": "herramientas internas",
+      "part3": "al servicio de tu PyME o Startup."
+    },
+    "subtitle": "En Plano combinamos diseño, no-code e inteligencia artificial para crear marcas sólidas, webs que generan clientes y soluciones digitales que ordenan tu negocio.",
+    "cta": "Quiero impulsar mi negocio",
+    "whatsappMessage": "Hola! Quiero impulsar mi negocio con Plano",
+    "stats": {
+      "projects": "Proyectos Finalizados",
+      "satisfaction": "Satisfacción",
+      "hours": "Horas Ahorradas"
+    }
+  },
+  "services": {
+    "title": "Servicios",
+    "titleHighlight": "integrales",
+    "subtitle": "Ofrecemos soluciones completas que cubren todas las necesidades digitales de tu negocio",
+    "items": {
+      "branding": {
+        "title": "Identidad de marca que inspira confianza",
+        "description": "Logotipos, manuales y piezas gráficas que posicionan a tu empresa como referente."
+      },
+      "web": {
+        "title": "Webs que convierten visitas en clientes",
+        "description": "Sitios modernos, rápidos y optimizados para SEO, pensados en ventas reales."
+      },
+      "tools": {
+        "title": "Herramientas internas para tu PyME",
+        "description": "ERP para venta de productos, tableros de resultados, sistemas de reservas y gestión de stock para ordenar tu operación."
+      },
+      "mvp": {
+        "title": "MVPs rápidos para Startups",
+        "description": "Prototipos funcionales en semanas, listos para validar."
+      },
+      "edtech": {
+        "title": "EdTech probado en colegios",
+        "description": "Digitalizamos la comunicación con familias y automatizamos informes para docentes."
+      },
+      "social": {
+        "title": "Contenido para redes",
+        "description": "Diseño de piezas visuales que transmiten tu marca y atraen a tu audiencia."
+      }
+    }
+  },
+  "valueProposition": {
+    "title": "Propuesta de",
+    "titleHighlight": "valor",
+    "quote": "Tu PyME o Startup necesita una marca sólida, una web profesional y herramientas internas claras:",
+    "quoteHighlight": "eso hacemos en Plano.",
+    "benefits": {
+      "results": {
+        "title": "Resultados medibles desde el inicio",
+        "description": "KPIs claros y métricas que importan para tu negocio"
+      },
+      "scale": {
+        "title": "Escalamos contigo, sin fricción técnica",
+        "description": "Tecnología que crece con tu empresa, sin complicaciones"
+      },
+      "support": {
+        "title": "Acompañamiento cercano y simple",
+        "description": "Comunicación directa y comprensible en cada paso"
+      },
+      "tracking": {
+        "title": "KPIs claros y seguimiento constante",
+        "description": "Reportes transparentes para tomar mejores decisiones"
+      }
+    }
+  },
+  "projects": {
+    "title": "Proyectos",
+    "titleHighlight": "finalizados",
+    "subtitle": "Casos reales de PyMEs y Startups que ya mejoraron su presencia digital y operación interna",
+    "filters": {
+      "all": "TODAS",
+      "web": "DESARROLLO WEB",
+      "ecommerce": "E-COMMERCE",
+      "tools": "HERRAMIENTAS INTERNAS",
+      "edtech": "EDTECH",
+      "consulting": "CONSULTORÍA"
+    },
+    "items": {
+      "pallets": {
+        "title": "Pallets Marcel SRL – Landing Page",
+        "description": "Landing institucional para fortalecer presencia digital y captar clientes del sector logístico."
+      },
+      "rhm": {
+        "title": "RHM Aislaciones Avanzadas – Landing Page",
+        "description": "Sitio de presentación optimizado para mostrar servicios y generar consultas comerciales."
+      },
+      "chiaramonte": {
+        "title": "Estudio Contable Chiaramonte & Sanchez – Web",
+        "description": "Página web institucional para comunicar servicios contables y facilitar el contacto con clientes."
+      },
+      "sur": {
+        "title": "Sur Interiorismo – Web Corporativa",
+        "description": "Plataforma moderna para exhibir proyectos de interiorismo con catálogo visual e integración de contacto."
+      },
+      "streetbarber": {
+        "title": "Street Barber – Web Profesional",
+        "description": "Sitio completo con secciones de servicios, galería y contacto, orientado a clientes finales."
+      },
+      "keytransaction": {
+        "title": "Key Transaction – Landing Page",
+        "description": "Landing enfocada en transmitir propuesta de valor, captar leads y apoyar la comunicación de la marca."
+      },
+      "ice": {
+        "title": "ICE Ingeniería – Web Corporativa",
+        "description": "Sitio moderno con secciones técnicas y comerciales para posicionar a la empresa en el mercado industrial."
+      },
+      "nzps": {
+        "title": "New Zealand Pacific School",
+        "description": "Mejoras en comunicación interna con familias y automatización de informes docentes. Además, desarrollo y gestión de su sitio institucional."
+      },
+      "bagual": {
+        "title": "El Bagual – ERP",
+        "description": "Sistema de gestión integral para administración de stock, ventas y procesos internos de la empresa."
+      },
+      "agrogy": {
+        "title": "Agrogy – Desarrollo Web",
+        "description": "Sitio web profesional con catálogo de productos para comunicar la propuesta de valor de la empresa."
+      }
+    },
+    "status": {
+      "published": "Publicado",
+      "operational": "Operativo",
+      "implemented": "Implementado",
+      "active": "80% de uso activo"
+    }
+  },
+  "testimonials": {
+    "title": "Testimonios",
+    "titleHighlight": "reales",
+    "subtitle": "La palabra de quienes ya confiaron en nosotros",
+    "items": {
+      "sofia": {
+        "quote": "Desde el inicio, el equipo de Plano entendió mi visión y creó un sitio web moderno y funcional. La comunicación fue excelente, cumplieron plazos y permitieron actualizaciones. Recomendados para quienes buscan calidad y profesionalismo. ¡Gracias, Plano!",
+        "author": "Sofía Ubertino Rosso",
+        "company": "SUR Interiorismo"
+      },
+      "juan": {
+        "quote": "Trabajar con plano fue un gran acierto para resolver nuestras necesidades digitales. Su profesionalismo, compromiso y comunicación constante así como las soluciones personalizadas brindadas superaron nuestras expectativas. ¡Gracias Plano!",
+        "author": "Juan Manuel Tripi",
+        "company": "ICE - Ingeniería y Construcciones Eléctricas S.A."
+      },
+      "lucas": {
+        "quote": "Plano digitalizó nuestra barbería con una web moderna e intuitiva. Ahora, nuestros clientes pueden reservar turnos fácilmente en ambas sucursales, mejorando la organización y la experiencia. ¡Gran trabajo y 100% recomendados!",
+        "author": "Lucas Ledesma",
+        "company": "Street Barber"
+      },
+      "daniela": {
+        "quote": "Estamos muy felices y satisfechas con el trabajo de PLANO WEB. Supieron interpretar exactamente lo que necesitábamos para nuestro estudio contable y crearon una web profesional, moderna y fácil de navegar. Además, siempre atentos y resolutivos en cada etapa del proceso. Gracias por potenciarnos y posicionarnos digitalmente en el mercado!",
+        "author": "Daniela Chiaramonte",
+        "company": "Chiaramonte & Sánchez"
+      },
+      "sergio": {
+        "quote": "Trabajar con Plano fue muy ágil, descontracturado y profesional. Su metodología fue clave para lograr exactamente lo que la empresa necesitaba transmitir. Logramos una web que nos representa y transmite nuestra identidad a la perfección. Por primera vez pude plasmar lo que tenía en mente en el producto final.",
+        "author": "Sergio Scravaglieri",
+        "company": "Agrogy"
+      }
+    }
+  },
+  "methodology": {
+    "title": "Metodología",
+    "subtitle": "Sabemos que tu tiempo vale oro. Por eso trabajamos",
+    "subtitleHighlight": "simple y ágil.",
+    "steps": {
+      "brief": {
+        "title": "Brief",
+        "description": "Entendemos tu necesidad",
+        "details": "Sesión de descubrimiento para comprender objetivos, audiencia y requerimientos específicos."
+      },
+      "sprint": {
+        "title": "Sprint",
+        "description": "Avances semanales",
+        "details": "Desarrollo ágil con entregas constantes para que veas el progreso en tiempo real."
+      },
+      "feedback": {
+        "title": "Feedback",
+        "description": "Ajustes en base a tu visión",
+        "details": "Revisiones colaborativas para asegurar que el resultado coincida con tus expectativas."
+      },
+      "results": {
+        "title": "Resultados",
+        "description": "Métricas claras para tomar decisiones",
+        "details": "Reportes de rendimiento y KPIs que te permiten medir el impacto real del proyecto."
+      }
+    },
+    "stepLabel": "Paso"
+  },
+  "team": {
+    "title": "Quiénes",
+    "titleHighlight": "somos",
+    "subtitle": "El equipo que hace posible que PYMEs y Startups compitan con tecnología de vanguardia",
+    "members": {
+      "ignacio": {
+        "name": "Ignacio Quantin",
+        "role": "NoCode Specialist",
+        "description": "Experto en desarrollo no-code y automatización. Especializado en crear soluciones tecnológicas escalables que impulsan el crecimiento de PYMEs y Startups.",
+        "skills": ["No-Code Development", "Automatización", "Integraciones", "MVP Development"]
+      },
+      "manuel": {
+        "name": "Manuel Ríos Velar",
+        "role": "Diseñador Gráfico",
+        "description": "Diseñador integral enfocado en branding y experiencia de usuario. Crea identidades visuales que comunican valor y conectan marcas con sus audiencias.",
+        "skills": ["Branding", "UI/UX Design", "Identidad Visual", "Design Systems"]
+      }
+    },
+    "mission": {
+      "title": "Nuestra misión",
+      "description": "Democratizar el acceso a tecnología de calidad para que cualquier empresa, sin importar su tamaño, pueda competir y crecer en el mundo digital."
+    }
+  },
+  "workTogether": {
+    "title": "Trabajemos juntos si...",
+    "subtitle": "Si te identificás con alguna de estas situaciones, somos el equipo perfecto para tu proyecto",
+    "reasons": [
+      "Querés hacer crecer tu negocio con una presencia digital clara y profesional.",
+      "Tenés procesos internos manuales y buscás automatizarlos para ganar tiempo.",
+      "Sabés que tu marca necesita un salto de calidad en diseño e identidad.",
+      "Valorás trabajar con un equipo que habla en simple, sin tecnicismos innecesarios.",
+      "Querés resultados medibles y concretos (más leads, menos costos, más eficiencia).",
+      "Te motiva la idea de un partner tecnológico cercano, no solo un proveedor.",
+      "Estás abierto a innovar con herramientas no-code e inteligencia artificial."
+    ]
+  },
+  "finalCTA": {
+    "title": "¿Querés que tu PyME o Startup dé el próximo",
+    "titleHighlight": "salto digital",
+    "titleEnd": "con una marca fuerte, una web profesional y herramientas internas claras?",
+    "cta": "Hablemos hoy de tu proyecto",
+    "whatsappMessage": "Hola! Queremos que nuestra empresa dé el próximo salto digital con Plano",
+    "follow": "Síguenos:",
+    "contact": "Contacto:",
+    "copyright": "© 2024 Plano. Agencia integral no-code para PyMEs y Startups."
+  },
+  "footer": {
+    "description": "Agencia integral no-code especializada en branding, desarrollo web y herramientas internas para PyMEs y Startups. Resultados medibles desde el inicio.",
+    "cta": "Hablemos en WhatsApp",
+    "navigation": {
+      "title": "Navegación",
+      "home": "Inicio",
+      "services": "Servicios",
+      "projects": "Proyectos",
+      "testimonials": "Testimonios",
+      "methodology": "Metodología",
+      "team": "Equipo"
+    },
+    "contact": {
+      "title": "Contacto"
+    },
+    "social": {
+      "title": "Redes Sociales"
+    },
+    "copyright": "Todos los derechos reservados",
+    "whatsappMessage": "Hola! Quiero impulsar mi negocio con Plano"
+  }
+}

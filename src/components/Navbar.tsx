@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import PlanoLogo from "./PlanoLogo";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/542323550605?text=Hola! Quiero impulsar mi negocio con Plano", "_blank");
+    const message = t('hero.whatsappMessage');
+    window.open(`https://wa.me/542323550605?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const scrollToSection = (sectionId: string) => {
@@ -19,11 +23,11 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { label: "Servicios", href: "servicios" },
-    { label: "Proyectos", href: "proyectos" },
-    { label: "Testimonios", href: "testimonios" },
-    { label: "Metodología", href: "metodologia" },
-    { label: "Equipo", href: "equipo" },
+    { label: t('navbar.services'), href: "servicios" },
+    { label: t('navbar.projects'), href: "proyectos" },
+    { label: t('navbar.testimonials'), href: "testimonios" },
+    { label: t('navbar.methodology'), href: "metodologia" },
+    { label: t('navbar.team'), href: "equipo" },
   ];
 
   return (
@@ -46,14 +50,15 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* Language Switcher & CTA Button */}
+          <div className="hidden md:flex items-center space-x-4">
+            <LanguageSwitcher />
             <Button 
               onClick={handleWhatsAppClick}
               variant="default"
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              Contactar
+              {t('navbar.contact')}
             </Button>
           </div>
 
@@ -79,12 +84,15 @@ const Navbar = () => {
                   {item.label}
                 </button>
               ))}
+              <div className="pt-2 border-t border-border">
+                <LanguageSwitcher />
+              </div>
               <Button 
                 onClick={handleWhatsAppClick}
                 variant="default"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full mt-4"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
               >
-                Contactar
+                {t('navbar.contact')}
               </Button>
             </div>
           </div>

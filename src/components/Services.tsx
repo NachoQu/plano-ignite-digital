@@ -1,44 +1,46 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Palette, Globe, Settings, Rocket, GraduationCap, Share2 } from "lucide-react";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
+import { useTranslation } from "react-i18next";
 
 const Services = () => {
+  const { t } = useTranslation();
   
   const services = [
     {
       icon: Palette,
-      title: "Identidad de marca que inspira confianza",
-      description: "Logotipos, manuales y piezas gráficas que posicionan a tu empresa como referente.",
+      title: t('services.items.branding.title'),
+      description: t('services.items.branding.description'),
       color: "text-primary"
     },
     {
       icon: Globe,
-      title: "Webs que convierten visitas en clientes",
-      description: "Sitios modernos, rápidos y optimizados para SEO, pensados en ventas reales.",
+      title: t('services.items.web.title'),
+      description: t('services.items.web.description'),
       color: "text-secondary"
     },
     {
       icon: Settings,
-      title: "Herramientas internas para tu PyME",
-      description: "ERP para venta de productos, tableros de resultados, sistemas de reservas y gestión de stock para ordenar tu operación.",
+      title: t('services.items.tools.title'),
+      description: t('services.items.tools.description'),
       color: "text-primary"
     },
     {
       icon: Rocket,
-      title: "MVPs rápidos para Startups",
-      description: "Prototipos funcionales en semanas, listos para validar.",
+      title: t('services.items.mvp.title'),
+      description: t('services.items.mvp.description'),
       color: "text-secondary"
     },
     {
       icon: GraduationCap,
-      title: "EdTech probado en colegios",
-      description: "Digitalizamos la comunicación con familias y automatizamos informes para docentes.",
+      title: t('services.items.edtech.title'),
+      description: t('services.items.edtech.description'),
       color: "text-primary"
     },
     {
       icon: Share2,
-      title: "Contenido para redes",
-      description: "Diseño de piezas visuales que transmiten tu marca y atraen a tu audiencia.",
+      title: t('services.items.social.title'),
+      description: t('services.items.social.description'),
       color: "text-secondary"
     }
   ];
@@ -49,10 +51,10 @@ const Services = () => {
         <ScrollAnimationWrapper animationType="fade-in">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold mb-6">
-              Servicios <span className="text-gradient-purple">integrales</span>
+              {t('services.title')} <span className="text-gradient-purple">{t('services.titleHighlight')}</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Ofrecemos soluciones completas que cubren todas las necesidades digitales de tu negocio
+              {t('services.subtitle')}
             </p>
           </div>
         </ScrollAnimationWrapper>
