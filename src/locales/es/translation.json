@@ -196,7 +196,9 @@
         "details": "Reportes de rendimiento y KPIs que te permiten medir el impacto real del proyecto."
       }
     },
-    "stepLabel": "Paso"
+    "stepLabel": "Paso",
+    "ctaText": "¿Listo para este paso?",
+    "ctaButton": "Empezar"
   },
   "team": {
     "title": "Quiénes",

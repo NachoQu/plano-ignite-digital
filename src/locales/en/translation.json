@@ -196,7 +196,9 @@
         "details": "Performance reports and KPIs that allow you to measure the real impact of the project."
       }
     },
-    "stepLabel": "Step"
+    "stepLabel": "Step",
+    "ctaText": "Ready for this step?",
+    "ctaButton": "Get Started"
   },
   "team": {
     "title": "Who",
