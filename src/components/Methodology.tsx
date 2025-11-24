@@ -91,7 +91,7 @@ const Methodology = () => {
                   <div
                     className={`
                       bg-gradient-to-r from-primary via-primary/90 to-secondary
-                      px-6 sm:px-8 py-0 flex items-center justify-between
+                      px-8 sm:px-12 py-0 flex items-center justify-between
                       overflow-hidden
                       transition-all duration-300 ease-out
                       ${isHovered ? "max-h-24 py-6" : "max-h-0 py-0"}
