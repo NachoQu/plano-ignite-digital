@@ -94,7 +94,7 @@ const Methodology = () => {
                       px-6 sm:px-8 py-0 flex items-center justify-between
                       overflow-hidden
                       transition-all duration-300 ease-out
-                      ${isHovered ? "max-h-20 py-4" : "max-h-0 py-0"}
+                      ${isHovered ? "max-h-24 py-6" : "max-h-0 py-0"}
                     `}
                   >
                     <span className="text-sm sm:text-base font-medium text-white whitespace-nowrap">
