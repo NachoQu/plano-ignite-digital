@@ -5,6 +5,7 @@
     "testimonials": "Testimonios",
     "methodology": "Metodología",
     "team": "Equipo",
+    "blog": "Blog",
     "contact": "Contactar"
   },
   "hero": {
@@ -256,7 +257,8 @@
       "projects": "Proyectos",
       "testimonials": "Testimonios",
       "methodology": "Metodología",
-      "team": "Equipo"
+      "team": "Equipo",
+      "blog": "Blog"
     },
     "contact": {
       "title": "Contacto"
@@ -266,5 +268,43 @@
     },
     "copyright": "Todos los derechos reservados",
     "whatsappMessage": "Hola! Quiero impulsar mi negocio con Plano"
+  },
+  "blog": {
+    "title": "Blog",
+    "titleHighlight": "tech",
+    "subtitle": "Las últimas noticias sobre IA, no-code y desarrollo web, desde la perspectiva de tu negocio",
+    "filters": {
+      "all": "Todos",
+      "ai": "Inteligencia Artificial",
+      "nocode": "No-Code",
+      "lovable": "Lovable",
+      "webdev": "Desarrollo Web",
+      "technology": "Tecnología"
+    },
+    "readMore": "Leer más",
+    "readingTime": "{{minutes}} min de lectura",
+    "source": "Fuente",
+    "publishedAt": "Publicado el",
+    "relatedPosts": "Artículos relacionados",
+    "backToBlog": "Volver al blog",
+    "noPostsYet": "Pronto publicaremos nuestro primer artículo. ¡Volvé pronto!",
+    "loading": "Cargando artículos...",
+    "error": "No pudimos cargar los artículos. Intentá de nuevo.",
+    "preview": {
+      "title": "Noticias",
+      "titleHighlight": "tech",
+      "subtitle": "Mantenete al día con las últimas tendencias en tecnología y cómo pueden impulsar tu negocio",
+      "viewAll": "Ver todos los artículos"
+    },
+    "cta": {
+      "title": "¿Querés aplicar esto en tu negocio?",
+      "button": "Hablemos por WhatsApp",
+      "whatsappMessage": "Hola! Vi su artículo sobre {{topic}} y me interesa saber cómo pueden ayudar a mi negocio"
+    },
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {{current}} de {{total}}"
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Instagram, Linkedin, Mail, Phone } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -88,12 +89,20 @@ const Footer = () => {
                 </button>
               </li>
               <li>
-                <button 
+                <button
                   onClick={() => scrollToSection('equipo')}
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t('footer.navigation.team')}
                 </button>
+              </li>
+              <li>
+                <Link
+                  to="/blog"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {t('footer.navigation.blog')}
+                </Link>
               </li>
             </ul>
           </div>
