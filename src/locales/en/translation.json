@@ -5,6 +5,7 @@
     "testimonials": "Testimonials",
     "methodology": "Methodology",
     "team": "Team",
+    "blog": "Blog",
     "contact": "Contact Us"
   },
   "hero": {
@@ -256,7 +257,8 @@
       "projects": "Projects",
       "testimonials": "Testimonials",
       "methodology": "Methodology",
-      "team": "Team"
+      "team": "Team",
+      "blog": "Blog"
     },
     "contact": {
       "title": "Contact"
@@ -266,5 +268,43 @@
     },
     "copyright": "All rights reserved",
     "whatsappMessage": "Hi! I want to boost my business with Plano"
+  },
+  "blog": {
+    "title": "Tech",
+    "titleHighlight": "blog",
+    "subtitle": "The latest news on AI, no-code, and web development, from your business perspective",
+    "filters": {
+      "all": "All",
+      "ai": "Artificial Intelligence",
+      "nocode": "No-Code",
+      "lovable": "Lovable",
+      "webdev": "Web Development",
+      "technology": "Technology"
+    },
+    "readMore": "Read more",
+    "readingTime": "{{minutes}} min read",
+    "source": "Source",
+    "publishedAt": "Published on",
+    "relatedPosts": "Related articles",
+    "backToBlog": "Back to blog",
+    "noPostsYet": "We'll publish our first article soon. Come back later!",
+    "loading": "Loading articles...",
+    "error": "We couldn't load the articles. Please try again.",
+    "preview": {
+      "title": "Tech",
+      "titleHighlight": "news",
+      "subtitle": "Stay up to date with the latest technology trends and how they can boost your business",
+      "viewAll": "View all articles"
+    },
+    "cta": {
+      "title": "Want to apply this to your business?",
+      "button": "Let's chat on WhatsApp",
+      "whatsappMessage": "Hi! I read your article about {{topic}} and I'm interested in learning how you can help my business"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{current}} of {{total}}"
+    }
   }
 }
