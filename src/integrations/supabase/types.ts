@@ -14,7 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      blog_posts: {
+        Row: {
+          content_en: string
+          content_es: string
+          created_at: string
+          cta_message_en: string
+          cta_message_es: string
+          excerpt_en: string
+          excerpt_es: string
+          id: string
+          image_alt_en: string
+          image_alt_es: string
+          image_url: string
+          is_published: boolean
+          published_at: string
+          reading_time_minutes: number
+          related_service: string | null
+          slug: string
+          source_name: string
+          source_url: string
+          summary_en: string
+          summary_es: string
+          title_en: string
+          title_es: string
+          topic: string
+        }
+        Insert: {
+          content_en?: string
+          content_es?: string
+          created_at?: string
+          cta_message_en?: string
+          cta_message_es?: string
+          excerpt_en?: string
+          excerpt_es?: string
+          id?: string
+          image_alt_en?: string
+          image_alt_es?: string
+          image_url?: string
+          is_published?: boolean
+          published_at?: string
+          reading_time_minutes?: number
+          related_service?: string | null
+          slug: string
+          source_name?: string
+          source_url?: string
+          summary_en?: string
+          summary_es?: string
+          title_en: string
+          title_es: string
+          topic?: string
+        }
+        Update: {
+          content_en?: string
+          content_es?: string
+          created_at?: string
+          cta_message_en?: string
+          cta_message_es?: string
+          excerpt_en?: string
+          excerpt_es?: string
+          id?: string
+          image_alt_en?: string
+          image_alt_es?: string
+          image_url?: string
+          is_published?: boolean
+          published_at?: string
+          reading_time_minutes?: number
+          related_service?: string | null
+          slug?: string
+          source_name?: string
+          source_url?: string
+          summary_en?: string
+          summary_es?: string
+          title_en?: string
+          title_es?: string
+          topic?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

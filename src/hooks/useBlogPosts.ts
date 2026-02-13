@@ -6,7 +6,7 @@ export function useBlogPosts(topic?: BlogTopic, page: number = 1, pageSize: numb
   return useQuery({
     queryKey: ['blog-posts', topic, page],
     queryFn: async () => {
-      let query = supabase
+      let query = (supabase as any)
         .from('blog_posts')
         .select('*', { count: 'exact' })
         .eq('is_published', true)
@@ -29,12 +29,12 @@ export function useBlogPost(slug: string) {
   return useQuery({
     queryKey: ['blog-post', slug],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('blog_posts')
         .select('*')
         .eq('slug', slug)
         .eq('is_published', true)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data as BlogPost;
@@ -48,7 +48,7 @@ export function useLatestBlogPosts(limit: number = 3) {
   return useQuery({
     queryKey: ['blog-posts-latest', limit],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('blog_posts')
         .select('*')
         .eq('is_published', true)
