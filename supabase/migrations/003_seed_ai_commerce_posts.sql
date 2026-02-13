@@ -1,6 +1,6 @@
 -- Seed 10 SEO-optimized blog posts about AI, no-code, and digital commerce (2026)
 
-INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, content_es, content_en, excerpt_es, excerpt_en, image_url, image_alt_es, image_alt_en, source_url, source_name, topic, related_service, cta_message_es, cta_message_en, published_at, reading_time_minutes) VALUES
+INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, content_es, content_en, excerpt_es, excerpt_en, image_url, image_alt_es, image_alt_en, source_url, source_name, topic, related_service, cta_message_es, cta_message_en, published_at, reading_time_minutes, is_published) VALUES
 
 -- Article 1: IA 2026 y comercio digital
 (
@@ -23,7 +23,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Querés integrar inteligencia artificial en tu plataforma digital? En Plano diseñamos experiencias web inteligentes que escalan tu negocio.',
   'Want to integrate artificial intelligence into your digital platform? At Plano we design intelligent web experiences that scale your business.',
   NOW() - INTERVAL '9 days',
-  4
+  4,
+  true
 ),
 
 -- Article 2: Lovable y el boom del no-code
@@ -47,7 +48,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Tenés una idea y querés lanzarla rápido? En Plano creamos MVPs con herramientas no-code como Lovable en tiempo récord.',
   'Have an idea and want to launch it fast? At Plano we build MVPs with no-code tools like Lovable in record time.',
   NOW() - INTERVAL '8 days',
-  3
+  3,
+  true
 ),
 
 -- Article 3: La IA sacude el mercado tecnológico
@@ -71,7 +73,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Tu empresa necesita adaptarse al cambio tecnológico? En Plano creamos herramientas internas y soluciones digitales que modernizan tu operación.',
   'Does your company need to adapt to technological change? At Plano we create internal tools and digital solutions that modernize your operations.',
   NOW() - INTERVAL '7 days',
-  3
+  3,
+  true
 ),
 
 -- Article 4: ChatGPT evoluciona
@@ -95,7 +98,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Querés que tu próximo proyecto digital integre IA desde el inicio? En Plano diseñamos sistemas inteligentes que potencian tu negocio.',
   'Want your next digital project to integrate AI from the start? At Plano we design intelligent systems that empower your business.',
   NOW() - INTERVAL '6 days',
-  4
+  4,
+  true
 ),
 
 -- Article 5: Publicidad en ChatGPT
@@ -119,7 +123,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Estás diseñando un producto digital y necesitás definir tu modelo de negocio? En Plano te ayudamos a crear plataformas que monetizan sin perder experiencia.',
   'Are you designing a digital product and need to define your business model? At Plano we help you create platforms that monetize without losing experience.',
   NOW() - INTERVAL '5 days',
-  3
+  3,
+  true
 ),
 
 -- Article 6: OpenAI retira GPT-4o
@@ -143,7 +148,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Necesitás soluciones digitales que se adapten al cambio constante? En Plano diseñamos herramientas flexibles que evolucionan con la tecnología.',
   'Need digital solutions that adapt to constant change? At Plano we design flexible tools that evolve with technology.',
   NOW() - INTERVAL '4 days',
-  3
+  3,
+  true
 ),
 
 -- Article 7: Claude y los agentes inteligentes
@@ -167,7 +173,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Querés automatizar procesos internos con agentes inteligentes? En Plano diseñamos herramientas que trabajan por vos.',
   'Want to automate internal processes with intelligent agents? At Plano we design tools that work for you.',
   NOW() - INTERVAL '3 days',
-  4
+  4,
+  true
 ),
 
 -- Article 8: Programación asistida por IA
@@ -191,7 +198,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Necesitás desarrollar un producto digital rápido y con calidad? En Plano usamos IA para acelerar el desarrollo sin perder estrategia.',
   'Need to develop a fast, quality digital product? At Plano we use AI to accelerate development without losing strategy.',
   NOW() - INTERVAL '2 days',
-  4
+  4,
+  true
 ),
 
 -- Article 9: Publicidad o suscripción en plataformas de IA
@@ -215,7 +223,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Estás definiendo el modelo de negocio de tu plataforma digital? En Plano te ayudamos a diseñar productos que generan confianza y resultados.',
   'Are you defining the business model for your digital platform? At Plano we help you design products that generate trust and results.',
   NOW() - INTERVAL '1 day',
-  3
+  3,
+  true
 ),
 
 -- Article 10: El auge del no-code en marketing
@@ -239,5 +248,6 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Querés crear campañas digitales que se muevan rápido? En Plano usamos no-code para construir experiencias que generan impacto.',
   'Want to create digital campaigns that move fast? At Plano we use no-code to build experiences that generate impact.',
   NOW(),
-  3
+  3,
+  true
 );

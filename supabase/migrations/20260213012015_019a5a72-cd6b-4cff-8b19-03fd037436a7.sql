@@ -21,7 +21,7 @@ CREATE TABLE public.blog_posts (
   cta_message_en TEXT NOT NULL DEFAULT '',
   published_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  is_published BOOLEAN NOT NULL DEFAULT false,
+  is_published BOOLEAN NOT NULL DEFAULT true,
   reading_time_minutes INTEGER NOT NULL DEFAULT 5
 );
 

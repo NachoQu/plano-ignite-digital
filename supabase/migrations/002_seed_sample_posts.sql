@@ -1,6 +1,6 @@
 -- Seed 3 sample blog posts so the blog doesn't appear empty on first deploy
 
-INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, content_es, content_en, excerpt_es, excerpt_en, image_url, image_alt_es, image_alt_en, source_url, source_name, topic, related_service, cta_message_es, cta_message_en, published_at, reading_time_minutes) VALUES
+INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, content_es, content_en, excerpt_es, excerpt_en, image_url, image_alt_es, image_alt_en, source_url, source_name, topic, related_service, cta_message_es, cta_message_en, published_at, reading_time_minutes, is_published) VALUES
 
 -- Article 1: AI
 (
@@ -23,7 +23,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Querés implementar IA en tu PyME sin complicaciones? En Plano creamos herramientas internas inteligentes con tecnología no-code.',
   'Want to implement AI in your SME without complications? At Plano we create intelligent internal tools with no-code technology.',
   NOW() - INTERVAL '2 days',
-  4
+  4,
+  true
 ),
 
 -- Article 2: No-Code
@@ -47,7 +48,8 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Tenés una idea de negocio y querés lanzarla rápido? En Plano creamos MVPs con herramientas no-code en semanas.',
   'Have a business idea and want to launch it fast? At Plano we create MVPs with no-code tools in weeks.',
   NOW() - INTERVAL '1 day',
-  5
+  5,
+  true
 ),
 
 -- Article 3: Web Development
@@ -71,5 +73,6 @@ INSERT INTO blog_posts (slug, title_es, title_en, summary_es, summary_en, conten
   '¿Tu web no genera los resultados que esperás? En Plano creamos sitios que convierten visitas en clientes reales.',
   'Is your website not generating the results you expect? At Plano we create sites that convert visits into real clients.',
   NOW(),
-  4
+  4,
+  true
 );
