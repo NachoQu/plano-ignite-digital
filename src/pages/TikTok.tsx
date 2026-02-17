@@ -48,7 +48,6 @@ const TikTok = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Trigger fade-in animations after mount
     const timer = setTimeout(() => setVisible(true), 50);
     return () => clearTimeout(timer);
   }, []);
@@ -58,7 +57,7 @@ const TikTok = () => {
       className="min-h-screen overflow-x-hidden"
       style={{
         background:
-          "radial-gradient(ellipse at 50% 0%, rgba(102,51,255,0.06) 0%, #ffffff 60%)",
+          "radial-gradient(ellipse at 50% 0%, rgba(102,51,255,0.15) 0%, #22242A 60%)",
       }}
     >
       <div className="mx-auto max-w-[520px] px-5 py-10">
@@ -71,24 +70,18 @@ const TikTok = () => {
           }}
         >
           {/* Avatar placeholder */}
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#6633FF] text-3xl font-bold text-white shadow-lg shadow-[#6633FF]/20">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#6633FF] text-3xl font-bold text-white shadow-lg shadow-[#6633FF]/30">
             N
           </div>
 
-          <h1
-            className="mb-2 text-3xl font-bold tracking-tight"
-            style={{ color: "#22242A" }}
-          >
+          <h1 className="mb-2 text-3xl font-bold tracking-tight text-white">
             Hola, soy Nacho{" "}
             <span role="img" aria-label="wave">
               👋
             </span>
           </h1>
 
-          <p
-            className="mb-3 text-base leading-relaxed"
-            style={{ color: "#22242A" }}
-          >
+          <p className="mb-3 text-base leading-relaxed text-[#C8C8C8]">
             Te atiendo personalmente por WhatsApp.
             <br />
             Elegí tu consulta y arrancamos ahora:
@@ -98,7 +91,7 @@ const TikTok = () => {
             className="inline-block rounded-full px-3 py-1 text-xs font-medium"
             style={{
               backgroundColor: "rgba(255,176,22,0.15)",
-              color: "#b07800",
+              color: "#FFB016",
             }}
           >
             Vengo de TikTok → te respondo yo.
@@ -115,12 +108,14 @@ const TikTok = () => {
                 href={card.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group block rounded-2xl border p-4 no-underline transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                className="group block rounded-2xl border p-4 no-underline transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-[#6633FF]/10"
                 style={{
-                  backgroundColor: card.highlighted ? "#6633FF" : "#ffffff",
+                  backgroundColor: card.highlighted
+                    ? "#6633FF"
+                    : "hsl(220 9% 18%)",
                   borderColor: card.highlighted
                     ? "#6633FF"
-                    : "rgba(200,200,200,0.5)",
+                    : "hsl(220 9% 25%)",
                   opacity: visible ? 1 : 0,
                   transform: visible ? "translateY(0)" : "translateY(20px)",
                   transitionDelay: `${150 + index * 80}ms`,
@@ -132,7 +127,7 @@ const TikTok = () => {
                     style={{
                       backgroundColor: card.highlighted
                         ? "rgba(255,255,255,0.2)"
-                        : "rgba(102,51,255,0.08)",
+                        : "rgba(102,51,255,0.15)",
                     }}
                   >
                     <Icon
@@ -143,12 +138,7 @@ const TikTok = () => {
                     />
                   </div>
                   <div className="min-w-0">
-                    <h2
-                      className="text-base font-semibold leading-tight"
-                      style={{
-                        color: card.highlighted ? "#ffffff" : "#22242A",
-                      }}
-                    >
+                    <h2 className="text-base font-semibold leading-tight text-white">
                       {card.title}
                     </h2>
                     <p
@@ -156,7 +146,7 @@ const TikTok = () => {
                       style={{
                         color: card.highlighted
                           ? "rgba(255,255,255,0.85)"
-                          : "#666666",
+                          : "#999999",
                       }}
                     >
                       {card.description}
@@ -177,13 +167,10 @@ const TikTok = () => {
             transitionDelay: "700ms",
           }}
         >
-          <p
-            className="mb-1 text-sm font-medium"
-            style={{ color: "#22242A" }}
-          >
+          <p className="mb-1 text-sm font-medium text-white">
             Proyectos reales en Argentina
           </p>
-          <p className="text-xs" style={{ color: "#C8C8C8" }}>
+          <p className="text-xs" style={{ color: "#666666" }}>
             Plano · Diseño + No-Code + IA
           </p>
         </footer>
