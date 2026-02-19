@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "remotion:preview": "remotion preview src/remotion/index.ts",
-    "remotion:render": "remotion render src/remotion/index.ts MyComposition out/video.mp4",
+    "remotion:render": "remotion render src/remotion/index.ts PromoVideo out/video.mp4",
     "remotion:upgrade": "remotion upgrade"
   },
   "dependencies": {
@@ -43,8 +43,10 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@remotion/cli": "^4.0.424",
+    "@remotion/google-fonts": "4.0.424",
     "@remotion/player": "^4.0.424",
     "@remotion/tailwind": "^4.0.424",
+    "@remotion/transitions": "4.0.424",
     "@supabase/supabase-js": "^2.95.3",
     "@tanstack/react-query": "^5.83.0",
     "class-variance-authority": "^0.7.1",
