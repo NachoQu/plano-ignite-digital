@@ -1,50 +1,69 @@
-import { TransitionSeries, linearTiming } from "@remotion/transitions";
-import { fade } from "@remotion/transitions/fade";
-import { slide } from "@remotion/transitions/slide";
+import {
+  AbsoluteFill,
+  Sequence,
+  interpolate,
+  useCurrentFrame,
+} from "remotion";
 import { IntroScene } from "./scenes/IntroScene";
 import { ServicesScene } from "./scenes/ServicesScene";
 import { StatsScene } from "./scenes/StatsScene";
 import { CtaScene } from "./scenes/CtaScene";
 
-const TRANSITION_DURATION = 15;
+const FADE_DURATION = 15;
+
+const FadeIn: React.FC<{ children: React.ReactNode; durationInFrames: number }> = ({
+  children,
+  durationInFrames,
+}) => {
+  const frame = useCurrentFrame();
+  const fadeIn = interpolate(frame, [0, FADE_DURATION], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const fadeOut = interpolate(
+    frame,
+    [durationInFrames - FADE_DURATION, durationInFrames],
+    [1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
+  return (
+    <AbsoluteFill style={{ opacity: Math.min(fadeIn, fadeOut) }}>
+      {children}
+    </AbsoluteFill>
+  );
+};
 
 export const PromoVideo: React.FC = () => {
   return (
-    <TransitionSeries>
+    <AbsoluteFill>
       {/* Scene 1: Intro - 4 seconds */}
-      <TransitionSeries.Sequence durationInFrames={120}>
-        <IntroScene />
-      </TransitionSeries.Sequence>
-
-      <TransitionSeries.Transition
-        presentation={fade()}
-        timing={linearTiming({ durationInFrames: TRANSITION_DURATION })}
-      />
+      <Sequence from={0} durationInFrames={120}>
+        <FadeIn durationInFrames={120}>
+          <IntroScene />
+        </FadeIn>
+      </Sequence>
 
       {/* Scene 2: Services - 4 seconds */}
-      <TransitionSeries.Sequence durationInFrames={120}>
-        <ServicesScene />
-      </TransitionSeries.Sequence>
-
-      <TransitionSeries.Transition
-        presentation={slide({ direction: "from-right" })}
-        timing={linearTiming({ durationInFrames: TRANSITION_DURATION })}
-      />
+      <Sequence from={120} durationInFrames={120}>
+        <FadeIn durationInFrames={120}>
+          <ServicesScene />
+        </FadeIn>
+      </Sequence>
 
       {/* Scene 3: Stats - 3.5 seconds */}
-      <TransitionSeries.Sequence durationInFrames={105}>
-        <StatsScene />
-      </TransitionSeries.Sequence>
-
-      <TransitionSeries.Transition
-        presentation={fade()}
-        timing={linearTiming({ durationInFrames: TRANSITION_DURATION })}
-      />
+      <Sequence from={240} durationInFrames={105}>
+        <FadeIn durationInFrames={105}>
+          <StatsScene />
+        </FadeIn>
+      </Sequence>
 
       {/* Scene 4: CTA - 4 seconds */}
-      <TransitionSeries.Sequence durationInFrames={120}>
-        <CtaScene />
-      </TransitionSeries.Sequence>
-    </TransitionSeries>
+      <Sequence from={345} durationInFrames={120}>
+        <FadeIn durationInFrames={120}>
+          <CtaScene />
+        </FadeIn>
+      </Sequence>
+    </AbsoluteFill>
   );
 };
