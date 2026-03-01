@@ -104,6 +104,14 @@ const Footer = () => {
                   {t('footer.navigation.blog')}
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/reportes"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Reportes
+                </Link>
+              </li>
             </ul>
           </div>
 
