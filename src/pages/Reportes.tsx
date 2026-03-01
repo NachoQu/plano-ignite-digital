@@ -22,13 +22,11 @@ import {
   TrendingUp,
   ChevronDown,
   ChevronUp,
-  BarChart3,
   Clock,
   Zap,
   CheckCircle2,
   ArrowRight,
   Mail,
-  MessageCircle,
 } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
@@ -41,20 +39,20 @@ const areas = [
     icon: ShoppingCart,
     name: "Ventas y Revenue",
     freq: "Semanal + Mensual",
-    why: "Las ventas son el motor de la empresa. Sin saber exactamente cuánto se vende, a quién, y con qué margen, es imposible tomar decisiones correctas sobre precios, descuentos o dónde enfocar al equipo comercial.",
+    why: "Sin visibilidad real sobre márgenes, canales y tickets promedio, las decisiones comerciales se basan en intuición. Este módulo centraliza lo esencial para vender mejor.",
     lagging: [
-      "Ventas totales del mes — cuánto dinero ingresó",
-      "Margen bruto — cuánto queda después de los costos del producto",
-      "Crecimiento vs. mismo mes del año anterior — si estamos mejor o peor",
-      "Devoluciones y cancelaciones — qué porcentaje de ventas se cayó",
-      "Ticket promedio — cuánto gasta en promedio cada cliente",
+      "Facturación total del período",
+      "Margen bruto por línea de producto",
+      "Crecimiento interanual",
+      "Devoluciones y cancelaciones",
+      "Ticket promedio por cliente",
     ],
     leading: [
-      "Forecast de ventas — proyección de cierre del mes en curso",
-      "Pipeline calificado — oportunidades con alta probabilidad de cerrar",
-      "Nuevas cuentas captadas — cuántos clientes nuevos ingresaron este mes",
-      "Velocidad del ciclo de venta — cuántos días tarda cerrar un negocio",
-      "Concentración de clientes — riesgo si el top 3 representa más del 40%",
+      "Forecast de cierre mensual",
+      "Pipeline calificado",
+      "Nuevas cuentas captadas",
+      "Velocidad del ciclo de venta",
+      "Concentración de cartera (top 3 clientes)",
     ],
   },
   {
@@ -62,20 +60,20 @@ const areas = [
     icon: Truck,
     name: "Supply Chain y Logística",
     freq: "Semanal + Mensual",
-    why: "Un producto que no llega a tiempo es una venta perdida y un cliente insatisfecho. Este reporte avisa antes de que haya quiebres de stock o retrasos graves que afecten las operaciones.",
+    why: "Un pedido que llega tarde es un cliente que no vuelve. Este módulo anticipa quiebres de stock y retrasos antes de que impacten en la operación.",
     lagging: [
-      "OTD (On Time Delivery) — porcentaje de pedidos entregados a tiempo",
-      "Fill Rate — porcentaje de pedidos entregados completos",
-      "Rotación de inventario — cuántas veces se renueva el stock por mes",
-      "Costo de logística como % de ventas",
-      "Quiebres de stock — productos que se quedaron sin inventario",
+      "OTD — entregas a tiempo",
+      "Fill Rate — pedidos completos",
+      "Rotación de inventario",
+      "Costo logístico como % de facturación",
+      "Quiebres de stock registrados",
     ],
     leading: [
-      "Días de cobertura de inventario — cuántos días más alcanza el stock actual",
-      "Lead time de proveedores — si están entregando más lento que lo habitual",
-      "Pedidos en tránsito retrasados — alerta temprana de problemas logísticos",
-      "Cumplimiento de pronóstico de demanda — qué tan exacta fue la planificación",
-      "Nivel de servicio proyectado para las próximas 2 semanas",
+      "Días de cobertura de inventario",
+      "Lead time de proveedores (tendencia)",
+      "Pedidos en tránsito con demora",
+      "Precisión del forecast de demanda",
+      "Nivel de servicio proyectado a 14 días",
     ],
   },
   {
@@ -83,104 +81,104 @@ const areas = [
     icon: DollarSign,
     name: "Finanzas y Control de Gestión",
     freq: "Mensual + Trimestral",
-    why: "Las finanzas muestran la salud real de la empresa más allá de las ventas. Una empresa puede vender mucho y aun así perder dinero si sus costos, deudas o flujo de caja están mal manejados.",
+    why: "Facturar mucho no garantiza rentabilidad. Este módulo muestra la salud financiera real: flujo de caja, márgenes netos y capacidad de pago.",
     lagging: [
-      "EBITDA — resultado operativo antes de impuestos e intereses",
-      "Margen neto — ganancia real sobre el total de ingresos",
-      "Capital de trabajo — capacidad de pagar deudas de corto plazo",
-      "Flujo de caja operativo — dinero real que entró y salió",
-      "Deuda sobre EBITDA — nivel de endeudamiento respecto a la capacidad de pago",
+      "EBITDA",
+      "Margen neto sobre ingresos",
+      "Capital de trabajo",
+      "Flujo de caja operativo",
+      "Ratio deuda / EBITDA",
     ],
     leading: [
-      "Proyección de caja a 90 días — si habrá problemas para pagar compromisos",
-      "Variación de costos fijos — alerta si los gastos estructurales subieron",
-      "Facturas vencidas por cobrar — riesgo de incobrabilidad",
-      "Presupuesto ejecutado vs. planificado — si el gasto está bajo o sobre lo previsto",
-      "Índice de liquidez corriente — capacidad inmediata de afrontar deudas",
+      "Proyección de caja a 90 días",
+      "Variación de costos fijos",
+      "Cuentas por cobrar vencidas",
+      "Presupuesto ejecutado vs. planificado",
+      "Índice de liquidez corriente",
     ],
   },
   {
     num: "04",
     icon: Megaphone,
-    name: "Marketing y Performance Digital",
+    name: "Marketing y Performance",
     freq: "Semanal + Mensual",
-    why: "El marketing sin datos es dinero quemado. Este reporte permite saber exactamente qué campañas funcionan, cuánto cuesta conseguir cada cliente, y si la inversión está generando retorno real.",
+    why: "Invertir sin medir es perder presupuesto. Este módulo conecta cada peso invertido con resultados concretos: leads, conversiones y retorno real.",
     lagging: [
-      "CAC (Costo de Adquisición de Cliente) — cuánto costó conseguir un cliente nuevo",
-      "ROAS — por cada peso invertido en publicidad, cuánto en ventas se generó",
-      "Leads generados por canal — cuántos contactos trajo cada medio",
-      "Tasa de conversión de lead a cliente — qué porcentaje terminó comprando",
-      "Costo por lead — eficiencia del gasto publicitario",
+      "CAC — costo por cliente adquirido",
+      "ROAS — retorno publicitario",
+      "Leads por canal",
+      "Tasa de conversión lead → cliente",
+      "Costo por lead",
     ],
     leading: [
-      "Alcance orgánico en redes — tendencia de visibilidad sin pauta pagada",
-      "CTR de campañas activas — si los anuncios están siendo clickeados",
-      "Posicionamiento SEO de palabras clave — visibilidad en buscadores",
-      "Share of voice — qué tan presente está la marca vs. la competencia",
-      "Engagement rate — nivel de interacción de la audiencia con el contenido",
+      "Alcance orgánico (tendencia)",
+      "CTR de campañas activas",
+      "Posicionamiento SEO",
+      "Share of voice vs. competencia",
+      "Engagement rate",
     ],
   },
   {
     num: "05",
     icon: RefreshCw,
-    name: "Clientes y Retención (Churn)",
+    name: "Retención y Churn",
     freq: "Mensual + Trimestral",
-    why: "Conseguir un cliente nuevo cuesta 5 a 7 veces más que retener uno existente. Este reporte detecta los clientes que están a punto de irse antes de que se vayan, para poder actuar a tiempo.",
+    why: "Retener cuesta 5x menos que adquirir. Este módulo identifica clientes en riesgo de fuga antes de que se vayan.",
     lagging: [
-      "Churn rate — porcentaje de clientes perdidos en el mes",
-      "Tasa de retención — inverso del churn, mide la lealtad",
-      "Lifetime Value (LTV) — valor económico total de un cliente promedio",
-      "LTV/CAC ratio — si lo que vale un cliente justifica lo que cuesta conseguirlo",
-      "Reactivaciones — clientes que volvieron a comprar después de un período inactivo",
+      "Churn rate mensual",
+      "Tasa de retención",
+      "Lifetime Value (LTV)",
+      "Ratio LTV / CAC",
+      "Reactivaciones del período",
     ],
     leading: [
-      "Clientes en riesgo de fuga — segmentación temprana por patrones de comportamiento",
-      "Frecuencia de compra por segmento — bajada en recurrencia como señal de alerta",
-      "Tiempo sin actividad por cliente — cuántos días llevan sin comprar",
-      "Tasa de apertura de emails — si los clientes están dejando de interactuar",
-      "Net Promoter Score (NPS) — probabilidad futura de recomendar la marca",
+      "Segmentación de clientes en riesgo",
+      "Frecuencia de compra por segmento",
+      "Días sin actividad por cuenta",
+      "Apertura de comunicaciones",
+      "Net Promoter Score (NPS)",
     ],
   },
   {
     num: "06",
     icon: Star,
-    name: "Satisfacción del Cliente y NPS",
+    name: "Experiencia del Cliente",
     freq: "Mensual + Trimestral",
-    why: "La experiencia del cliente es el activo invisible más valioso. Un cliente satisfecho recomienda. Uno insatisfecho lo cuenta 10 veces. Medir NPS y CSAT permite mejorar antes de perder clientes por razones evitables.",
+    why: "Un cliente satisfecho recomienda. Uno insatisfecho lo cuenta 10 veces. Medir NPS y CSAT permite mejorar antes de perder cuentas por razones evitables.",
     lagging: [
-      "NPS (Net Promoter Score) — del 1 al 10, cuántos recomendarían la marca",
-      "CSAT (Customer Satisfaction Score) — satisfacción puntual de interacciones",
-      "CES (Customer Effort Score) — cuánto esfuerzo requirió resolver un problema",
-      "Tiempo de respuesta promedio en soporte",
-      "Tasa de resolución en primer contacto — problemas solucionados sin escalado",
+      "NPS — lealtad y recomendación",
+      "CSAT — satisfacción puntual",
+      "CES — esfuerzo del cliente",
+      "Tiempo de respuesta en soporte",
+      "Resolución en primer contacto",
     ],
     leading: [
-      "Volumen de quejas o reclamos por categoría",
-      "Menciones negativas en redes sociales",
-      "Tasa de abandono en procesos de compra o atención",
-      "Tickets sin resolver que superan el SLA",
-      "Respuestas negativas en encuestas de pulso rápido",
+      "Volumen de quejas por categoría",
+      "Menciones negativas en redes",
+      "Abandono en procesos de compra",
+      "Tickets fuera de SLA",
+      "Pulsos rápidos de satisfacción",
     ],
   },
   {
     num: "07",
     icon: HeartPulse,
-    name: "Salud Corporativa y Clima Interno",
+    name: "Salud Corporativa",
     freq: "Mensual + Anual",
-    why: "Una empresa con empleados desmotivados o estructuralmente enferma no puede crecer de forma sostenible. Este reporte detecta señales tempranas de deterioro interno que luego se convierten en rotación, productividad baja y costos altos.",
+    why: "Equipos desmotivados frenan el crecimiento. Este módulo detecta señales tempranas de deterioro interno que impactan productividad y costos.",
     lagging: [
-      "Ausentismo — porcentaje de horas no trabajadas sobre el total",
-      "Tasa de accidentes o incidentes laborales",
-      "Presentismo — empleados presentes pero con baja productividad",
-      "Costo de enfermedades laborales sobre nómina total",
-      "Denuncias o conflictos internos registrados",
+      "Ausentismo",
+      "Incidentes laborales",
+      "Presentismo (presencia sin productividad)",
+      "Costo de enfermedades sobre nómina",
+      "Conflictos internos registrados",
     ],
     leading: [
-      "eNPS (Employee Net Promoter Score) — si los empleados recomendarían trabajar aquí",
-      "Satisfacción en encuestas de clima — temperatura interna del equipo",
-      "Rotación voluntaria — empleados que se van por decisión propia",
-      "Participación en programas de bienestar",
-      "Horas extra acumuladas — señal de sobrecarga o mala planificación",
+      "eNPS — recomendación interna",
+      "Clima laboral (encuestas)",
+      "Rotación voluntaria",
+      "Participación en bienestar",
+      "Horas extra acumuladas",
     ],
   },
   {
@@ -188,20 +186,20 @@ const areas = [
     icon: Leaf,
     name: "ESG y Sustentabilidad",
     freq: "Trimestral + Anual",
-    why: "Los inversores, clientes y reguladores exigen cada vez más que las empresas midan su impacto ambiental y social. Tener estos reportes no solo es responsabilidad, es ventaja competitiva para acceder a financiamiento y mercados exigentes.",
+    why: "Inversores, clientes y reguladores exigen métricas de impacto. Reportar ESG no es solo responsabilidad: es ventaja competitiva para acceder a mejores condiciones.",
     lagging: [
-      "Emisiones de CO2 directas e indirectas (Scope 1, 2 y 3)",
-      "Consumo de energía y porcentaje renovable",
-      "Generación de residuos y tasa de reciclaje",
-      "Consumo de agua por unidad producida",
-      "Proveedores evaluados con criterios sociales y ambientales",
+      "Emisiones CO₂ (Scope 1, 2, 3)",
+      "Consumo energético y % renovable",
+      "Generación de residuos y reciclaje",
+      "Consumo de agua por unidad",
+      "Proveedores evaluados (criterios ESG)",
     ],
     leading: [
-      "Progreso hacia metas de reducción de emisiones anuales",
-      "Proyectos de eficiencia energética en ejecución",
-      "Certificaciones ESG en proceso de obtención",
-      "Riesgo regulatorio ambiental por mercado/operación",
-      "Diversidad e inclusión en nuevas contrataciones",
+      "Progreso en metas de reducción",
+      "Proyectos de eficiencia en curso",
+      "Certificaciones en trámite",
+      "Riesgo regulatorio ambiental",
+      "Diversidad en nuevas contrataciones",
     ],
   },
   {
@@ -209,62 +207,62 @@ const areas = [
     icon: Map,
     name: "Expansión y Nuevos Mercados",
     freq: "Trimestral",
-    why: "Crecer en un mercado nuevo sin datos es apostar a ciegas. Este reporte analiza el potencial real de nuevas geografías o segmentos, y mide si las apuestas de expansión están funcionando como se esperaba.",
+    why: "Crecer sin datos es apostar a ciegas. Este módulo mide el potencial real de nuevas geografías y si la inversión en expansión está rindiendo.",
     lagging: [
-      "Revenue por región o canal nuevo — cuánto generó la expansión",
-      "Participación de mercado por zona — market share ganado",
-      "ROI de la inversión en cada mercado nuevo",
-      "Costo de entrada vs. ingresos obtenidos en los primeros 6 meses",
-      "Clientes activos en mercados nuevos vs. objetivo",
+      "Revenue por región o canal nuevo",
+      "Market share por zona",
+      "ROI de cada mercado nuevo",
+      "Costo de entrada vs. ingresos (6 meses)",
+      "Clientes activos vs. objetivo",
     ],
     leading: [
-      "Tamaño del mercado potencial (TAM/SAM) por región objetivo",
-      "Barreras regulatorias o legales identificadas",
-      "Nivel de adaptación del producto al mercado local",
-      "Pipeline de clientes en mercados no activos todavía",
-      "Velocidad de penetración vs. benchmark de expansiones anteriores",
+      "TAM / SAM por región objetivo",
+      "Barreras regulatorias identificadas",
+      "Adaptación del producto al mercado local",
+      "Pipeline en mercados no activos",
+      "Velocidad de penetración vs. benchmark",
     ],
   },
   {
     num: "10",
     icon: Cog,
-    name: "Manufactura y Eficiencia Operativa (OEE)",
+    name: "Manufactura y OEE",
     freq: "Tiempo real + Semanal",
-    why: "En manufactura, el tiempo parado es dinero perdido. El OEE (Efectividad Global del Equipo) es el indicador global que mide cuánto del potencial productivo se está aprovechando realmente.",
+    why: "Tiempo parado es margen perdido. El OEE mide cuánto del potencial productivo se aprovecha realmente.",
     lagging: [
-      "OEE (Overall Equipment Effectiveness) — % de capacidad productiva real vs. teórica",
-      "Tasa de defectos — unidades con fallas sobre el total producido",
-      "Downtime no planificado — horas de parada por fallas",
-      "Costo de calidad (re-trabajo, desperdicios, garantías)",
-      "Productividad por turno — unidades producidas por hora trabajada",
+      "OEE — efectividad global del equipo",
+      "Tasa de defectos",
+      "Downtime no planificado",
+      "Costo de calidad (re-trabajo, scrap)",
+      "Productividad por turno",
     ],
     leading: [
-      "MTBF (Mean Time Between Failures) — tiempo promedio entre fallas de equipos",
-      "Cumplimiento de mantenimiento preventivo programado",
-      "Variabilidad del proceso — si los resultados son consistentes o erráticos",
-      "Stock de repuestos críticos disponibles",
-      "Temperatura y vibración de equipos clave (sensores IoT)",
+      "MTBF — tiempo entre fallas",
+      "Cumplimiento de mantenimiento preventivo",
+      "Variabilidad del proceso",
+      "Stock de repuestos críticos",
+      "Sensores IoT (temperatura, vibración)",
     ],
   },
   {
     num: "11",
     icon: Lightbulb,
-    name: "Innovación y Pipeline de Nuevos Productos",
+    name: "Innovación y Nuevos Productos",
     freq: "Mensual + Trimestral",
-    why: "Las empresas que no innovan quedan obsoletas. Este reporte mide si la organización tiene un pipeline real de nuevos productos o mejoras, y si el dinero invertido en innovación está generando resultados concretos.",
+    why: "Las organizaciones que no innovan quedan obsoletas. Este módulo mide si hay un pipeline real de desarrollo y si la inversión en I+D genera retorno.",
     lagging: [
-      "Revenue de productos lanzados en los últimos 24 meses — % sobre ventas totales",
-      "Tiempo promedio de desarrollo de producto (time-to-market)",
-      "Proyectos de I+D completados en el período",
-      "ROI de proyectos de innovación cerrados",
-      "Patentes o propiedad intelectual generada",
+      "Revenue de productos < 24 meses (% sobre total)",
+      "Time-to-market promedio",
+      "Proyectos de I+D completados",
+      "ROI de innovación",
+      "Propiedad intelectual generada",
     ],
     leading: [
-      "Pipeline activo de nuevos proyectos — cuántos en exploración, desarrollo y test",
-      "Presupuesto de I+D ejecutado vs. planificado",
+      "Pipeline activo (exploración → desarrollo → test)",
+      "Presupuesto I+D ejecutado vs. plan",
       "Proyectos en etapa piloto o MVP",
-      "Ideas ingresadas al funnel de innovación este mes",
-      "Tiempo en etapa de validación — si los proyectos avanzan o se traban",
+      "Ideas ingresadas al funnel",
+      "Tiempo en validación (velocidad de avance)",
     ],
   },
   {
@@ -272,41 +270,41 @@ const areas = [
     icon: Shield,
     name: "Tecnología y Ciberseguridad",
     freq: "Mensual + Trimestral",
-    why: "La tecnología sostiene cada proceso del negocio. Una falla crítica o un ataque informático puede paralizar operaciones durante días. Este reporte monitorea la salud del ecosistema tecnológico y los riesgos digitales.",
+    why: "Una falla crítica o un ataque puede paralizar operaciones. Este módulo monitorea la salud del ecosistema tecnológico y los riesgos digitales.",
     lagging: [
-      "Uptime de sistemas críticos — disponibilidad real de los sistemas productivos",
-      "Incidentes de seguridad detectados y resueltos",
-      "Tiempo de respuesta ante incidentes (MTTR)",
-      "Porcentaje de sistemas con parches de seguridad al día",
-      "Costo de incidentes tecnológicos en el período",
+      "Uptime de sistemas críticos",
+      "Incidentes de seguridad resueltos",
+      "MTTR — tiempo de respuesta",
+      "Sistemas con parches al día (%)",
+      "Costo de incidentes tecnológicos",
     ],
     leading: [
-      "Vulnerabilidades críticas detectadas pendientes de parcheo",
-      "Nivel de cumplimiento de políticas de seguridad por área",
-      "Ratio de empleados capacitados en ciberseguridad",
-      "Deuda técnica acumulada en sistemas core",
-      "Antigüedad promedio de infraestructura crítica",
+      "Vulnerabilidades críticas pendientes",
+      "Cumplimiento de políticas por área",
+      "Personal capacitado en ciberseguridad (%)",
+      "Deuda técnica en sistemas core",
+      "Antigüedad de infraestructura crítica",
     ],
   },
   {
     num: "13",
     icon: Users,
-    name: "Talento, RRHH y eNPS",
+    name: "Talento y Capital Humano",
     freq: "Mensual + Trimestral",
-    why: "El capital humano es el único activo que puede multiplicarse. Sin datos sobre el equipo, las decisiones de contratación, retención y desarrollo son pura intuición. Este reporte convierte los datos de personas en ventaja competitiva.",
+    why: "El equipo es el único activo que se multiplica. Sin métricas de personas, las decisiones de contratación y retención son pura intuición.",
     lagging: [
-      "Rotación de personal — % de empleados que se fueron sobre el total",
-      "Costo de rotación — tiempo y dinero para reemplazar una posición",
-      "Tiempo de cobertura de vacantes — días promedio para cubrir un puesto",
-      "Desempeño promedio por área — resultados en evaluaciones periódicas",
-      "Inversión en capacitación por empleado",
+      "Rotación de personal",
+      "Costo de reemplazo por posición",
+      "Tiempo de cobertura de vacantes",
+      "Desempeño promedio por área",
+      "Inversión en capacitación per cápita",
     ],
     leading: [
-      "eNPS (Employee NPS) — si los empleados recomendarían trabajar en la empresa",
-      "Pipeline de talento interno — candidatos listos para ascender",
-      "Riesgo de fuga por posición crítica — empleados clave con baja satisfacción",
-      "Participación en encuestas de clima — temperatura del equipo",
-      "Tiempo desde última capacitación por empleado",
+      "eNPS — recomendación como empleador",
+      "Pipeline de talento interno",
+      "Riesgo de fuga en posiciones clave",
+      "Participación en encuestas de clima",
+      "Última capacitación por colaborador",
     ],
   },
 ];
@@ -314,99 +312,99 @@ const areas = [
 const correlations = [
   {
     origin: "OTD (Logística)",
-    impact: "NPS (Satisfacción)",
+    impact: "NPS (Experiencia)",
     relation:
-      "Si los pedidos llegan tarde, el NPS baja 3 puntos en promedio por cada 5% de caída en OTD.",
+      "Cada 5% de caída en entregas a tiempo reduce el NPS en ~3 puntos.",
   },
   {
-    origin: "Churn Rate (Clientes)",
+    origin: "Churn (Retención)",
     impact: "Revenue (Ventas)",
     relation:
-      "1% de aumento en churn equivale a -4% de revenue anual en modelos de suscripción o recurrencia.",
+      "+1% de churn equivale a –4% de facturación anual en modelos recurrentes.",
   },
   {
     origin: "OEE (Manufactura)",
     impact: "Margen Bruto (Finanzas)",
     relation:
-      "Cada 1% de mejora en OEE reduce el costo de producción entre 0.3% y 0.8%.",
+      "Cada 1% de mejora en OEE reduce el costo de producción entre 0,3% y 0,8%.",
   },
   {
     origin: "eNPS (Talento)",
     impact: "Ausentismo (Salud)",
     relation:
-      "Empresas con eNPS alto tienen 30-40% menos ausentismo. Empleados comprometidos no faltan.",
+      "Equipos con eNPS alto registran 30–40% menos ausentismo.",
   },
   {
     origin: "ESG Score",
-    impact: "Costo de capital (Finanzas)",
+    impact: "Costo de Capital",
     relation:
-      "Empresas con buena calificación ESG acceden a crédito con tasas hasta 1.5 puntos más bajas.",
+      "Buena calificación ESG reduce tasas de crédito hasta 1,5 puntos.",
   },
   {
-    origin: "Satisfacción (NPS)",
-    impact: "Churn (Clientes)",
+    origin: "NPS (Experiencia)",
+    impact: "Churn (Retención)",
     relation:
-      "Un NPS por debajo de 30 predice el doble de tasa de churn en los 90 días siguientes.",
+      "NPS < 30 predice el doble de fuga en los 90 días siguientes.",
   },
   {
-    origin: "Pipeline I+D (Innovación)",
-    impact: "Market Share (Ventas)",
+    origin: "Pipeline I+D",
+    impact: "Market Share",
     relation:
-      "Empresas con 15%+ de revenue en productos nuevos crecen 2x más rápido que el promedio del sector.",
+      "+15% de revenue en productos nuevos = 2x más crecimiento vs. promedio sectorial.",
   },
 ];
 
 const frequencies = [
   {
     freq: "Tiempo real",
-    areas: "Manufactura, Sistemas críticos",
+    areas: "Manufactura · Sistemas críticos",
     purpose: "Alertas inmediatas ante fallas o desvíos de producción",
   },
   {
     freq: "Semanal",
-    areas: "Ventas, Supply Chain, Marketing",
-    purpose: "Seguimiento del ritmo del negocio para correcciones rápidas",
+    areas: "Ventas · Supply Chain · Marketing",
+    purpose: "Seguimiento del ritmo operativo para correcciones ágiles",
   },
   {
     freq: "Mensual",
-    areas: "Finanzas, Clientes, NPS, Salud, Talento",
-    purpose: "Evaluación de resultados y tendencias del mes completo",
+    areas: "Finanzas · Clientes · NPS · Salud · Talento",
+    purpose: "Evaluación de resultados y tendencias del período completo",
   },
   {
     freq: "Trimestral",
-    areas: "ESG, Expansión, Innovación, Tecnología",
-    purpose: "Revisión estratégica de proyectos de largo plazo",
+    areas: "ESG · Expansión · Innovación · Tecnología",
+    purpose: "Revisión estratégica de iniciativas de mediano plazo",
   },
   {
     freq: "Anual",
-    areas: "ESG, Salud Corporativa, Benchmarks",
-    purpose: "Balance anual completo y comparación histórica",
+    areas: "ESG · Salud Corporativa · Benchmarks",
+    purpose: "Balance integral y comparación histórica",
   },
 ];
 
 const glossary = [
-  { term: "KPI", def: "Indicador Clave de Rendimiento. Es un número que mide qué tan bien (o mal) está funcionando algo importante para el negocio." },
-  { term: "Indicador rezagado", def: "Muestra lo que ya pasó. Es el resultado final. Ejemplo: ventas del mes cerrado." },
-  { term: "Indicador anticipado", def: "Muestra lo que está por pasar. Es una señal temprana. Ejemplo: pipeline de ventas para el mes que viene." },
-  { term: "Dashboard", def: "Tablero visual e interactivo donde se ven todos los indicadores en tiempo real, como el panel de un auto." },
-  { term: "Churn", def: "El porcentaje de clientes que se fueron o dejaron de comprar en un período determinado." },
-  { term: "NPS", def: "Net Promoter Score. Una pregunta simple: del 1 al 10, ¿cuánto recomendarías esta empresa? Mide lealtad." },
-  { term: "OEE", def: "Overall Equipment Effectiveness. Mide qué porcentaje de la capacidad productiva real se está aprovechando en manufactura." },
-  { term: "EBITDA", def: "Ganancia operativa de la empresa antes de descontar impuestos, intereses y depreciaciones. Muestra la rentabilidad real del negocio." },
-  { term: "CAC", def: "Costo de Adquisición de Cliente. Cuánto dinero se gastó en marketing y ventas para conseguir un nuevo cliente." },
-  { term: "LTV", def: "Lifetime Value. Cuánto dinero genera un cliente promedio durante toda su relación con la empresa." },
-  { term: "OTD", def: "On Time Delivery. Porcentaje de pedidos que llegaron al cliente en la fecha prometida." },
-  { term: "eNPS", def: "Employee Net Promoter Score. Lo mismo que el NPS pero aplicado a los empleados: cuánto recomendarían trabajar en la empresa." },
-  { term: "ESG", def: "Environmental, Social and Governance. Marco que mide el impacto ambiental, social y de gobernanza de una empresa." },
-  { term: "ROI", def: "Return on Investment. Por cada peso invertido, cuántos pesos de retorno se obtuvieron." },
-  { term: "Pipeline", def: "Embudo de oportunidades. En ventas, son los negocios en proceso. En innovación, los proyectos en desarrollo." },
+  { term: "KPI", def: "Indicador clave de rendimiento. Mide qué tan bien funciona algo importante para el negocio." },
+  { term: "Rezagado", def: "Muestra lo que ya pasó. Es el resultado final (ej: facturación del mes cerrado)." },
+  { term: "Anticipado", def: "Señal temprana de lo que está por pasar (ej: pipeline para el próximo mes)." },
+  { term: "Dashboard", def: "Tablero visual e interactivo donde se ven los indicadores en tiempo real." },
+  { term: "Churn", def: "Porcentaje de clientes que dejaron de comprar en un período determinado." },
+  { term: "NPS", def: "Net Promoter Score. Mide cuánto recomendarían tus clientes tu marca, del 1 al 10." },
+  { term: "OEE", def: "Overall Equipment Effectiveness. Qué porcentaje de la capacidad productiva se aprovecha." },
+  { term: "EBITDA", def: "Ganancia operativa antes de impuestos, intereses y depreciaciones." },
+  { term: "CAC", def: "Costo de adquisición de cliente. Cuánto cuesta conseguir un nuevo comprador." },
+  { term: "LTV", def: "Lifetime Value. Cuánto genera un cliente durante toda su relación con la marca." },
+  { term: "OTD", def: "On Time Delivery. Porcentaje de pedidos entregados en fecha prometida." },
+  { term: "eNPS", def: "Employee NPS. Cuánto recomendarían los colaboradores trabajar en la organización." },
+  { term: "ESG", def: "Environmental, Social & Governance. Marco de impacto ambiental, social y de gobernanza." },
+  { term: "ROI", def: "Retorno sobre la inversión. Por cada peso invertido, cuántos pesos de retorno." },
+  { term: "Pipeline", def: "Embudo de oportunidades: negocios en proceso (ventas) o proyectos en desarrollo (innovación)." },
 ];
 
 const comparisonRows = [
-  { label: "Costo mensual", analyst: "$3.000 - $6.000 USD", plano: "Desde $600 USD" },
-  { label: "Tiempo hasta primer resultado", analyst: "3 a 6 meses", plano: "2 semanas" },
-  { label: "Cobertura de áreas", analyst: "1 a 2 áreas", plano: "Hasta 13 áreas" },
-  { label: "Riesgo de rotación", analyst: "Alto", plano: "Sin riesgo" },
+  { label: "Inversión mensual", analyst: "$3.000 – $6.000 USD", plano: "Desde $600 USD" },
+  { label: "Primer resultado", analyst: "3 a 6 meses", plano: "2 semanas" },
+  { label: "Áreas cubiertas", analyst: "1 a 2", plano: "Hasta 13" },
+  { label: "Riesgo de rotación", analyst: "Alto", plano: "Ninguno" },
   { label: "Escalabilidad", analyst: "Limitada", plano: "Inmediata" },
 ];
 
@@ -431,7 +429,7 @@ const AreaCard = ({ area, index }: { area: (typeof areas)[number]; index: number
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-mono text-secondary mb-1">
-                ÁREA {area.num}
+                {area.num}
               </p>
               <CardTitle className="text-lg font-bold leading-tight">
                 {area.name}
@@ -457,13 +455,12 @@ const AreaCard = ({ area, index }: { area: (typeof areas)[number]; index: number
               {area.why}
             </p>
 
-            {/* Lagging */}
             <div>
               <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                 <TrendingDown className="h-4 w-4 text-secondary" />
-                Indicadores Rezagados
+                <span className="text-foreground">Rezagados</span>
                 <span className="text-xs font-normal text-muted-foreground">
-                  (qué pasó)
+                  — qué pasó
                 </span>
               </h4>
               <ul className="space-y-2">
@@ -478,13 +475,12 @@ const AreaCard = ({ area, index }: { area: (typeof areas)[number]; index: number
               </ul>
             </div>
 
-            {/* Leading */}
             <div>
               <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                Indicadores Anticipados
+                <span className="text-foreground">Anticipados</span>
                 <span className="text-xs font-normal text-muted-foreground">
-                  (qué va a pasar)
+                  — qué va a pasar
                 </span>
               </h4>
               <ul className="space-y-2">
@@ -520,27 +516,22 @@ const Reportes = () => {
 
       {/* ====== HERO ====== */}
       <section className="pt-28 pb-20 bg-background relative overflow-hidden">
-        {/* Decorative gradients */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
         <div className="container mx-auto px-6 relative">
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center max-w-4xl mx-auto">
               <p className="text-sm font-mono tracking-widest text-secondary mb-4 uppercase">
-                Plan de Servicio — Documento Oficial
+                Inteligencia de negocios como servicio
               </p>
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                Reportes inteligentes para{" "}
-                <span className="text-gradient-purple">decisiones correctas</span>
+                Datos claros.{" "}
+                <span className="text-gradient-purple">Decisiones correctas.</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10">
-                Unificamos los datos de las principales áreas de tu empresa y los
-                convertimos en reportes visuales, claros y periódicos. Sin
-                analistas propios, sin meses de implementación, sin herramientas
-                costosas.
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+                Unificamos la información de tu operación en reportes visuales y periódicos. Sin analistas propios, sin meses de implementación.
               </p>
 
-              {/* Stats row */}
-              <div className="flex flex-wrap justify-center gap-6 md:gap-10 mb-10">
+              <div className="flex flex-wrap justify-center gap-8 md:gap-12 mb-10">
                 {[
                   { value: "13", label: "Áreas" },
                   { value: "+65", label: "KPIs" },
@@ -571,42 +562,27 @@ const Reportes = () => {
         </div>
       </section>
 
-      {/* ====== SECTION 1 — QUÉ ES PLANO ====== */}
+      {/* ====== SECTION 1 — QUÉ RESOLVEMOS ====== */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-6">
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="max-w-4xl mx-auto">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                01
+                01 — El problema
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-8">
-                Qué es Plano y{" "}
-                <span className="text-gradient-purple">qué problema resuelve</span>
+                De datos dispersos a{" "}
+                <span className="text-gradient-purple">visión integral</span>
               </h2>
               <div className="space-y-5 text-muted-foreground leading-relaxed text-lg">
                 <p>
-                  La mayoría de las empresas tienen datos. El problema es que esos
-                  datos están dispersos: en planillas de Excel, en el ERP, en el
-                  CRM, en archivos de cada área. Nadie los unifica, nadie los
-                  analiza con frecuencia, y las decisiones se toman por intuición.
+                  La mayoría de las organizaciones tienen datos. El problema es que están dispersos: en planillas, en el ERP, en el CRM, en archivos de cada área. Nadie los unifica, nadie los analiza con frecuencia, y las decisiones se toman por intuición.
+                </p>
+                <p className="text-foreground font-medium">
+                  Nosotros resolvemos exactamente eso.
                 </p>
                 <p>
-                  <strong className="text-foreground">
-                    Plano resuelve exactamente eso.
-                  </strong>
-                </p>
-                <p>
-                  Somos un servicio de inteligencia de negocios que unifica los
-                  datos de las principales áreas de una empresa y los convierte en
-                  reportes visuales, claros y periódicos. Sin necesidad de
-                  contratar analistas propios, sin meses de implementación, sin
-                  herramientas costosas.
-                </p>
-                <p>
-                  El resultado: el equipo directivo recibe cada semana o cada mes
-                  un reporte listo para leer, con los indicadores clave de cada
-                  área, las alertas tempranas y los insights para actuar antes de
-                  que los problemas escalen.
+                  Conectamos las fuentes, limpiamos la información y la convertimos en indicadores accionables. El equipo directivo recibe cada semana o cada mes un reporte listo para leer, con alertas tempranas e insights para actuar antes de que los problemas escalen.
                 </p>
               </div>
             </div>
@@ -616,15 +592,15 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in" delay={200}>
             <div className="max-w-4xl mx-auto mt-16">
               <h3 className="text-2xl font-bold mb-8">
-                Cómo funciona en la práctica
+                Proceso de implementación
               </h3>
               <div className="grid gap-4">
                 {[
-                  "Nos conectamos con las fuentes de datos del cliente (archivos, sistemas, APIs)",
-                  "Unificamos y limpiamos la información",
-                  "Construimos el dashboard y los templates de reporte",
-                  "Entregamos el primer reporte completo en un plazo de 2 semanas",
-                  "A partir de ahí, los reportes se entregan automáticamente según la frecuencia pactada",
+                  "Conexión con fuentes de datos (archivos, sistemas, APIs)",
+                  "Limpieza y unificación de la información",
+                  "Diseño del dashboard y templates de reporte",
+                  "Entrega del primer informe completo en 2 semanas",
+                  "Envío automático según la frecuencia acordada",
                 ].map((step, i) => (
                   <div
                     key={i}
@@ -644,9 +620,9 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in" delay={300}>
             <div className="max-w-4xl mx-auto mt-16">
               <h3 className="text-2xl font-bold mb-8">
-                Por qué usar Plano y{" "}
+                Servicio externo vs.{" "}
                 <span className="text-gradient-orange">
-                  no contratar un analista
+                  analista interno
                 </span>
               </h3>
               <div className="overflow-x-auto">
@@ -667,7 +643,7 @@ const Reportes = () => {
                   <tbody>
                     {comparisonRows.map((row) => (
                       <tr key={row.label} className="border-b border-border/50">
-                        <td className="py-4 pr-4 text-sm font-medium">
+                        <td className="py-4 pr-4 text-sm font-medium text-foreground">
                           {row.label}
                         </td>
                         <td className="py-4 px-4 text-sm text-muted-foreground">
@@ -692,28 +668,26 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center mb-4">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                02
+                02 — Cobertura
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Las 13 áreas del negocio y{" "}
-                <span className="text-gradient-purple">sus indicadores</span>
+                13 áreas.{" "}
+                <span className="text-gradient-purple">+65 indicadores.</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-4">
-                Cada área tiene dos tipos de indicadores:
+                Cada módulo combina dos tipos de métricas:
               </p>
               <div className="flex flex-wrap justify-center gap-6 mb-12">
                 <div className="flex items-center gap-2 text-sm">
                   <TrendingDown className="h-4 w-4 text-secondary" />
                   <span className="text-muted-foreground">
-                    <strong className="text-foreground">Rezagados:</strong> lo que
-                    YA pasó
+                    <strong className="text-foreground">Rezagados:</strong> lo que ya pasó
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <TrendingUp className="h-4 w-4 text-primary" />
                   <span className="text-muted-foreground">
-                    <strong className="text-foreground">Anticipados:</strong> lo
-                    que ESTÁ POR PASAR
+                    <strong className="text-foreground">Anticipados:</strong> lo que está por pasar
                   </span>
                 </div>
               </div>
@@ -734,19 +708,16 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center mb-12">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                03
+                03 — Visión cruzada
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Correlaciones entre áreas —{" "}
+                Correlaciones que{" "}
                 <span className="text-gradient-orange">
-                  la ventaja del sistema unificado
+                  solo un sistema unificado detecta
                 </span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Al medir todas las áreas en un sistema unificado, detectamos
-                relaciones entre indicadores que de otra forma nunca se verían.
-                Si se mejora el indicador A, se sabe que impactará en el
-                indicador B.
+                Al medir todo en un mismo lugar, aparecen relaciones entre métricas que de otra forma pasarían desapercibidas.
               </p>
             </div>
           </ScrollAnimationWrapper>
@@ -780,15 +751,14 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center mb-12">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                04
+                04 — Cadencia
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Frecuencias de{" "}
-                <span className="text-gradient-purple">reporte</span>
+                La frecuencia justa para{" "}
+                <span className="text-gradient-purple">cada decisión</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                No todos los datos necesitan verse todos los días, pero tampoco
-                conviene esperar un trimestre para detectar un problema.
+                Ni demasiado frecuente ni demasiado tarde. Cada área tiene el ritmo de seguimiento que necesita.
               </p>
             </div>
           </ScrollAnimationWrapper>
@@ -803,7 +773,7 @@ const Reportes = () => {
                     </span>
                   </div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium">{f.areas}</p>
+                    <p className="text-sm font-medium text-foreground">{f.areas}</p>
                     <p className="text-sm text-muted-foreground">{f.purpose}</p>
                   </div>
                 </div>
@@ -813,22 +783,20 @@ const Reportes = () => {
         </div>
       </section>
 
-      {/* ====== SECTION 5 — PLANES Y PRECIOS ====== */}
+      {/* ====== SECTION 5 — PLANES ====== */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-6">
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center mb-12">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                05
+                05 — Inversión
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Planes y{" "}
-                <span className="text-gradient-orange">precios</span>
+                Tres planes, una{" "}
+                <span className="text-gradient-orange">misma calidad</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                3 planes diseñados para empresas en diferentes etapas de madurez en
-                datos. Todos incluyen setup inicial, dashboard interactivo y soporte
-                continuo.
+                Diseñados para organizaciones en diferentes etapas de madurez analítica. Todos incluyen setup inicial, dashboard interactivo y soporte continuo.
               </p>
             </div>
           </ScrollAnimationWrapper>
@@ -851,15 +819,14 @@ const Reportes = () => {
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
                   <p className="text-sm text-muted-foreground mb-6">
-                    Ideal para empresas que quieren empezar a tomar decisiones
-                    basadas en datos sin una gran inversión inicial.
+                    Para quienes quieren empezar a tomar decisiones basadas en datos sin una gran inversión inicial.
                   </p>
                   <ul className="space-y-3 flex-1">
                     {[
-                      "3 áreas de negocio a elección",
+                      "3 módulos de negocio a elección",
                       "~15 KPIs (rezagados + anticipados)",
                       "Dashboard interactivo HTML",
-                      "Reporte mensual en PDF",
+                      "Informe mensual en PDF",
                       "Setup en 2 semanas",
                       "Soporte por email",
                     ].map((f) => (
@@ -874,7 +841,7 @@ const Reportes = () => {
                     variant="outline"
                     className="w-full mt-8"
                   >
-                    Empezar
+                    Comenzar
                   </Button>
                 </CardContent>
               </Card>
@@ -884,7 +851,7 @@ const Reportes = () => {
             <ScrollAnimationWrapper animationType="fade-in" delay={100}>
               <Card className="border-2 border-primary bg-background h-full flex flex-col relative">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-4 py-1 rounded-full">
-                  Popular
+                  Recomendado
                 </div>
                 <CardHeader className="text-center pb-4 pt-8">
                   <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-2">
@@ -900,17 +867,16 @@ const Reportes = () => {
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
                   <p className="text-sm text-muted-foreground mb-6">
-                    Para empresas en crecimiento que necesitan visibilidad sobre las
-                    áreas clave del negocio con mayor frecuencia.
+                    Para operaciones en crecimiento que necesitan visibilidad frecuente sobre las áreas clave.
                   </p>
                   <ul className="space-y-3 flex-1">
                     {[
                       "Todo lo del plan Starter",
-                      "6 áreas de negocio incluidas",
-                      "~35 KPIs con correlaciones entre áreas",
-                      "Reportes semanales + mensuales",
-                      "Alertas automáticas por desvío de KPI",
-                      "Reunión mensual de revisión de resultados",
+                      "6 módulos de negocio incluidos",
+                      "~35 KPIs con correlaciones cruzadas",
+                      "Informes semanales + mensuales",
+                      "Alertas automáticas por desvío",
+                      "Reunión mensual de revisión",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
                         <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -922,7 +888,7 @@ const Reportes = () => {
                     onClick={handlePilotClick}
                     className="w-full mt-8 bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
-                    Empezar
+                    Comenzar
                   </Button>
                 </CardContent>
               </Card>
@@ -940,22 +906,21 @@ const Reportes = () => {
                     <span className="text-muted-foreground ml-1">USD / mes</span>
                   </div>
                   <p className="text-sm text-secondary font-medium">
-                    13 áreas + customización
+                    13 áreas + personalización
                   </p>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
                   <p className="text-sm text-muted-foreground mb-6">
-                    Cobertura total del negocio. Para empresas que quieren
-                    inteligencia operativa completa y un socio estratégico en datos.
+                    Cobertura completa. Para quienes buscan inteligencia operativa total y un socio estratégico en analítica.
                   </p>
                   <ul className="space-y-3 flex-1">
                     {[
-                      "Las 13 áreas del negocio cubiertas",
+                      "Los 13 módulos cubiertos",
                       "+65 KPIs con correlaciones cruzadas",
-                      "Todas las frecuencias de reporte",
-                      "Integración con sistemas existentes (ERP/CRM)",
+                      "Todas las frecuencias de entrega",
+                      "Integración con sistemas existentes (ERP / CRM)",
                       "Analista dedicado y reuniones semanales",
-                      "Reportes custom por solicitud del cliente",
+                      "Informes custom a demanda",
                     ].map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
                         <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -968,7 +933,7 @@ const Reportes = () => {
                     variant="outline"
                     className="w-full mt-8"
                   >
-                    Empezar
+                    Comenzar
                   </Button>
                 </CardContent>
               </Card>
@@ -977,10 +942,8 @@ const Reportes = () => {
 
           <ScrollAnimationWrapper animationType="fade-in" delay={300}>
             <p className="text-center text-sm text-muted-foreground mt-8 max-w-2xl mx-auto">
-              <strong className="text-foreground">Nota sobre el setup inicial:</strong>{" "}
-              Se cobra un fee único de $500 a $2.000 USD al inicio del contrato. Incluye
-              mapeo de fuentes de datos, configuración del dashboard, y entrega del
-              primer reporte completo.
+              <strong className="text-foreground">Setup inicial:</strong>{" "}
+              Fee único de $500 a $2.000 USD. Incluye mapeo de fuentes, configuración del dashboard y entrega del primer informe.
             </p>
           </ScrollAnimationWrapper>
         </div>
@@ -992,16 +955,15 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="max-w-3xl mx-auto text-center">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                06
+                06 — Primeros pasos
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Cómo empezar —{" "}
-                <span className="text-gradient-purple">Programa Piloto</span>
+                Programa{" "}
+                <span className="text-gradient-purple">Piloto</span>
               </h2>
               <p className="text-lg text-muted-foreground mb-10">
-                Estamos seleccionando{" "}
-                <strong className="text-foreground">5 empresas piloto</strong> para
-                trabajar con datos reales.
+                Seleccionamos{" "}
+                <strong className="text-foreground">5 organizaciones</strong> para trabajar con datos reales y co-crear el servicio.
               </p>
             </div>
           </ScrollAnimationWrapper>
@@ -1010,10 +972,10 @@ const Reportes = () => {
             <div className="max-w-3xl mx-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                 {[
-                  "Primer mes al 50% del precio del plan elegido",
+                  "Primer mes al 50% del plan elegido",
                   "Acceso prioritario a nuevas funcionalidades",
-                  "Participación en la co-creación del roadmap del servicio",
-                  "Caso de éxito co-branding para visibilidad mutua",
+                  "Participación en la co-creación del roadmap",
+                  "Caso de éxito co-branding",
                 ].map((benefit) => (
                   <div
                     key={benefit}
@@ -1026,11 +988,9 @@ const Reportes = () => {
               </div>
 
               <div className="bg-card border border-border rounded-xl p-6 mb-10">
-                <h4 className="font-semibold mb-3">Requisitos mínimos</h4>
+                <h4 className="font-semibold text-foreground mb-3">Requisitos mínimos</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Empresa con operaciones activas, datos disponibles en al menos 1
-                  área, y disposición para dedicar 2 horas al proceso de onboarding
-                  inicial.
+                  Operaciones activas, datos disponibles en al menos 1 área, y disposición para dedicar 2 horas al onboarding inicial.
                 </p>
               </div>
 
@@ -1058,14 +1018,14 @@ const Reportes = () => {
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center mb-12">
               <p className="text-sm font-mono text-secondary mb-2 uppercase tracking-wider">
-                07
+                07 — Referencia
               </p>
               <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                Glosario de{" "}
-                <span className="text-gradient-orange">términos clave</span>
+                Glosario{" "}
+                <span className="text-gradient-orange">ejecutivo</span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Referencia rápida de los conceptos más usados en este documento.
+                Definiciones breves de los términos más usados en este documento.
               </p>
             </div>
           </ScrollAnimationWrapper>
@@ -1091,8 +1051,8 @@ const Reportes = () => {
       <section className="py-16 bg-background border-t border-border">
         <div className="container mx-auto px-6 text-center">
           <ScrollAnimationWrapper animationType="fade-in">
-            <p className="text-lg text-muted-foreground mb-2">
-              "Reportes inteligentes para decisiones correctas"
+            <p className="text-lg font-medium text-foreground mb-2">
+              Datos claros. Decisiones correctas.
             </p>
             <p className="text-sm text-muted-foreground mb-1">
               igna.quantin@gmail.com

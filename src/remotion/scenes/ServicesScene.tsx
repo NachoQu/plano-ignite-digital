@@ -151,7 +151,7 @@ export const ServicesScene: React.FC = () => {
       </div>
 
       {/* Service cards */}
-      <Sequence from={10} layout="none" premountFor={fps}>
+      <Sequence from={10} layout="none">
         <div
           style={{
             display: "flex",
