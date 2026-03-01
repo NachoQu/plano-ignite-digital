@@ -44,6 +44,7 @@ const Navbar = () => {
     { label: t('navbar.methodology'), href: "metodologia", type: 'scroll' },
     { label: t('navbar.team'), href: "equipo", type: 'scroll' },
     { label: t('navbar.blog'), href: "/blog", type: 'route' },
+    { label: "Reportes", href: "/reportes", type: 'route' },
   ];
 
   return (
