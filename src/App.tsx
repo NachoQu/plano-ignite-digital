@@ -10,6 +10,8 @@ import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
 import TikTok from "./pages/TikTok";
 import Reportes from "./pages/Reportes";
+import Login from "./pages/Login";
+import Facturacion from "./pages/Facturacion";
 import '@/i18n/config';
 
 const queryClient = new QueryClient();
