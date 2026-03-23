@@ -29,6 +29,8 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/tiktok" element={<TikTok />} />
             <Route path="/reportes" element={<Reportes />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/facturacion" element={<Facturacion />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
