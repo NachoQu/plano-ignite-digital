@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// @ts-ignore esm.sh npm import
+import Afip from "https://esm.sh/@afipsdk/afip.js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,17 +9,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// ARCA Testing (homologación) base URL
-const ARCA_BASE_URL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
-const ARCA_WSDL_URL = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL";
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Verify auth
+    // Verificar autenticación Supabase
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "No autorizado" }), {
@@ -26,11 +24,11 @@ serve(async (req) => {
       });
     }
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
 
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
@@ -40,13 +38,27 @@ serve(async (req) => {
       });
     }
 
-    const ARCA_TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN");
-    if (!ARCA_TOKEN) {
-      return new Response(JSON.stringify({ error: "ARCA_ACCESS_TOKEN no configurado" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    const accessToken = Deno.env.get("ARCA_ACCESS_TOKEN");
+    if (!accessToken) {
+      return new Response(
+        JSON.stringify({ error: "ARCA_ACCESS_TOKEN no configurado" }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
+
+    // CUIT configurable via env var, por defecto el CUIT del contribuyente
+    const cuit = parseInt(Deno.env.get("AFIP_CUIT") ?? "20357947783");
+
+    // Inicializar SDK — production: false = homologación (testing)
+    // deno-lint-ignore no-explicit-any
+    const afip: any = new Afip({
+      CUIT: cuit,
+      access_token: accessToken,
+      production: false,
+    });
 
     const body = await req.json();
     const { action, ...params } = body;
@@ -55,19 +67,22 @@ serve(async (req) => {
 
     switch (action) {
       case "emitir":
-        result = await emitirComprobante(ARCA_TOKEN, params);
+        result = await emitirComprobante(afip, params);
         break;
       case "consultar":
-        result = await consultarComprobantes(ARCA_TOKEN, params);
+        result = await consultarComprobantes(afip, params);
         break;
       case "ultimo":
-        result = await ultimoComprobante(ARCA_TOKEN, params);
+        result = await ultimoComprobante(afip, params);
         break;
       default:
-        return new Response(JSON.stringify({ error: `Acción desconocida: ${action}` }), {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: `Acción desconocida: ${action}` }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
     }
 
     return new Response(JSON.stringify(result), {
@@ -83,182 +98,85 @@ serve(async (req) => {
   }
 });
 
-function buildSoapEnvelope(method: string, innerXml: string, token: string): string {
-  return `<?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-               xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
-  <soap:Body>
-    <${method} xmlns="http://ar.gov.afip.dif.FEV1/">
-      <Auth>
-        <Token>${token}</Token>
-        <Sign></Sign>
-        <Cuit></Cuit>
-      </Auth>
-      ${innerXml}
-    </${method}>
-  </soap:Body>
-</soap:Envelope>`;
-}
-
-async function callSoap(soapBody: string): Promise<string> {
-  const response = await fetch(ARCA_BASE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/xml; charset=utf-8",
-      SOAPAction: "",
-    },
-    body: soapBody,
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`ARCA API error [${response.status}]: ${text.substring(0, 500)}`);
-  }
-
-  return response.text();
-}
-
-function extractValue(xml: string, tag: string): string {
-  const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, "s");
-  const match = xml.match(regex);
-  return match ? match[1] : "";
-}
-
-async function emitirComprobante(token: string, params: Record<string, unknown>) {
-  const {
-    puntoVenta,
-    tipoComprobante,
-    concepto,
-    docTipo,
-    docNro,
-    importeTotal,
-    importeNeto,
-    importeIva,
-  } = params;
-
-  // First get last invoice number
-  const ultimoSoap = buildSoapEnvelope(
-    "FECompUltimoAutorizado",
-    `<PtoVta>${puntoVenta}</PtoVta><CbteTipo>${tipoComprobante}</CbteTipo>`,
-    token
-  );
-  const ultimoResponse = await callSoap(ultimoSoap);
-  const lastNumber = parseInt(extractValue(ultimoResponse, "CbteNro") || "0");
-  const nextNumber = lastNumber + 1;
-
+// deno-lint-ignore no-explicit-any
+async function emitirComprobante(afip: any, params: Record<string, unknown>) {
   const today = new Date().toISOString().split("T")[0].replace(/-/g, "");
 
-  const detailXml = `
-    <FeCAEReq>
-      <FeCabReq>
-        <CantReg>1</CantReg>
-        <PtoVta>${puntoVenta}</PtoVta>
-        <CbteTipo>${tipoComprobante}</CbteTipo>
-      </FeCabReq>
-      <FeDetReq>
-        <FECAEDetRequest>
-          <Concepto>${concepto}</Concepto>
-          <DocTipo>${docTipo}</DocTipo>
-          <DocNro>${docNro}</DocNro>
-          <CbteDesde>${nextNumber}</CbteDesde>
-          <CbteHasta>${nextNumber}</CbteHasta>
-          <CbteFch>${today}</CbteFch>
-          <ImpTotal>${importeTotal}</ImpTotal>
-          <ImpTotConc>0</ImpTotConc>
-          <ImpNeto>${importeNeto}</ImpNeto>
-          <ImpOpEx>0</ImpOpEx>
-          <ImpTrib>0</ImpTrib>
-          <ImpIVA>${importeIva}</ImpIVA>
-          <MonId>PES</MonId>
-          <MonCotiz>1</MonCotiz>
-          <Iva>
-            <AlicIva>
-              <Id>5</Id>
-              <BaseImp>${importeNeto}</BaseImp>
-              <Importe>${importeIva}</Importe>
-            </AlicIva>
-          </Iva>
-        </FECAEDetRequest>
-      </FeDetReq>
-    </FeCAEReq>`;
-
-  const soapBody = buildSoapEnvelope("FECAESolicitar", detailXml, token);
-  const response = await callSoap(soapBody);
-
-  const cae = extractValue(response, "CAE");
-  const caeFchVto = extractValue(response, "CAEFchVto");
-  const resultado = extractValue(response, "Resultado");
-
-  if (resultado === "R") {
-    const obs = extractValue(response, "Msg");
-    throw new Error(`Comprobante rechazado: ${obs || "Sin detalle"}`);
-  }
+  const res = await afip.ElectronicBilling.createNextVoucher({
+    CantReg: 1,
+    PtoVta: params.puntoVenta,
+    CbteTipo: params.tipoComprobante,
+    Concepto: params.concepto,
+    DocTipo: params.docTipo,
+    DocNro: params.docNro,
+    CbteFch: today,
+    ImpTotal: params.importeTotal,
+    ImpTotConc: 0,
+    ImpNeto: params.importeNeto,
+    ImpOpEx: 0,
+    ImpTrib: 0,
+    ImpIVA: params.importeIva,
+    MonId: "PES",
+    MonCotiz: 1,
+    Iva: [
+      {
+        Id: 5, // Alícuota IVA 21%
+        BaseImp: params.importeNeto,
+        Importe: params.importeIva,
+      },
+    ],
+  });
 
   return {
-    cae,
-    caeFchVto,
-    numero: nextNumber,
-    resultado,
+    cae: res.CAE,
+    caeFchVto: res.CAEFchVto,
+    numero: res.voucher_number,
+    resultado: "A",
   };
 }
 
-async function consultarComprobantes(token: string, params: Record<string, unknown>) {
+// deno-lint-ignore no-explicit-any
+async function consultarComprobantes(afip: any, params: Record<string, unknown>) {
   const { puntoVenta, tipoComprobante } = params;
 
-  // Get the last number first
-  const ultimoSoap = buildSoapEnvelope(
-    "FECompUltimoAutorizado",
-    `<PtoVta>${puntoVenta}</PtoVta><CbteTipo>${tipoComprobante}</CbteTipo>`,
-    token
+  const lastNumber: number = await afip.ElectronicBilling.getLastVoucher(
+    puntoVenta as number,
+    tipoComprobante as number,
   );
-  const ultimoResponse = await callSoap(ultimoSoap);
-  const lastNumber = parseInt(extractValue(ultimoResponse, "CbteNro") || "0");
 
-  // Fetch last 10 invoices
   const comprobantes = [];
   const start = Math.max(1, lastNumber - 9);
 
   for (let i = lastNumber; i >= start; i--) {
     try {
-      const consultaSoap = buildSoapEnvelope(
-        "FECompConsultar",
-        `<FeCompConsReq>
-          <CbteTipo>${tipoComprobante}</CbteTipo>
-          <CbteNro>${i}</CbteNro>
-          <PtoVta>${puntoVenta}</PtoVta>
-        </FeCompConsReq>`,
-        token
+      const info = await afip.ElectronicBilling.getVoucherInfo(
+        i,
+        puntoVenta as number,
+        tipoComprobante as number,
       );
-      const response = await callSoap(consultaSoap);
-
       comprobantes.push({
         tipo: tipoComprobante,
         puntoVenta,
         numero: i,
-        fecha: extractValue(response, "CbteFch"),
-        importeTotal: parseFloat(extractValue(response, "ImpTotal") || "0"),
-        cae: extractValue(response, "CodAutorizacion"),
-        caeFchVto: extractValue(response, "FchVto"),
+        fecha: info.CbteFch,
+        importeTotal: info.ImpTotal,
+        cae: info.CodAutorizacion,
+        caeFchVto: info.FchVto,
       });
     } catch {
-      // Skip if individual query fails
+      // Omitir si el comprobante no existe
     }
   }
 
   return { comprobantes };
 }
 
-async function ultimoComprobante(token: string, params: Record<string, unknown>) {
-  const { puntoVenta, tipoComprobante } = params;
-
-  const soapBody = buildSoapEnvelope(
-    "FECompUltimoAutorizado",
-    `<PtoVta>${puntoVenta}</PtoVta><CbteTipo>${tipoComprobante}</CbteTipo>`,
-    token
+// deno-lint-ignore no-explicit-any
+async function ultimoComprobante(afip: any, params: Record<string, unknown>) {
+  const numero: number = await afip.ElectronicBilling.getLastVoucher(
+    params.puntoVenta as number,
+    params.tipoComprobante as number,
   );
-  const response = await callSoap(soapBody);
-  const numero = parseInt(extractValue(response, "CbteNro") || "0");
 
   return { numero };
 }
