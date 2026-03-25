@@ -48,7 +48,9 @@ const Facturacion = () => {
     importeIva: "",
   });
   const [comprobantes, setComprobantes] = useState<Comprobante[]>([]);
+  const [comprobantesSearched, setComprobantesSearched] = useState(false);
   const [ultimoComprobante, setUltimoComprobante] = useState<{ numero: number; tipo: string; puntoVenta: number } | null>(null);
+  const [ultimoSearched, setUltimoSearched] = useState(false);
   const [consultaPV, setConsultaPV] = useState("1");
   const [consultaTipo, setConsultaTipo] = useState("1");
   const [error, setError] = useState("");
@@ -124,9 +126,11 @@ const Facturacion = () => {
         tipoComprobante: parseInt(consultaTipo),
       });
       setComprobantes(result.comprobantes || []);
+      setComprobantesSearched(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
       setError(msg);
+      setComprobantesSearched(true);
     } finally {
       setLoading(false);
     }
@@ -141,13 +145,15 @@ const Facturacion = () => {
         tipoComprobante: parseInt(consultaTipo),
       });
       setUltimoComprobante({
-        numero: result.numero,
+        numero: result.numero ?? 0,
         tipo: tiposComprobante[consultaTipo] || consultaTipo,
         puntoVenta: parseInt(consultaPV),
       });
+      setUltimoSearched(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
       setError(msg);
+      setUltimoSearched(true);
     } finally {
       setLoading(false);
     }
@@ -363,6 +369,12 @@ const Facturacion = () => {
                   Buscar
                 </Button>
 
+                {comprobantesSearched && comprobantes.length === 0 && (
+                  <div className="py-10 text-center text-muted-foreground text-sm">
+                    Sin comprobantes emitidos para este punto de venta y tipo.
+                  </div>
+                )}
+
                 {comprobantes.length > 0 && (
                   <div className="rounded-lg border border-border overflow-x-auto">
                     <Table>
@@ -430,6 +442,12 @@ const Facturacion = () => {
                   Consultar
                 </Button>
 
+                {ultimoSearched && !ultimoComprobante && (
+                  <div className="py-10 text-center text-muted-foreground text-sm">
+                    No se pudo obtener el último comprobante.
+                  </div>
+                )}
+
                 {ultimoComprobante && (
                   <div className="p-6 rounded-lg border border-border bg-card">
                     <div className="grid grid-cols-3 gap-4 text-center">
@@ -443,7 +461,11 @@ const Facturacion = () => {
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Último número</p>
-                        <p className="text-lg font-semibold text-primary">{ultimoComprobante.numero}</p>
+                        {ultimoComprobante.numero === 0 ? (
+                          <p className="text-lg font-semibold text-muted-foreground">Sin emitidos</p>
+                        ) : (
+                          <p className="text-lg font-semibold text-primary">{String(ultimoComprobante.numero).padStart(8, "0")}</p>
+                        )}
                       </div>
                     </div>
                   </div>
