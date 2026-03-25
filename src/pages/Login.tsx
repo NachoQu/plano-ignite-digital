@@ -13,25 +13,37 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (authError) {
-      setError("Credenciales incorrectas");
-      setLoading(false);
-      return;
+    if (isSignUp) {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+        setLoading(false);
+        return;
+      }
+      navigate("/facturacion");
+    } else {
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (authError) {
+        setError("Credenciales incorrectas");
+        setLoading(false);
+        return;
+      }
+      navigate("/facturacion");
     }
-
-    navigate("/facturacion");
   };
 
   return (
@@ -43,11 +55,11 @@ const Login = () => {
           </div>
           <CardTitle className="text-xl text-foreground flex items-center justify-center gap-2">
             <Lock className="h-4 w-4 text-primary" />
-            Acceso restringido
+            {isSignUp ? "Crear cuenta" : "Acceso restringido"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">Email</Label>
               <Input
@@ -67,6 +79,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
                 placeholder="••••••••"
               />
             </div>
@@ -74,9 +87,16 @@ const Login = () => {
               <p className="text-sm text-destructive">{error}</p>
             )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Ingresando..." : "Ingresar"}
+              {loading ? (isSignUp ? "Creando cuenta..." : "Ingresando...") : (isSignUp ? "Crear cuenta" : "Ingresar")}
             </Button>
           </form>
+          <button
+            type="button"
+            onClick={() => { setIsSignUp(!isSignUp); setError(""); }}
+            className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {isSignUp ? "¿Ya tenés cuenta? Ingresá" : "¿No tenés cuenta? Registrate"}
+          </button>
         </CardContent>
       </Card>
     </div>
