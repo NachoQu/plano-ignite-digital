@@ -33,46 +33,49 @@ interface Comprobante {
   caeFchVto: string;
 }
 
+interface UltimoItem {
+  tipoKey: string;
+  tipoNombre: string;
+  numero: number;
+}
+
+const TIPOS_COMPROBANTE: Record<string, string> = {
+  "1": "Factura A",
+  "6": "Factura B",
+  "11": "Factura C",
+  "2": "Nota de Débito A",
+  "3": "Nota de Crédito A",
+  "7": "Nota de Débito B",
+  "8": "Nota de Crédito B",
+  "12": "Nota de Débito C",
+  "13": "Nota de Crédito C",
+};
+
+// Factura C (monotributo) no lleva IVA
+const TIPOS_SIN_IVA = new Set(["11", "12", "13"]);
+
 const Facturacion = () => {
   const { user, loading: authLoading, signOut } = useAuth("/login");
   const [activeTab, setActiveTab] = useState("emitir");
   const [loading, setLoading] = useState(false);
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
     puntoVenta: "1",
-    tipoComprobante: "1",
+    tipoComprobante: "11",
     concepto: "2",
     docTipo: "80",
     docNro: "",
     importeTotal: "",
     importeNeto: "",
-    importeIva: "",
+    importeIva: "0",
   });
   const [comprobantes, setComprobantes] = useState<Comprobante[]>([]);
   const [comprobantesSearched, setComprobantesSearched] = useState(false);
-  const [ultimoComprobante, setUltimoComprobante] = useState<{ numero: number; tipo: string; puntoVenta: number } | null>(null);
+  const [ultimosTodos, setUltimosTodos] = useState<UltimoItem[]>([]);
+  const [ultimoSingle, setUltimoSingle] = useState<{ numero: number; tipo: string; puntoVenta: number } | null>(null);
   const [ultimoSearched, setUltimoSearched] = useState(false);
   const [consultaPV, setConsultaPV] = useState("1");
-  const [consultaTipo, setConsultaTipo] = useState("1");
+  const [consultaTipo, setConsultaTipo] = useState("0");
   const [error, setError] = useState("");
-
-  const tiposComprobante: Record<string, string> = {
-    "1": "Factura A",
-    "6": "Factura B",
-    "11": "Factura C",
-    "2": "Nota de Débito A",
-    "3": "Nota de Crédito A",
-    "7": "Nota de Débito B",
-    "8": "Nota de Crédito B",
-    "12": "Nota de Débito C",
-    "13": "Nota de Crédito C",
-  };
-
-  const tiposDocumento: Record<string, string> = {
-    "80": "CUIT",
-    "86": "CUIL",
-    "96": "DNI",
-    "99": "Consumidor Final",
-  };
 
   const callArcaFunction = async (action: string, body: Record<string, unknown>) => {
     const { data, error } = await supabase.functions.invoke("arca-facturacion", {
@@ -81,6 +84,34 @@ const Facturacion = () => {
     if (error) throw new Error(error.message);
     if (data?.error) throw new Error(data.error);
     return data;
+  };
+
+  // Recalcula IVA y total cuando cambia el neto o el tipo de comprobante
+  const handleNetoChange = (neto: string, tipoComprobante: string) => {
+    const netoNum = parseFloat(neto) || 0;
+    const sinIva = TIPOS_SIN_IVA.has(tipoComprobante);
+    const iva = sinIva ? 0 : Math.round(netoNum * 21) / 100;
+    const total = netoNum + iva;
+    setInvoiceData((prev) => ({
+      ...prev,
+      importeNeto: neto,
+      importeIva: sinIva ? "0" : iva > 0 ? iva.toFixed(2) : prev.importeIva,
+      importeTotal: total > 0 ? total.toFixed(2) : prev.importeTotal,
+    }));
+  };
+
+  // Cuando cambia el tipo, recalcula IVA con el neto actual
+  const handleTipoChange = (tipo: string) => {
+    const netoNum = parseFloat(invoiceData.importeNeto) || 0;
+    const sinIva = TIPOS_SIN_IVA.has(tipo);
+    const iva = sinIva ? 0 : Math.round(netoNum * 21) / 100;
+    const total = netoNum + iva;
+    setInvoiceData((prev) => ({
+      ...prev,
+      tipoComprobante: tipo,
+      importeIva: sinIva ? "0" : netoNum > 0 ? iva.toFixed(2) : prev.importeIva,
+      importeTotal: netoNum > 0 ? total.toFixed(2) : prev.importeTotal,
+    }));
   };
 
   const handleEmitir = async (e: React.FormEvent) => {
@@ -101,13 +132,13 @@ const Facturacion = () => {
       });
 
       toast.success(`Comprobante emitido — CAE: ${result.cae}`);
-      setInvoiceData({
-        ...invoiceData,
+      setInvoiceData((prev) => ({
+        ...prev,
         docNro: "",
         importeTotal: "",
         importeNeto: "",
-        importeIva: "",
-      });
+        importeIva: TIPOS_SIN_IVA.has(prev.tipoComprobante) ? "0" : "",
+      }));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
       setError(msg);
@@ -120,12 +151,33 @@ const Facturacion = () => {
   const handleConsultarComprobantes = async () => {
     setLoading(true);
     setError("");
+    setComprobantes([]);
+    setComprobantesSearched(false);
+
     try {
-      const result = await callArcaFunction("consultar", {
-        puntoVenta: parseInt(consultaPV),
-        tipoComprobante: parseInt(consultaTipo),
-      });
-      setComprobantes(result.comprobantes || []);
+      const pv = parseInt(consultaPV);
+
+      if (consultaTipo === "0") {
+        // Consultar todos los tipos en paralelo
+        const resultados = await Promise.allSettled(
+          Object.keys(TIPOS_COMPROBANTE).map((tipo) =>
+            callArcaFunction("consultar", { puntoVenta: pv, tipoComprobante: parseInt(tipo) })
+          )
+        );
+        const todos: Comprobante[] = resultados.flatMap((r) =>
+          r.status === "fulfilled" ? (r.value.comprobantes || []) : []
+        );
+        // Ordenar por número descendente
+        todos.sort((a, b) => b.numero - a.numero);
+        setComprobantes(todos);
+      } else {
+        const result = await callArcaFunction("consultar", {
+          puntoVenta: pv,
+          tipoComprobante: parseInt(consultaTipo),
+        });
+        setComprobantes(result.comprobantes || []);
+      }
+
       setComprobantesSearched(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
@@ -139,16 +191,39 @@ const Facturacion = () => {
   const handleUltimoComprobante = async () => {
     setLoading(true);
     setError("");
+    setUltimoSingle(null);
+    setUltimosTodos([]);
+    setUltimoSearched(false);
+
     try {
-      const result = await callArcaFunction("ultimo", {
-        puntoVenta: parseInt(consultaPV),
-        tipoComprobante: parseInt(consultaTipo),
-      });
-      setUltimoComprobante({
-        numero: result.numero ?? 0,
-        tipo: tiposComprobante[consultaTipo] || consultaTipo,
-        puntoVenta: parseInt(consultaPV),
-      });
+      const pv = parseInt(consultaPV);
+
+      if (consultaTipo === "0") {
+        // Consultar todos los tipos en paralelo
+        const entries = Object.entries(TIPOS_COMPROBANTE);
+        const resultados = await Promise.allSettled(
+          entries.map(([tipo]) =>
+            callArcaFunction("ultimo", { puntoVenta: pv, tipoComprobante: parseInt(tipo) })
+          )
+        );
+        const items: UltimoItem[] = resultados.map((r, i) => ({
+          tipoKey: entries[i][0],
+          tipoNombre: entries[i][1],
+          numero: r.status === "fulfilled" ? (r.value.numero ?? 0) : 0,
+        }));
+        setUltimosTodos(items);
+      } else {
+        const result = await callArcaFunction("ultimo", {
+          puntoVenta: pv,
+          tipoComprobante: parseInt(consultaTipo),
+        });
+        setUltimoSingle({
+          numero: result.numero ?? 0,
+          tipo: TIPOS_COMPROBANTE[consultaTipo] || consultaTipo,
+          puntoVenta: pv,
+        });
+      }
+
       setUltimoSearched(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
@@ -168,6 +243,8 @@ const Facturacion = () => {
   }
 
   if (!user) return null;
+
+  const sinIvaActual = TIPOS_SIN_IVA.has(invoiceData.tipoComprobante);
 
   return (
     <div className="min-h-screen bg-background">
@@ -236,11 +313,11 @@ const Facturacion = () => {
                       <Label className="text-foreground">Tipo de comprobante</Label>
                       <Select
                         value={invoiceData.tipoComprobante}
-                        onValueChange={(v) => setInvoiceData({ ...invoiceData, tipoComprobante: v })}
+                        onValueChange={handleTipoChange}
                       >
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          {Object.entries(tiposComprobante).map(([k, v]) => (
+                          {Object.entries(TIPOS_COMPROBANTE).map(([k, v]) => (
                             <SelectItem key={k} value={k}>{v}</SelectItem>
                           ))}
                         </SelectContent>
@@ -257,9 +334,10 @@ const Facturacion = () => {
                       >
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          {Object.entries(tiposDocumento).map(([k, v]) => (
-                            <SelectItem key={k} value={k}>{v}</SelectItem>
-                          ))}
+                          <SelectItem value="80">CUIT</SelectItem>
+                          <SelectItem value="86">CUIL</SelectItem>
+                          <SelectItem value="96">DNI</SelectItem>
+                          <SelectItem value="99">Consumidor Final</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -296,19 +374,30 @@ const Facturacion = () => {
                         type="number"
                         step="0.01"
                         value={invoiceData.importeNeto}
-                        onChange={(e) => setInvoiceData({ ...invoiceData, importeNeto: e.target.value })}
+                        onChange={(e) => handleNetoChange(e.target.value, invoiceData.tipoComprobante)}
                         placeholder="0.00"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-foreground">IVA</Label>
+                      <Label className="text-foreground">
+                        IVA {sinIvaActual && <span className="text-xs text-muted-foreground">(monotributo)</span>}
+                      </Label>
                       <Input
                         type="number"
                         step="0.01"
                         value={invoiceData.importeIva}
-                        onChange={(e) => setInvoiceData({ ...invoiceData, importeIva: e.target.value })}
+                        onChange={(e) => {
+                          const iva = parseFloat(e.target.value) || 0;
+                          const neto = parseFloat(invoiceData.importeNeto) || 0;
+                          setInvoiceData({
+                            ...invoiceData,
+                            importeIva: e.target.value,
+                            importeTotal: (neto + iva).toFixed(2),
+                          });
+                        }}
                         placeholder="0.00"
+                        disabled={sinIvaActual}
                         required
                       />
                     </div>
@@ -339,7 +428,7 @@ const Facturacion = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-foreground">Consultar comprobantes</CardTitle>
-                <CardDescription>Buscá comprobantes emitidos por punto de venta y tipo.</CardDescription>
+                <CardDescription>Buscá los últimos 10 comprobantes emitidos por punto de venta y tipo.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -357,7 +446,8 @@ const Facturacion = () => {
                     <Select value={consultaTipo} onValueChange={setConsultaTipo}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        {Object.entries(tiposComprobante).map(([k, v]) => (
+                        <SelectItem value="0">Todos</SelectItem>
+                        {Object.entries(TIPOS_COMPROBANTE).map(([k, v]) => (
                           <SelectItem key={k} value={k}>{v}</SelectItem>
                         ))}
                       </SelectContent>
@@ -371,7 +461,7 @@ const Facturacion = () => {
 
                 {comprobantesSearched && comprobantes.length === 0 && (
                   <div className="py-10 text-center text-muted-foreground text-sm">
-                    Sin comprobantes emitidos para este punto de venta y tipo.
+                    Sin comprobantes emitidos para los filtros seleccionados.
                   </div>
                 )}
 
@@ -391,7 +481,7 @@ const Facturacion = () => {
                       <TableBody>
                         {comprobantes.map((c, i) => (
                           <TableRow key={i}>
-                            <TableCell className="text-foreground">{tiposComprobante[String(c.tipo)] || c.tipo}</TableCell>
+                            <TableCell className="text-foreground">{TIPOS_COMPROBANTE[String(c.tipo)] || c.tipo}</TableCell>
                             <TableCell className="text-foreground">{c.puntoVenta}</TableCell>
                             <TableCell className="text-foreground">{c.numero}</TableCell>
                             <TableCell className="text-muted-foreground">{c.fecha}</TableCell>
@@ -412,7 +502,7 @@ const Facturacion = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="text-foreground">Último comprobante autorizado</CardTitle>
-                <CardDescription>Consultá el último número de comprobante autorizado en ARCA.</CardDescription>
+                <CardDescription>Consultá el último número autorizado en ARCA por tipo de comprobante.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -430,7 +520,8 @@ const Facturacion = () => {
                     <Select value={consultaTipo} onValueChange={setConsultaTipo}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        {Object.entries(tiposComprobante).map(([k, v]) => (
+                        <SelectItem value="0">Todos</SelectItem>
+                        {Object.entries(TIPOS_COMPROBANTE).map(([k, v]) => (
                           <SelectItem key={k} value={k}>{v}</SelectItem>
                         ))}
                       </SelectContent>
@@ -442,29 +533,62 @@ const Facturacion = () => {
                   Consultar
                 </Button>
 
-                {ultimoSearched && !ultimoComprobante && (
+                {ultimoSearched && !ultimoSingle && ultimosTodos.length === 0 && (
                   <div className="py-10 text-center text-muted-foreground text-sm">
-                    No se pudo obtener el último comprobante.
+                    No se pudo obtener información de comprobantes.
                   </div>
                 )}
 
-                {ultimoComprobante && (
+                {/* Vista "Todos" — tabla */}
+                {ultimosTodos.length > 0 && (
+                  <div className="rounded-lg border border-border overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Tipo</TableHead>
+                          <TableHead className="text-right">Último número</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {ultimosTodos.map((item) => (
+                          <TableRow key={item.tipoKey}>
+                            <TableCell className="text-foreground">{item.tipoNombre}</TableCell>
+                            <TableCell className="text-right">
+                              {item.numero === 0 ? (
+                                <span className="text-muted-foreground text-sm">Sin emitidos</span>
+                              ) : (
+                                <span className="font-semibold text-primary font-mono">
+                                  {String(item.numero).padStart(8, "0")}
+                                </span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+
+                {/* Vista tipo único — card */}
+                {ultimoSingle && (
                   <div className="p-6 rounded-lg border border-border bg-card">
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
                         <p className="text-sm text-muted-foreground">Tipo</p>
-                        <p className="text-lg font-semibold text-foreground">{ultimoComprobante.tipo}</p>
+                        <p className="text-lg font-semibold text-foreground">{ultimoSingle.tipo}</p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Punto de venta</p>
-                        <p className="text-lg font-semibold text-foreground">{String(ultimoComprobante.puntoVenta).padStart(4, "0")}</p>
+                        <p className="text-lg font-semibold text-foreground">{String(ultimoSingle.puntoVenta).padStart(4, "0")}</p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Último número</p>
-                        {ultimoComprobante.numero === 0 ? (
+                        {ultimoSingle.numero === 0 ? (
                           <p className="text-lg font-semibold text-muted-foreground">Sin emitidos</p>
                         ) : (
-                          <p className="text-lg font-semibold text-primary">{String(ultimoComprobante.numero).padStart(8, "0")}</p>
+                          <p className="text-lg font-semibold text-primary font-mono">
+                            {String(ultimoSingle.numero).padStart(8, "0")}
+                          </p>
                         )}
                       </div>
                     </div>
