@@ -75,11 +75,29 @@ const Facturacion = () => {
   };
 
   const callArcaFunction = async (action: string, body: Record<string, unknown>) => {
-    const { data, error } = await supabase.functions.invoke("arca-facturacion", {
-      body: { action, ...body },
-    });
-    if (error) throw new Error(error.message);
-    if (data?.error) throw new Error(data.error);
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session?.access_token) {
+      await signOut();
+      throw new Error("Sesión expirada. Por favor, ingresá de nuevo.");
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/arca-facturacion`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionData.session.access_token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ action, ...body }),
+      }
+    );
+
+    const data = await response.json();
+    if (!response.ok || data?.error) {
+      throw new Error(data?.error || `Error ${response.status}`);
+    }
     return data;
   };
 
