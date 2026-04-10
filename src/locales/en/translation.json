@@ -130,6 +130,30 @@
       "agrogy": {
         "title": "Agrogy – Web Development",
         "description": "Professional website with product catalog to communicate the company's value proposition."
+      },
+      "remag": {
+        "title": "Remolques Remag – One Page",
+        "description": "Landing page for 24/7 towing and roadside assistance service in Luján and surroundings. Immediate attention via call or WhatsApp."
+      },
+      "cicslu": {
+        "title": "CICSLU – Institutional Website",
+        "description": "Website for the Chamber of Industry, Commerce and Services of Luján. Platform to unite companies and drive local economic development."
+      },
+      "chiaramonteApp": {
+        "title": "Chiaramonte & Sanchez – Management App",
+        "description": "Comprehensive accounting firm management system: income, expenses, projections and informational reports."
+      },
+      "cordero": {
+        "title": "Cordero – Room Booking",
+        "description": "Web app for booking and managing corporate meeting rooms."
+      },
+      "ausencias": {
+        "title": "Absence Management – School",
+        "description": "Web app for managing and visualizing staff absences in educational institutions."
+      },
+      "fisioactiva": {
+        "title": "FisioActiva – Appointment Linktree",
+        "description": "Custom linktree for physiotherapy appointment booking with direct access to each professional."
       }
     },
     "status": {
