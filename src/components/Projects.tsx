@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink, Building2, Palette, Scissors, Key, Zap, School, Store, Calculator, Truck, Landmark, Briefcase, DoorOpen, UserX, Link } from "lucide-react";
+import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink, Building2, Palette, Scissors, Key, Zap, School, Store, Calculator, Truck, Landmark, Briefcase, DoorOpen, UserX, Link, TrendingUp, Trophy, Car, Coffee, LayoutDashboard } from "lucide-react";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 import { useTranslation } from "react-i18next";
 
@@ -132,6 +132,46 @@ const Projects = () => {
       category: t('projects.filters.web'),
       status: t('projects.status.published'),
       link: "https://fisioactiva.com.ar/turnos"
+    },
+    {
+      icon: TrendingUp,
+      title: t('projects.items.dashboardLogistica.title'),
+      description: t('projects.items.dashboardLogistica.description'),
+      category: t('projects.filters.demos'),
+      status: t('projects.status.published'),
+      link: "https://dashboardlogistica.vercel.app"
+    },
+    {
+      icon: Trophy,
+      title: t('projects.items.mundial2026.title'),
+      description: t('projects.items.mundial2026.description'),
+      category: t('projects.filters.demos'),
+      status: t('projects.status.published'),
+      link: "https://mundial2026-flax.vercel.app"
+    },
+    {
+      icon: Car,
+      title: t('projects.items.colapinto.title'),
+      description: t('projects.items.colapinto.description'),
+      category: t('projects.filters.demos'),
+      status: t('projects.status.published'),
+      link: "https://francocolapintoargentina.vercel.app"
+    },
+    {
+      icon: Coffee,
+      title: t('projects.items.cafeLujan.title'),
+      description: t('projects.items.cafeLujan.description'),
+      category: t('projects.filters.demos'),
+      status: t('projects.status.published'),
+      link: "https://cafelujan.vercel.app"
+    },
+    {
+      icon: LayoutDashboard,
+      title: t('projects.items.helioDashboard.title'),
+      description: t('projects.items.helioDashboard.description'),
+      category: t('projects.filters.demos'),
+      status: t('projects.status.published'),
+      link: "https://heliodashboard.vercel.app"
     }
   ];
 
@@ -151,7 +191,7 @@ const Projects = () => {
 
         {/* Filtros */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {[t('projects.filters.all'), t('projects.filters.web'), t('projects.filters.ecommerce'), t('projects.filters.edtech'), t('projects.filters.tools')].map((filter) => (
+          {[t('projects.filters.all'), t('projects.filters.web'), t('projects.filters.ecommerce'), t('projects.filters.edtech'), t('projects.filters.tools'), t('projects.filters.demos')].map((filter) => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}

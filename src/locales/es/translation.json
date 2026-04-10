@@ -88,7 +88,8 @@
       "ecommerce": "E-COMMERCE",
       "tools": "HERRAMIENTAS INTERNAS",
       "edtech": "EDTECH",
-      "consulting": "CONSULTORÍA"
+      "consulting": "CONSULTORÍA",
+      "demos": "DEMOS EDUCATIVAS"
     },
     "items": {
       "pallets": {
@@ -154,6 +155,26 @@
       "fisioactiva": {
         "title": "FisioActiva – Linktree de Turnos",
         "description": "Linktree personalizado para reserva de turnos de fisioterapia con acceso directo a cada profesional."
+      },
+      "dashboardLogistica": {
+        "title": "Dashboard Logística – Demo",
+        "description": "Reporte interactivo para empresa de logística. Proyecto educativo/ficticio para demostrar capacidades."
+      },
+      "mundial2026": {
+        "title": "Mundial 2026 – Demo",
+        "description": "App web del Mundial 2026 con estadísticas y fixture. Proyecto educativo/ficticio."
+      },
+      "colapinto": {
+        "title": "Franco Colapinto – Demo",
+        "description": "Web dedicada a Franco Colapinto con su historia y trayectoria en carreras. Proyecto educativo/ficticio."
+      },
+      "cafeLujan": {
+        "title": "Café Luján – Demo",
+        "description": "Reporte de ventas interactivo para cafeterías. Proyecto educativo/ficticio."
+      },
+      "helioDashboard": {
+        "title": "Helio Dashboard – Demo",
+        "description": "Dashboard integral de reportes empresariales. Proyecto educativo/ficticio."
       }
     },
     "status": {
