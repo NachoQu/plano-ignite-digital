@@ -130,13 +130,38 @@
       "agrogy": {
         "title": "Agrogy – Desarrollo Web",
         "description": "Sitio web profesional con catálogo de productos para comunicar la propuesta de valor de la empresa."
+      },
+      "remag": {
+        "title": "Remolques Remag – One Page",
+        "description": "Landing page para servicio de auxilio y remolque 24 hs en Luján y alrededores. Atención inmediata por llamada o WhatsApp."
+      },
+      "cicslu": {
+        "title": "CICSLU – Web Institucional",
+        "description": "Sitio web para la Cámara de Industria, Comercio y Servicios de Luján. Plataforma para nuclear empresas e impulsar el desarrollo económico local."
+      },
+      "chiaramonteApp": {
+        "title": "Chiaramonte & Sanchez – App de Gestión",
+        "description": "Sistema integral de gestión del estudio contable: ingresos, egresos, proyecciones y reportes informativos."
+      },
+      "cordero": {
+        "title": "Cordero – Reserva de Salas",
+        "description": "App web para la reserva y gestión de salas de reuniones corporativas."
+      },
+      "ausencias": {
+        "title": "Gestión de Ausencias – Colegio",
+        "description": "App web para la gestión y visualización de ausencias de personal en instituciones educativas."
+      },
+      "fisioactiva": {
+        "title": "FisioActiva – Linktree de Turnos",
+        "description": "Linktree personalizado para reserva de turnos de fisioterapia con acceso directo a cada profesional."
       }
     },
     "status": {
       "published": "Publicado",
       "operational": "Operativo",
       "implemented": "Implementado",
-      "active": "80% de uso activo"
+      "active": "80% de uso activo",
+      "inDevelopment": "En desarrollo"
     }
   },
   "testimonials": {

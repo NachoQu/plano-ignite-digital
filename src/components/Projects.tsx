@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink, Building2, Palette, Scissors, Key, Zap, School, Store, Calculator } from "lucide-react";
+import { Globe, ShoppingCart, BarChart3, Calendar, GraduationCap, Package, ExternalLink, Building2, Palette, Scissors, Key, Zap, School, Store, Calculator, Truck, Landmark, Briefcase, DoorOpen, UserX, Link } from "lucide-react";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 import { useTranslation } from "react-i18next";
 
@@ -87,6 +87,51 @@ const Projects = () => {
       category: t('projects.filters.web'),
       status: t('projects.status.published'),
       link: "https://www.agrogy.com"
+    },
+    {
+      icon: Truck,
+      title: t('projects.items.remag.title'),
+      description: t('projects.items.remag.description'),
+      category: t('projects.filters.web'),
+      status: t('projects.status.published'),
+      link: "https://www.remolquesremag.com.ar"
+    },
+    {
+      icon: Landmark,
+      title: t('projects.items.cicslu.title'),
+      description: t('projects.items.cicslu.description'),
+      category: t('projects.filters.web'),
+      status: t('projects.status.published'),
+      link: "https://cicslu.com.ar"
+    },
+    {
+      icon: Briefcase,
+      title: t('projects.items.chiaramonteApp.title'),
+      description: t('projects.items.chiaramonteApp.description'),
+      category: t('projects.filters.tools'),
+      status: t('projects.status.inDevelopment')
+    },
+    {
+      icon: DoorOpen,
+      title: t('projects.items.cordero.title'),
+      description: t('projects.items.cordero.description'),
+      category: t('projects.filters.tools'),
+      status: t('projects.status.inDevelopment')
+    },
+    {
+      icon: UserX,
+      title: t('projects.items.ausencias.title'),
+      description: t('projects.items.ausencias.description'),
+      category: t('projects.filters.edtech'),
+      status: t('projects.status.inDevelopment')
+    },
+    {
+      icon: Link,
+      title: t('projects.items.fisioactiva.title'),
+      description: t('projects.items.fisioactiva.description'),
+      category: t('projects.filters.web'),
+      status: t('projects.status.published'),
+      link: "https://fisioactiva.com.ar/turnos"
     }
   ];
 
