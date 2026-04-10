@@ -160,7 +160,8 @@
       "published": "Published",
       "operational": "Operational",
       "implemented": "Implemented",
-      "active": "80% active use"
+      "active": "80% active use",
+      "inDevelopment": "In development"
     }
   },
   "testimonials": {
