@@ -209,7 +209,7 @@ const Projects = () => {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center text-xs text-primary hover:text-primary/80 transition-colors cursor-pointer"
+                      className="flex items-center text-xs text-secondary hover:text-secondary/80 transition-colors cursor-pointer"
                     >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       {project.link.replace(/^https?:\/\//, '')}
