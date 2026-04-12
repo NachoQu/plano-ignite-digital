@@ -104,6 +104,7 @@ export type Database = {
           phone: string
           source_url: string
           user_id: string
+          website: string
           whatsapp_link: string
         }
         Insert: {
@@ -117,6 +118,7 @@ export type Database = {
           phone?: string
           source_url?: string
           user_id: string
+          website?: string
           whatsapp_link?: string
         }
         Update: {
@@ -130,6 +132,7 @@ export type Database = {
           phone?: string
           source_url?: string
           user_id?: string
+          website?: string
           whatsapp_link?: string
         }
         Relationships: []
