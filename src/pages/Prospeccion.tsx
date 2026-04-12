@@ -311,7 +311,7 @@ const Prospeccion = () => {
                             </TableCell>
                             <TableCell>
                               {lead.whatsapp_link ? (
-                                <a href={lead.whatsapp_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-green-600 hover:underline">
+                                <a href={lead.whatsapp_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
                                   <MessageCircle className="h-3 w-3" /> WhatsApp
                                 </a>
                               ) : lead.phone || "-"}
