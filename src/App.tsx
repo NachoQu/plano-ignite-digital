@@ -12,6 +12,7 @@ import TikTok from "./pages/TikTok";
 import Reportes from "./pages/Reportes";
 import Login from "./pages/Login";
 import Facturacion from "./pages/Facturacion";
+import Prospeccion from "./pages/Prospeccion";
 import '@/i18n/config';
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/reportes" element={<Reportes />} />
             <Route path="/login" element={<Login />} />
             <Route path="/facturacion" element={<Facturacion />} />
+            <Route path="/prospeccion" element={<Prospeccion />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
