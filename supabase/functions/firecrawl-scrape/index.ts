@@ -122,7 +122,7 @@ serve(async (req) => {
           {
             role: "system",
             content: `Eres un extractor de datos de contacto de negocios. Analiza el contenido web y extrae información de contacto de negocios/empresas/profesionales.
-Extrae TODOS los contactos que encuentres. Para cada uno devuelve: name (nombre del negocio o persona), city (ciudad), phone (número de teléfono con código de área/país), email (correo electrónico).
+Extrae TODOS los contactos que encuentres. Para cada uno devuelve: name (nombre del negocio o persona), city (ciudad), phone (número de teléfono con código de área/país), email (correo electrónico), website (URL del sitio web o página asociada, si existe).
 Si no encuentras algún campo, déjalo vacío "".
 Responde SOLO con el JSON, sin explicaciones.`,
           },
@@ -149,8 +149,9 @@ Responde SOLO con el JSON, sin explicaciones.`,
                         city: { type: "string", description: "City location" },
                         phone: { type: "string", description: "Phone number with area code" },
                         email: { type: "string", description: "Email address" },
+                        website: { type: "string", description: "Website URL if available" },
                       },
-                      required: ["name", "city", "phone", "email"],
+                      required: ["name", "city", "phone", "email", "website"],
                     },
                   },
                 },
