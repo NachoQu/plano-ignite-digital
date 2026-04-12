@@ -5,6 +5,7 @@ export type Lead = {
   city: string;
   phone: string;
   email: string;
+  website: string;
   whatsapp_link: string;
   source_url: string;
 };

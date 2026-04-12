@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { Search, Globe, Save, MessageCircle, Mail, Trash2, Loader2, LogOut } from "lucide-react";
+import { Search, Globe, Save, MessageCircle, Mail, Trash2, Loader2, LogOut, ExternalLink } from "lucide-react";
 
 const NICHES = [
   "restaurantes",
@@ -25,7 +25,7 @@ const NICHES = [
   "otro",
 ];
 
-type SavedLead = Lead & { id: string; niche: string; notes: string; created_at: string };
+type SavedLead = Lead & { id: string; niche: string; notes: string; created_at: string; website: string };
 
 const Prospeccion = () => {
   const { user, loading: authLoading, signOut } = useAuth("/login");
@@ -99,6 +99,7 @@ const Prospeccion = () => {
       phone: lead.phone,
       whatsapp_link: lead.whatsapp_link,
       email: lead.email,
+      website: lead.website || "",
       niche: selectedNiche || "otro",
       source_url: lead.source_url,
       notes: "",
@@ -219,10 +220,11 @@ const Prospeccion = () => {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Nombre</TableHead>
+                         <TableHead>Nombre</TableHead>
                           <TableHead>Ciudad</TableHead>
                           <TableHead>Teléfono</TableHead>
                           <TableHead>Email</TableHead>
+                          <TableHead>Web</TableHead>
                           <TableHead className="text-right">Acciones</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -242,6 +244,13 @@ const Prospeccion = () => {
                               {lead.email ? (
                                 <a href={`mailto:${lead.email}`} className="text-primary hover:underline flex items-center gap-1">
                                   <Mail className="h-3 w-3" /> {lead.email}
+                                </a>
+                              ) : "-"}
+                            </TableCell>
+                            <TableCell>
+                              {lead.website ? (
+                                <a href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline flex items-center gap-1">
+                                  <ExternalLink className="h-3 w-3" /> Ver
                                 </a>
                               ) : "-"}
                             </TableCell>
@@ -291,11 +300,12 @@ const Prospeccion = () => {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Nombre</TableHead>
+                         <TableHead>Nombre</TableHead>
                           <TableHead>Ciudad</TableHead>
                           <TableHead>Nicho</TableHead>
                           <TableHead>Teléfono</TableHead>
                           <TableHead>Email</TableHead>
+                          <TableHead>Web</TableHead>
                           <TableHead className="text-right">Acciones</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -320,6 +330,13 @@ const Prospeccion = () => {
                               {lead.email ? (
                                 <a href={`mailto:${lead.email}`} className="text-primary hover:underline flex items-center gap-1">
                                   <Mail className="h-3 w-3" /> {lead.email}
+                                </a>
+                              ) : "-"}
+                            </TableCell>
+                            <TableCell>
+                              {lead.website ? (
+                                <a href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-primary hover:underline">
+                                  <ExternalLink className="h-3 w-3" /> Web
                                 </a>
                               ) : "-"}
                             </TableCell>
