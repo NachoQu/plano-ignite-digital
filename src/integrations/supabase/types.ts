@@ -92,6 +92,48 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          city: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          niche: string
+          notes: string
+          phone: string
+          source_url: string
+          user_id: string
+          whatsapp_link: string
+        }
+        Insert: {
+          city?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          niche?: string
+          notes?: string
+          phone?: string
+          source_url?: string
+          user_id: string
+          whatsapp_link?: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          niche?: string
+          notes?: string
+          phone?: string
+          source_url?: string
+          user_id?: string
+          whatsapp_link?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
