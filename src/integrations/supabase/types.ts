@@ -95,6 +95,7 @@ export type Database = {
       leads: {
         Row: {
           city: string
+          contacted: boolean
           created_at: string
           email: string
           id: string
@@ -102,13 +103,16 @@ export type Database = {
           niche: string
           notes: string
           phone: string
+          province: string
           source_url: string
+          tags: string[]
           user_id: string
           website: string
           whatsapp_link: string
         }
         Insert: {
           city?: string
+          contacted?: boolean
           created_at?: string
           email?: string
           id?: string
@@ -116,13 +120,16 @@ export type Database = {
           niche?: string
           notes?: string
           phone?: string
+          province?: string
           source_url?: string
+          tags?: string[]
           user_id: string
           website?: string
           whatsapp_link?: string
         }
         Update: {
           city?: string
+          contacted?: boolean
           created_at?: string
           email?: string
           id?: string
@@ -130,7 +137,9 @@ export type Database = {
           niche?: string
           notes?: string
           phone?: string
+          province?: string
           source_url?: string
+          tags?: string[]
           user_id?: string
           website?: string
           whatsapp_link?: string
