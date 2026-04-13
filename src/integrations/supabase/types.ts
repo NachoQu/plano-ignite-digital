@@ -95,7 +95,7 @@ export type Database = {
       leads: {
         Row: {
           city: string
-          contacted: boolean
+          contact_status: string
           created_at: string
           email: string
           id: string
@@ -112,7 +112,7 @@ export type Database = {
         }
         Insert: {
           city?: string
-          contacted?: boolean
+          contact_status?: string
           created_at?: string
           email?: string
           id?: string
@@ -129,7 +129,7 @@ export type Database = {
         }
         Update: {
           city?: string
-          contacted?: boolean
+          contact_status?: string
           created_at?: string
           email?: string
           id?: string

@@ -3,14 +3,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Upload, MessageCircle, Mail, Trash2, Loader2, LogOut,
-  ExternalLink, CheckCircle, XCircle, Plus, X, FileSpreadsheet,
-  UserPlus, ChevronDown, ChevronUp
+  ExternalLink, Plus, X, FileSpreadsheet,
+  UserPlus, ChevronDown, ChevronUp, Circle, CheckCircle2, Ban
 } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
@@ -19,8 +18,16 @@ import {
 const NICHES = [
   "restaurantes", "inmobiliarias", "talleres mecánicos", "consultorios médicos",
   "estudios contables", "peluquerías", "gimnasios", "veterinarias",
-  "ferreterías", "hoteles", "otro",
+  "ferreterías", "hoteles", "abogados", "otro",
 ];
+
+const STATUS_OPTIONS = [
+  { value: "no_contactado", label: "No contactado", icon: Circle, color: "text-muted-foreground" },
+  { value: "contactado", label: "Contactado", icon: CheckCircle2, color: "text-yellow-500" },
+  { value: "cerrado", label: "Cerrado", icon: Ban, color: "text-green-500" },
+] as const;
+
+type ContactStatus = "no_contactado" | "contactado" | "cerrado";
 
 type SavedLead = {
   id: string;
@@ -33,20 +40,36 @@ type SavedLead = {
   website: string;
   niche: string;
   notes: string;
-  contacted: boolean;
+  contact_status: ContactStatus;
   tags: string[];
   created_at: string;
 };
 
+const StatusButton = ({ status, onChange }: { status: ContactStatus; onChange: (s: ContactStatus) => void }) => {
+  const current = STATUS_OPTIONS.find((o) => o.value === status) || STATUS_OPTIONS[0];
+  const nextIndex = (STATUS_OPTIONS.findIndex((o) => o.value === status) + 1) % STATUS_OPTIONS.length;
+  const Icon = current.icon;
+
+  return (
+    <button
+      onClick={() => onChange(STATUS_OPTIONS[nextIndex].value)}
+      className={`shrink-0 ${current.color}`}
+      title={current.label}
+    >
+      <Icon className="h-5 w-5" />
+    </button>
+  );
+};
+
 const LeadCard = ({
   lead,
-  onToggleContacted,
+  onChangeStatus,
   onAddTag,
   onRemoveTag,
   onDelete,
 }: {
   lead: SavedLead;
-  onToggleContacted: () => void;
+  onChangeStatus: (status: ContactStatus) => void;
   onAddTag: (tag: string) => void;
   onRemoveTag: (tag: string) => void;
   onDelete: () => void;
@@ -56,16 +79,9 @@ const LeadCard = ({
 
   return (
     <div className="border border-border rounded-lg p-4 space-y-3 bg-card">
-      {/* Row 1: Main info */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <button
-            onClick={onToggleContacted}
-            className={`shrink-0 ${lead.contacted ? "text-green-500" : "text-muted-foreground"}`}
-            title={lead.contacted ? "Contactado" : "No contactado"}
-          >
-            {lead.contacted ? <CheckCircle className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-          </button>
+          <StatusButton status={lead.contact_status} onChange={onChangeStatus} />
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-foreground truncate">{lead.name || "Sin nombre"}</p>
             <p className="text-xs text-muted-foreground">
@@ -81,7 +97,6 @@ const LeadCard = ({
         </div>
       </div>
 
-      {/* Row 2: Contact links */}
       <div className="flex flex-wrap items-center gap-3 text-sm">
         {lead.whatsapp_link ? (
           <a href={lead.whatsapp_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-green-500 hover:underline">
@@ -106,7 +121,6 @@ const LeadCard = ({
         )}
       </div>
 
-      {/* Row 3: Tags */}
       <div className="flex flex-wrap gap-1.5 items-center">
         {(lead.tags || []).map((tag) => (
           <Badge key={tag} variant="outline" className="text-xs gap-1 pr-1">
@@ -130,12 +144,7 @@ const LeadCard = ({
             }}
           />
           <button
-            onClick={() => {
-              if (tagInput.trim()) {
-                onAddTag(tagInput.trim());
-                setTagInput("");
-              }
-            }}
+            onClick={() => { if (tagInput.trim()) { onAddTag(tagInput.trim()); setTagInput(""); } }}
             className="text-primary hover:text-primary/80"
           >
             <Plus className="h-4 w-4" />
@@ -143,7 +152,6 @@ const LeadCard = ({
         </div>
       </div>
 
-      {/* Expanded: delete */}
       {expanded && (
         <div className="flex justify-end pt-2 border-t border-border">
           <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive" onClick={onDelete}>
@@ -185,7 +193,7 @@ const AddLeadDialog = ({ user, onSaved }: { user: { id: string }; onSaved: () =>
       notes: "",
       source_url: "",
       tags: [],
-      contacted: false,
+      contact_status: "no_contactado",
     });
 
     if (error) {
@@ -220,9 +228,7 @@ const AddLeadDialog = ({ user, onSaved }: { user: { id: string }; onSaved: () =>
           <Input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           <Input placeholder="Sitio web" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
           <Select value={form.niche} onValueChange={(v) => setForm({ ...form, niche: v })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Nicho" />
-            </SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="Nicho" /></SelectTrigger>
             <SelectContent>
               {NICHES.map((n) => (
                 <SelectItem key={n} value={n}>{n.charAt(0).toUpperCase() + n.slice(1)}</SelectItem>
@@ -247,9 +253,14 @@ const Prospeccion = () => {
   const [savedLeads, setSavedLeads] = useState<SavedLead[]>([]);
   const [filterNiche, setFilterNiche] = useState("all");
   const [filterProvince, setFilterProvince] = useState("all");
-  const [filterContacted, setFilterContacted] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [loadingLeads, setLoadingLeads] = useState(true);
   const [importing, setImporting] = useState(false);
+
+  // CSV import niche dialog
+  const [csvNicheDialogOpen, setCsvNicheDialogOpen] = useState(false);
+  const [csvNiche, setCsvNiche] = useState("otro");
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (user) fetchLeads();
@@ -269,13 +280,22 @@ const Prospeccion = () => {
     setLoadingLeads(false);
   };
 
-  const handleCSVImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+    setPendingFile(file);
+    setCsvNiche("otro");
+    setCsvNicheDialogOpen(true);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleCSVImport = async () => {
+    if (!pendingFile || !user) return;
+    setCsvNicheDialogOpen(false);
     setImporting(true);
 
     try {
-      const text = await file.text();
+      const text = await pendingFile.text();
       const lines = text.split("\n").filter((l) => l.trim());
       if (lines.length < 2) {
         toast({ title: "Error", description: "El CSV está vacío", variant: "destructive" });
@@ -321,6 +341,10 @@ const Prospeccion = () => {
         const tagsRaw = iTags >= 0 ? cols[iTags]?.replace(/['"]/g, "").trim() : "";
         const tags = tagsRaw ? tagsRaw.split(";").map((t) => t.trim()).filter(Boolean) : [];
 
+        // Use CSV niche column if present, otherwise use the selected niche
+        const nicheFromCSV = iNiche >= 0 ? cols[iNiche]?.replace(/['"]/g, "").trim() : "";
+        const niche = nicheFromCSV || csvNiche;
+
         leads.push({
           user_id: user.id,
           name: iName >= 0 ? cols[iName]?.replace(/['"]/g, "").trim() || "" : "",
@@ -330,11 +354,11 @@ const Prospeccion = () => {
           whatsapp_link: whatsappLink,
           email: iEmail >= 0 ? cols[iEmail]?.replace(/['"]/g, "").trim() || "" : "",
           website: iWebsite >= 0 ? cols[iWebsite]?.replace(/['"]/g, "").trim() || "" : "",
-          niche: iNiche >= 0 ? cols[iNiche]?.replace(/['"]/g, "").trim() || "otro" : "otro",
+          niche,
           notes: "",
           source_url: "",
           tags,
-          contacted: false,
+          contact_status: "no_contactado",
         });
       }
 
@@ -358,14 +382,14 @@ const Prospeccion = () => {
       toast({ title: "Error", description: "Error al procesar el CSV", variant: "destructive" });
     } finally {
       setImporting(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
+      setPendingFile(null);
     }
   };
 
-  const toggleContacted = async (lead: SavedLead) => {
-    const { error } = await supabase.from("leads").update({ contacted: !lead.contacted }).eq("id", lead.id);
+  const changeStatus = async (lead: SavedLead, newStatus: ContactStatus) => {
+    const { error } = await supabase.from("leads").update({ contact_status: newStatus }).eq("id", lead.id);
     if (!error) {
-      setSavedLeads((prev) => prev.map((l) => (l.id === lead.id ? { ...l, contacted: !l.contacted } : l)));
+      setSavedLeads((prev) => prev.map((l) => (l.id === lead.id ? { ...l, contact_status: newStatus } : l)));
     }
   };
 
@@ -400,11 +424,17 @@ const Prospeccion = () => {
   let filteredLeads = savedLeads;
   if (filterNiche !== "all") filteredLeads = filteredLeads.filter((l) => l.niche === filterNiche);
   if (filterProvince !== "all") filteredLeads = filteredLeads.filter((l) => l.province === filterProvince);
-  if (filterContacted === "yes") filteredLeads = filteredLeads.filter((l) => l.contacted);
-  if (filterContacted === "no") filteredLeads = filteredLeads.filter((l) => !l.contacted);
+  if (filterStatus !== "all") filteredLeads = filteredLeads.filter((l) => l.contact_status === filterStatus);
 
   const uniqueNiches = [...new Set(savedLeads.map((l) => l.niche).filter(Boolean))];
   const uniqueProvinces = [...new Set(savedLeads.map((l) => l.province).filter(Boolean))];
+
+  const counts = {
+    total: savedLeads.length,
+    no_contactado: savedLeads.filter((l) => l.contact_status === "no_contactado").length,
+    contactado: savedLeads.filter((l) => l.contact_status === "contactado").length,
+    cerrado: savedLeads.filter((l) => l.contact_status === "cerrado").length,
+  };
 
   if (authLoading) {
     return (
@@ -422,7 +452,7 @@ const Prospeccion = () => {
           <h1 className="text-xl font-bold text-foreground">Prospección</h1>
           <div className="flex items-center gap-2">
             {user && <AddLeadDialog user={user} onSaved={fetchLeads} />}
-            <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleCSVImport} />
+            <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleFileSelect} />
             <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={importing}>
               {importing ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : <FileSpreadsheet className="h-4 w-4 mr-1" />}
               CSV
@@ -434,7 +464,62 @@ const Prospeccion = () => {
         </div>
       </div>
 
+      {/* CSV Niche Selection Dialog */}
+      <Dialog open={csvNicheDialogOpen} onOpenChange={(open) => { if (!open) { setCsvNicheDialogOpen(false); setPendingFile(null); } }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Seleccionar nicho para importación</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Este nicho se asignará a todos los leads del CSV (a menos que el CSV tenga una columna de nicho).
+          </p>
+          <Select value={csvNiche} onValueChange={setCsvNiche}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {NICHES.map((n) => (
+                <SelectItem key={n} value={n}>{n.charAt(0).toUpperCase() + n.slice(1)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button onClick={handleCSVImport} className="w-full">
+            <Upload className="h-4 w-4 mr-2" /> Importar {pendingFile?.name}
+          </Button>
+        </DialogContent>
+      </Dialog>
+
       <div className="container mx-auto px-4 py-4 space-y-4">
+        {/* Status tabs */}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            variant={filterStatus === "all" ? "default" : "outline"}
+            onClick={() => setFilterStatus("all")}
+          >
+            Todos ({counts.total})
+          </Button>
+          <Button
+            size="sm"
+            variant={filterStatus === "no_contactado" ? "default" : "outline"}
+            onClick={() => setFilterStatus("no_contactado")}
+          >
+            <Circle className="h-3 w-3 mr-1" /> No contactados ({counts.no_contactado})
+          </Button>
+          <Button
+            size="sm"
+            variant={filterStatus === "contactado" ? "default" : "outline"}
+            onClick={() => setFilterStatus("contactado")}
+          >
+            <CheckCircle2 className="h-3 w-3 mr-1" /> Contactados ({counts.contactado})
+          </Button>
+          <Button
+            size="sm"
+            variant={filterStatus === "cerrado" ? "default" : "outline"}
+            onClick={() => setFilterStatus("cerrado")}
+          >
+            <Ban className="h-3 w-3 mr-1" /> Cerrados ({counts.cerrado})
+          </Button>
+        </div>
+
         {/* Filters */}
         <div className="flex flex-wrap gap-2 items-center">
           <Select value={filterProvince} onValueChange={setFilterProvince}>
@@ -442,7 +527,7 @@ const Prospeccion = () => {
               <SelectValue placeholder="Provincia" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todas</SelectItem>
+              <SelectItem value="all">Todas las provincias</SelectItem>
               {uniqueProvinces.map((p) => (
                 <SelectItem key={p} value={p}>{p}</SelectItem>
               ))}
@@ -453,24 +538,14 @@ const Prospeccion = () => {
               <SelectValue placeholder="Nicho" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="all">Todos los nichos</SelectItem>
               {uniqueNiches.map((n) => (
                 <SelectItem key={n} value={n}>{n.charAt(0).toUpperCase() + n.slice(1)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Select value={filterContacted} onValueChange={setFilterContacted}>
-            <SelectTrigger className="w-36 h-8 text-xs">
-              <SelectValue placeholder="Estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="yes">Contactados</SelectItem>
-              <SelectItem value="no">No contactados</SelectItem>
-            </SelectContent>
-          </Select>
           <span className="text-xs text-muted-foreground ml-auto">
-            {filteredLeads.length}/{savedLeads.length}
+            {filteredLeads.length} leads
           </span>
         </div>
 
@@ -489,7 +564,7 @@ const Prospeccion = () => {
               <LeadCard
                 key={lead.id}
                 lead={lead}
-                onToggleContacted={() => toggleContacted(lead)}
+                onChangeStatus={(status) => changeStatus(lead, status)}
                 onAddTag={(tag) => addTag(lead.id, tag)}
                 onRemoveTag={(tag) => removeTag(lead.id, tag)}
                 onDelete={() => handleDeleteLead(lead.id)}
