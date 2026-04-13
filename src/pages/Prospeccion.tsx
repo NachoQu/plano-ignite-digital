@@ -287,13 +287,13 @@ const Prospeccion = () => {
       const findCol = (names: string[]) =>
         headers.findIndex((h) => names.some((n) => h.includes(n)));
 
-      const iName = findCol(["nombre", "name", "razón social", "razon social", "negocio", "empresa"]);
-      const iCity = findCol(["ciudad", "city", "localidad"]);
-      const iProvince = findCol(["provincia", "province", "estado", "state"]);
-      const iPhone = findCol(["teléfono", "telefono", "phone", "tel", "celular", "móvil", "movil"]);
+      const iName = findCol(["nombre", "name", "razón social", "razon social", "negocio", "empresa", "title", "titulo", "título", "comercio", "local"]);
+      const iCity = findCol(["ciudad", "city", "localidad", "ubicación", "ubicacion", "location", "dirección", "direccion", "address"]);
+      const iProvince = findCol(["provincia", "province", "estado", "state", "departamento", "región", "region"]);
+      const iPhone = findCol(["teléfono", "telefono", "phone", "tel", "celular", "móvil", "movil", "whatsapp", "contacto"]);
       const iEmail = findCol(["email", "correo", "mail", "e-mail"]);
-      const iWebsite = findCol(["web", "website", "sitio", "página", "pagina", "url"]);
-      const iNiche = findCol(["nicho", "niche", "rubro", "categoría", "categoria", "sector"]);
+      const iWebsite = findCol(["web", "website", "sitio", "página", "pagina", "url", "link", "enlace", "google maps"]);
+      const iNiche = findCol(["nicho", "niche", "rubro", "categoría", "categoria", "sector", "tipo", "industria"]);
       const iTags = findCol(["tags", "etiquetas", "notas", "observaciones"]);
 
       const parseCSVLine = (line: string): string[] => {
