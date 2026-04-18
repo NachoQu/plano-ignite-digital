@@ -1,13 +1,16 @@
 // supabase/functions/arca-handler/index.ts
-// Edge Function para ARCA vía AFIP SDK
-// Flujo correcto: 1) /auth obtiene TA (token+sign) 2) /requests ejecuta método del WS
-// Actions: estado | facturar | consultar-padron | ultimo-comprobante | tipos-comprobante
+// v3: agrega acciones de setup inicial (crear-certificado, autorizar-wsfe)
+// Flujo: 1) crear-certificado 2) guardar cert+key en secrets 3) autorizar-wsfe 4) usar WSs
 
 const AFIPSDK_URL = "https://app.afipsdk.com/api/v1";
 const TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN")!;
 const CUIT = Deno.env.get("ARCA_CUIT")!;
 const PRODUCTION = Deno.env.get("ARCA_PRODUCTION") === "true";
 const ENV = PRODUCTION ? "prod" : "dev";
+
+// Certificado y key (se cargan después de correr crear-certificado)
+const CERT = Deno.env.get("ARCA_CERT") ?? "";
+const KEY = Deno.env.get("ARCA_KEY") ?? "";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,10 +19,14 @@ const corsHeaders = {
 };
 
 // ──────────────────────────────────────────────────────────
-// Paso 1: obtener Ticket de Acceso (TA) → { token, sign }
+// Helper: obtener TA (token + sign) para un web service
 // ──────────────────────────────────────────────────────────
 async function getTA(wsid: string) {
-  console.log(`[getTA] Solicitando TA para wsid=${wsid} env=${ENV} cuit=${CUIT}`);
+  if (!CERT || !KEY) {
+    throw new Error(
+      "Faltan ARCA_CERT y/o ARCA_KEY en secrets. Ejecutá primero la acción 'crear-certificado'."
+    );
+  }
 
   const res = await fetch(`${AFIPSDK_URL}/afip/auth`, {
     method: "POST",
@@ -27,24 +34,26 @@ async function getTA(wsid: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
     },
-    body: JSON.stringify({ environment: ENV, tax_id: CUIT, wsid }),
+    body: JSON.stringify({
+      environment: ENV,
+      tax_id: CUIT,
+      wsid,
+      cert: CERT,
+      key: KEY,
+    }),
   });
 
   const data = await res.json();
-  console.log(`[getTA] status=${res.status} body=${JSON.stringify(data).slice(0, 300)}`);
+  console.log(`[getTA] wsid=${wsid} status=${res.status}`);
 
-  if (!res.ok) {
-    throw new Error(`auth failed (${res.status}): ${JSON.stringify(data)}`);
-  }
-  return data; // { token, sign, expiration }
+  if (!res.ok) throw new Error(`auth failed (${res.status}): ${JSON.stringify(data)}`);
+  return data;
 }
 
 // ──────────────────────────────────────────────────────────
-// Paso 2: ejecutar método del WS de ARCA
+// Helper: llamar método de WS de ARCA
 // ──────────────────────────────────────────────────────────
 async function callArca(wsid: string, method: string, params: any) {
-  console.log(`[callArca] wsid=${wsid} method=${method}`);
-
   const res = await fetch(`${AFIPSDK_URL}/afip/requests`, {
     method: "POST",
     headers: {
@@ -55,42 +64,131 @@ async function callArca(wsid: string, method: string, params: any) {
   });
 
   const data = await res.json();
-  console.log(`[callArca] status=${res.status} body=${JSON.stringify(data).slice(0, 500)}`);
+  console.log(`[callArca] ${method} status=${res.status}`);
 
-  if (!res.ok) {
-    throw new Error(`request failed (${res.status}): ${JSON.stringify(data)}`);
-  }
+  if (!res.ok) throw new Error(`${method} failed (${res.status}): ${JSON.stringify(data)}`);
   return data;
+}
+
+// ──────────────────────────────────────────────────────────
+// Helper: correr automatización y esperar resultado
+// ──────────────────────────────────────────────────────────
+async function runAutomation(automation: string, params: any, maxWaitMs = 180_000) {
+  // 1) Iniciar automatización
+  const startRes = await fetch(`${AFIPSDK_URL}/automations`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({ automation, params }),
+  });
+
+  const startData = await startRes.json();
+  console.log(`[automation:${automation}] start status=${startRes.status} id=${startData.id}`);
+
+  if (!startRes.ok) {
+    throw new Error(`automation start failed (${startRes.status}): ${JSON.stringify(startData)}`);
+  }
+
+  // Si ya viene completa, devolver
+  if (startData.status === "complete") return startData;
+
+  const id = startData.id;
+  if (!id) throw new Error(`automation no devolvió id: ${JSON.stringify(startData)}`);
+
+  // 2) Polling cada 3s hasta que complete o falle
+  const started = Date.now();
+  while (Date.now() - started < maxWaitMs) {
+    await new Promise((r) => setTimeout(r, 3000));
+
+    const statusRes = await fetch(`${AFIPSDK_URL}/automations/${id}`, {
+      headers: { Authorization: `Bearer ${TOKEN}` },
+    });
+    const statusData = await statusRes.json();
+    console.log(`[automation:${automation}] poll status=${statusData.status}`);
+
+    if (statusData.status === "complete") return statusData;
+    if (statusData.status === "error" || statusData.status === "failed") {
+      throw new Error(`automation falló: ${JSON.stringify(statusData)}`);
+    }
+  }
+
+  throw new Error(`automation timeout después de ${maxWaitMs / 1000}s`);
 }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  // Chequeo de secrets
   if (!TOKEN || !CUIT) {
     return new Response(
-      JSON.stringify({
-        ok: false,
-        error: "Faltan secrets ARCA_ACCESS_TOKEN o ARCA_CUIT en la Edge Function",
-      }),
+      JSON.stringify({ ok: false, error: "Faltan ARCA_ACCESS_TOKEN o ARCA_CUIT" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 
   try {
     const { action, payload = {} } = await req.json();
-    console.log(`[handler] action=${action} payload=${JSON.stringify(payload)}`);
+    console.log(`[handler] action=${action}`);
 
     let result;
 
     switch (action) {
-      // 1) Ping al servidor de facturación (NO requiere TA — el más simple para testear)
+      // ═══════════════════════════════════════════════════════
+      // SETUP (solo se corre 1 vez por CUIT)
+      // ═══════════════════════════════════════════════════════
+
+      // Crear certificado de desarrollo — devuelve cert y key
+      case "crear-certificado": {
+        if (!payload.password) {
+          throw new Error("Falta 'password' en payload (clave fiscal de ARCA)");
+        }
+
+        result = await runAutomation("create-cert-dev", {
+          cuit: CUIT,
+          username: payload.username ?? CUIT,
+          password: payload.password,
+          alias: payload.alias ?? "plano",
+        });
+
+        // Extraer solo cert y key para copiar fácil
+        if (result.data?.cert && result.data?.key) {
+          result = {
+            ...result,
+            _instrucciones:
+              "Copiá 'data.cert' y 'data.key' (incluyendo los -----BEGIN...----- y -----END...-----) " +
+              "y guardalos como secrets ARCA_CERT y ARCA_KEY en Supabase. " +
+              "Después redesplegá la Edge Function.",
+          };
+        }
+        break;
+      }
+
+      // Autorizar web service wsfe al certificado (paso posterior a crear cert)
+      case "autorizar-wsfe": {
+        if (!payload.password) {
+          throw new Error("Falta 'password' en payload (clave fiscal de ARCA)");
+        }
+
+        result = await runAutomation("auth-web-service-dev", {
+          cuit: CUIT,
+          username: payload.username ?? CUIT,
+          password: payload.password,
+          alias: payload.alias ?? "plano",
+          wsid: "wsfe",
+        });
+        break;
+      }
+
+      // ═══════════════════════════════════════════════════════
+      // USO NORMAL (requiere cert + key + wsfe autorizado)
+      // ═══════════════════════════════════════════════════════
+
       case "estado": {
         result = await callArca("wsfe", "FEDummy", {});
         break;
       }
 
-      // 2) Último comprobante autorizado (requiere TA)
       case "ultimo-comprobante": {
         const { token, sign } = await getTA("wsfe");
         result = await callArca("wsfe", "FECompUltimoAutorizado", {
@@ -101,23 +199,12 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // 3) Tipos de comprobante disponibles (útil para listar opciones en UI)
-      case "tipos-comprobante": {
-        const { token, sign } = await getTA("wsfe");
-        result = await callArca("wsfe", "FEParamGetTiposCbte", {
-          Auth: { Token: token, Sign: sign, Cuit: CUIT },
-        });
-        break;
-      }
-
-      // 4) Facturar — Factura C ($100 sin IVA ni nada, simple)
       case "facturar": {
         const { token, sign } = await getTA("wsfe");
         const puntoVenta = payload.puntoVenta ?? 1;
-        const tipoCbte = payload.tipoCbte ?? 11; // 11 = Factura C
+        const tipoCbte = payload.tipoCbte ?? 11;
         const importe = payload.importe ?? 100;
 
-        // Obtener último y sumarle 1
         const ultimo = await callArca("wsfe", "FECompUltimoAutorizado", {
           Auth: { Token: token, Sign: sign, Cuit: CUIT },
           PtoVta: puntoVenta,
@@ -146,22 +233,10 @@ Deno.serve(async (req) => {
                 ImpIVA: 0,
                 MonId: "PES",
                 MonCotiz: 1,
-                CondicionIVAReceptorId: payload.condicionIVAReceptor ?? 5, // 5 = consumidor final
+                CondicionIVAReceptorId: payload.condicionIVAReceptor ?? 5,
               },
             },
           },
-        });
-        break;
-      }
-
-      // 5) Consultar padrón (requiere WS distinto)
-      case "consultar-padron": {
-        const { token, sign } = await getTA("ws_sr_constancia_inscripcion");
-        result = await callArca("ws_sr_constancia_inscripcion", "getPersona_v2", {
-          token,
-          sign,
-          cuitRepresentada: CUIT,
-          idPersona: String(payload.cuitConsultado),
         });
         break;
       }

@@ -1,13 +1,18 @@
 // src/components/ArcaTester.tsx
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 type Action =
   | "estado"
+  | "crear-certificado"
+  | "autorizar-wsfe"
   | "ultimo-comprobante"
-  | "tipos-comprobante"
-  | "facturar"
-  | "consultar-padron";
+  | "facturar";
 
 export default function ArcaTester() {
   const [action, setAction] = useState<Action>("estado");
@@ -22,7 +27,6 @@ export default function ArcaTester() {
       const { data, error } = await supabase.functions.invoke("arca-handler", {
         body: { action, payload: JSON.parse(payload || "{}") },
       });
-      // Si la function devuelve 500, Supabase mete el cuerpo en error.context
       if (error) {
         const ctx = (error as any).context;
         const body = ctx ? await ctx.text?.() : null;
@@ -43,12 +47,15 @@ export default function ArcaTester() {
     setResponse(null);
   };
 
+  const isSetupAction = action === "crear-certificado" || action === "autorizar-wsfe";
+
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-bold">ARCA · Tester</h1>
       <p className="text-sm text-gray-500">
-        Banco de pruebas para web services de ARCA (ex AFIP) vía AFIP SDK. Empezá por
-        <strong> estado</strong>.
+        Orden recomendado: <strong>estado</strong> → <strong>crear-certificado</strong> →
+        (guardar cert+key en secrets) → <strong>autorizar-wsfe</strong> →
+        <strong> ultimo-comprobante</strong> → <strong>facturar</strong>.
       </p>
 
       <div className="flex gap-2 flex-wrap">
@@ -65,6 +72,13 @@ export default function ArcaTester() {
         ))}
       </div>
 
+      {isSetupAction && (
+        <div className="bg-yellow-50 border border-yellow-300 rounded p-3 text-sm text-yellow-900">
+          ⚠️ Esta acción requiere tu <strong>clave fiscal de ARCA</strong>. Se envía directo a AFIP
+          SDK por HTTPS. Después de usarla, considerá rotar tu clave fiscal en arca.gob.ar.
+        </div>
+      )}
+
       <textarea
         value={payload}
         onChange={(e) => setPayload(e.target.value)}
@@ -76,11 +90,15 @@ export default function ArcaTester() {
         disabled={loading}
         className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
       >
-        {loading ? "Enviando a ARCA..." : "Ejecutar"}
+        {loading
+          ? isSetupAction
+            ? "Ejecutando automatización (puede tardar hasta 2 min)..."
+            : "Enviando a ARCA..."
+          : "Ejecutar"}
       </button>
 
       {response && (
-        <pre className="bg-gray-900 text-green-300 p-4 rounded text-xs overflow-auto max-h-96">
+        <pre className="bg-gray-900 text-green-300 p-4 rounded text-xs overflow-auto max-h-[500px]">
           {JSON.stringify(response, null, 2)}
         </pre>
       )}
@@ -90,12 +108,20 @@ export default function ArcaTester() {
 
 const presets: Record<Action, string> = {
   estado: "{}",
+  "crear-certificado": JSON.stringify(
+    { password: "TU_CLAVE_FISCAL_ARCA", alias: "plano" },
+    null,
+    2
+  ),
+  "autorizar-wsfe": JSON.stringify(
+    { password: "TU_CLAVE_FISCAL_ARCA", alias: "plano" },
+    null,
+    2
+  ),
   "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
-  "tipos-comprobante": "{}",
   facturar: JSON.stringify(
     { puntoVenta: 1, tipoCbte: 11, importe: 100, docTipo: 99, docNro: 0 },
     null,
     2
   ),
-  "consultar-padron": JSON.stringify({ cuitConsultado: "20111111112" }, null, 2),
 };
