@@ -1,81 +1,142 @@
 // supabase/functions/arca-handler/index.ts
-// Edge Function única para probar todo el flujo de ARCA vía AFIP SDK
-// Actions: facturar | consultar-padron | constatar | ultimo-comprobante
+// Edge Function para ARCA vía AFIP SDK
+// Flujo correcto: 1) /auth obtiene TA (token+sign) 2) /requests ejecuta método del WS
+// Actions: estado | facturar | consultar-padron | ultimo-comprobante | tipos-comprobante
 
 const AFIPSDK_URL = "https://app.afipsdk.com/api/v1";
 const TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN")!;
 const CUIT = Deno.env.get("ARCA_CUIT")!;
 const PRODUCTION = Deno.env.get("ARCA_PRODUCTION") === "true";
+const ENV = PRODUCTION ? "prod" : "dev";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-// Helper: llama a cualquier web service de ARCA vía AFIP SDK
-// deno-lint-ignore no-explicit-any
-async function callArca(webService: string, method: string, params: any) {
+// ──────────────────────────────────────────────────────────
+// Paso 1: obtener Ticket de Acceso (TA) → { token, sign }
+// ──────────────────────────────────────────────────────────
+async function getTA(wsid: string) {
+  console.log(`[getTA] Solicitando TA para wsid=${wsid} env=${ENV} cuit=${CUIT}`);
+
+  const res = await fetch(`${AFIPSDK_URL}/afip/auth`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${TOKEN}`,
+    },
+    body: JSON.stringify({ environment: ENV, tax_id: CUIT, wsid }),
+  });
+
+  const data = await res.json();
+  console.log(`[getTA] status=${res.status} body=${JSON.stringify(data).slice(0, 300)}`);
+
+  if (!res.ok) {
+    throw new Error(`auth failed (${res.status}): ${JSON.stringify(data)}`);
+  }
+  return data; // { token, sign, expiration }
+}
+
+// ──────────────────────────────────────────────────────────
+// Paso 2: ejecutar método del WS de ARCA
+// ──────────────────────────────────────────────────────────
+async function callArca(wsid: string, method: string, params: any) {
+  console.log(`[callArca] wsid=${wsid} method=${method}`);
+
   const res = await fetch(`${AFIPSDK_URL}/afip/requests`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
     },
-    body: JSON.stringify({
-      environment: PRODUCTION ? "prod" : "dev",
-      tax_id: CUIT,
-      web_service: webService,
-      method,
-      params,
-    }),
+    body: JSON.stringify({ environment: ENV, wsid, method, params }),
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(JSON.stringify(data));
+  console.log(`[callArca] status=${res.status} body=${JSON.stringify(data).slice(0, 500)}`);
+
+  if (!res.ok) {
+    throw new Error(`request failed (${res.status}): ${JSON.stringify(data)}`);
+  }
   return data;
 }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
+  // Chequeo de secrets
+  if (!TOKEN || !CUIT) {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        error: "Faltan secrets ARCA_ACCESS_TOKEN o ARCA_CUIT en la Edge Function",
+      }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+
   try {
-    const { action, payload } = await req.json();
+    const { action, payload = {} } = await req.json();
+    console.log(`[handler] action=${action} payload=${JSON.stringify(payload)}`);
 
     let result;
+
     switch (action) {
-      // ──────────────────────────────────────────────────────────
-      // 1) Emitir Factura C (ideal para monotributo / homo)
-      // ──────────────────────────────────────────────────────────
+      // 1) Ping al servidor de facturación (NO requiere TA — el más simple para testear)
+      case "estado": {
+        result = await callArca("wsfe", "FEDummy", {});
+        break;
+      }
+
+      // 2) Último comprobante autorizado (requiere TA)
+      case "ultimo-comprobante": {
+        const { token, sign } = await getTA("wsfe");
+        result = await callArca("wsfe", "FECompUltimoAutorizado", {
+          Auth: { Token: token, Sign: sign, Cuit: CUIT },
+          PtoVta: payload.puntoVenta ?? 1,
+          CbteTipo: payload.tipoCbte ?? 11,
+        });
+        break;
+      }
+
+      // 3) Tipos de comprobante disponibles (útil para listar opciones en UI)
+      case "tipos-comprobante": {
+        const { token, sign } = await getTA("wsfe");
+        result = await callArca("wsfe", "FEParamGetTiposCbte", {
+          Auth: { Token: token, Sign: sign, Cuit: CUIT },
+        });
+        break;
+      }
+
+      // 4) Facturar — Factura C ($100 sin IVA ni nada, simple)
       case "facturar": {
+        const { token, sign } = await getTA("wsfe");
         const puntoVenta = payload.puntoVenta ?? 1;
         const tipoCbte = payload.tipoCbte ?? 11; // 11 = Factura C
-        const importe = payload.importe;
-        const docNro = payload.docNro ?? 0; // consumidor final = 0
-        const docTipo = payload.docTipo ?? 99; // 99 = sin identificar
+        const importe = payload.importe ?? 100;
 
-        // 1.a) Obtener último comprobante autorizado en ARCA
+        // Obtener último y sumarle 1
         const ultimo = await callArca("wsfe", "FECompUltimoAutorizado", {
-          Auth: { Cuit: Number(CUIT) },
+          Auth: { Token: token, Sign: sign, Cuit: CUIT },
           PtoVta: puntoVenta,
           CbteTipo: tipoCbte,
         });
-        const proximo = (ultimo.FECompUltimoAutorizadoResult?.CbteNro ?? 0) + 1;
+        const nro = (ultimo.CbteNro ?? 0) + 1;
+        const hoy = Number(new Date().toISOString().slice(0, 10).replace(/-/g, ""));
 
-        // 1.b) Solicitar CAE a ARCA
-        const hoy = new Date().toISOString().slice(0, 10).replace(/-/g, "");
         result = await callArca("wsfe", "FECAESolicitar", {
-          Auth: { Cuit: Number(CUIT) },
+          Auth: { Token: token, Sign: sign, Cuit: CUIT },
           FeCAEReq: {
             FeCabReq: { CantReg: 1, PtoVta: puntoVenta, CbteTipo: tipoCbte },
             FeDetReq: {
               FECAEDetRequest: {
-                Concepto: 1, // 1 = productos
-                DocTipo: docTipo,
-                DocNro: docNro,
-                CbteDesde: proximo,
-                CbteHasta: proximo,
+                Concepto: 1,
+                DocTipo: payload.docTipo ?? 99,
+                DocNro: payload.docNro ?? 0,
+                CbteDesde: nro,
+                CbteHasta: nro,
                 CbteFch: hoy,
                 ImpTotal: importe,
                 ImpTotConc: 0,
@@ -85,6 +146,7 @@ Deno.serve(async (req) => {
                 ImpIVA: 0,
                 MonId: "PES",
                 MonCotiz: 1,
+                CondicionIVAReceptorId: payload.condicionIVAReceptor ?? 5, // 5 = consumidor final
               },
             },
           },
@@ -92,49 +154,14 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // ──────────────────────────────────────────────────────────
-      // 2) Consultar padrón de ARCA (datos de contribuyente por CUIT)
-      // ──────────────────────────────────────────────────────────
+      // 5) Consultar padrón (requiere WS distinto)
       case "consultar-padron": {
-        result = await callArca("ws_sr_constancia_inscripcion", "getPersona", {
-          token: "AUTO",
-          sign: "AUTO",
-          cuitRepresentada: Number(CUIT),
-          idPersona: Number(payload.cuitConsultado),
-        });
-        break;
-      }
-
-      // ──────────────────────────────────────────────────────────
-      // 3) Constatar comprobante en ARCA (validar un CAE ya emitido)
-      // ──────────────────────────────────────────────────────────
-      case "constatar": {
-        result = await callArca("ws_sr_constancia_comprobantes", "comprobanteConstatar", {
-          Auth: { Cuit: Number(CUIT) },
-          CmpReq: {
-            CbteModo: "CAE",
-            CuitEmisor: payload.cuitEmisor,
-            PtoVta: payload.puntoVenta,
-            CbteTipo: payload.tipoCbte,
-            CbteNro: payload.cbteNro,
-            CbteFch: payload.fecha, // YYYYMMDD
-            ImpTotal: payload.importe,
-            CodAutorizacion: payload.cae,
-            DocTipoReceptor: payload.docTipoReceptor ?? 99,
-            DocNroReceptor: payload.docNroReceptor ?? 0,
-          },
-        });
-        break;
-      }
-
-      // ──────────────────────────────────────────────────────────
-      // 4) Último comprobante autorizado en ARCA (útil para debug)
-      // ──────────────────────────────────────────────────────────
-      case "ultimo-comprobante": {
-        result = await callArca("wsfe", "FECompUltimoAutorizado", {
-          Auth: { Cuit: Number(CUIT) },
-          PtoVta: payload.puntoVenta ?? 1,
-          CbteTipo: payload.tipoCbte ?? 11,
+        const { token, sign } = await getTA("ws_sr_constancia_inscripcion");
+        result = await callArca("ws_sr_constancia_inscripcion", "getPersona_v2", {
+          token,
+          sign,
+          cuitRepresentada: CUIT,
+          idPersona: String(payload.cuitConsultado),
         });
         break;
       }
@@ -144,13 +171,14 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ ok: true, environment: PRODUCTION ? "prod" : "dev", result }),
+      JSON.stringify({ ok: true, environment: ENV, action, result }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-  } catch (err) {
-    return new Response(JSON.stringify({ ok: false, error: String(err) }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+  } catch (err: any) {
+    console.error("[handler] ERROR", err);
+    return new Response(
+      JSON.stringify({ ok: false, error: err.message ?? String(err) }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 });
