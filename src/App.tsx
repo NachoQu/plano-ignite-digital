@@ -13,6 +13,7 @@ import Reportes from "./pages/Reportes";
 import Login from "./pages/Login";
 import Facturacion from "./pages/Facturacion";
 import Prospeccion from "./pages/Prospeccion";
+import ArcaTester from "./components/ArcaTester";
 import '@/i18n/config';
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/facturacion" element={<Facturacion />} />
             <Route path="/prospeccion" element={<Prospeccion />} />
+            <Route path="/arca-test" element={<ArcaTester />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
