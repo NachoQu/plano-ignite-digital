@@ -1,1 +1,4 @@
 project_id = "dnznkefuqjezhiijbbox"
+
+[functions.arca-handler]
+verify_jwt = false
