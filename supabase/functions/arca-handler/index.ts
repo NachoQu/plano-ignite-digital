@@ -1,6 +1,5 @@
 // supabase/functions/arca-handler/index.ts
-// v3: agrega acciones de setup inicial (crear-certificado, autorizar-wsfe)
-// Flujo: 1) crear-certificado 2) guardar cert+key en secrets 3) autorizar-wsfe 4) usar WSs
+// v4: fix en autorizar-wsfe (parámetro correcto es 'service', no 'wsid')
 
 const AFIPSDK_URL = "https://app.afipsdk.com/api/v1";
 const TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN")!;
@@ -8,7 +7,6 @@ const CUIT = Deno.env.get("ARCA_CUIT")!;
 const PRODUCTION = Deno.env.get("ARCA_PRODUCTION") === "true";
 const ENV = PRODUCTION ? "prod" : "dev";
 
-// Certificado y key (se cargan después de correr crear-certificado)
 const CERT = Deno.env.get("ARCA_CERT") ?? "";
 const KEY = Deno.env.get("ARCA_KEY") ?? "";
 
@@ -18,9 +16,6 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-// ──────────────────────────────────────────────────────────
-// Helper: obtener TA (token + sign) para un web service
-// ──────────────────────────────────────────────────────────
 async function getTA(wsid: string) {
   if (!CERT || !KEY) {
     throw new Error(
@@ -50,9 +45,6 @@ async function getTA(wsid: string) {
   return data;
 }
 
-// ──────────────────────────────────────────────────────────
-// Helper: llamar método de WS de ARCA
-// ──────────────────────────────────────────────────────────
 async function callArca(wsid: string, method: string, params: any) {
   const res = await fetch(`${AFIPSDK_URL}/afip/requests`, {
     method: "POST",
@@ -70,11 +62,7 @@ async function callArca(wsid: string, method: string, params: any) {
   return data;
 }
 
-// ──────────────────────────────────────────────────────────
-// Helper: correr automatización y esperar resultado
-// ──────────────────────────────────────────────────────────
 async function runAutomation(automation: string, params: any, maxWaitMs = 180_000) {
-  // 1) Iniciar automatización
   const startRes = await fetch(`${AFIPSDK_URL}/automations`, {
     method: "POST",
     headers: {
@@ -91,13 +79,11 @@ async function runAutomation(automation: string, params: any, maxWaitMs = 180_00
     throw new Error(`automation start failed (${startRes.status}): ${JSON.stringify(startData)}`);
   }
 
-  // Si ya viene completa, devolver
   if (startData.status === "complete") return startData;
 
   const id = startData.id;
   if (!id) throw new Error(`automation no devolvió id: ${JSON.stringify(startData)}`);
 
-  // 2) Polling cada 3s hasta que complete o falle
   const started = Date.now();
   while (Date.now() - started < maxWaitMs) {
     await new Promise((r) => setTimeout(r, 3000));
@@ -134,11 +120,6 @@ Deno.serve(async (req) => {
     let result;
 
     switch (action) {
-      // ═══════════════════════════════════════════════════════
-      // SETUP (solo se corre 1 vez por CUIT)
-      // ═══════════════════════════════════════════════════════
-
-      // Crear certificado de desarrollo — devuelve cert y key
       case "crear-certificado": {
         if (!payload.password) {
           throw new Error("Falta 'password' en payload (clave fiscal de ARCA)");
@@ -151,7 +132,6 @@ Deno.serve(async (req) => {
           alias: payload.alias ?? "plano",
         });
 
-        // Extraer solo cert y key para copiar fácil
         if (result.data?.cert && result.data?.key) {
           result = {
             ...result,
@@ -164,25 +144,21 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // Autorizar web service wsfe al certificado (paso posterior a crear cert)
       case "autorizar-wsfe": {
         if (!payload.password) {
           throw new Error("Falta 'password' en payload (clave fiscal de ARCA)");
         }
 
+        // ⬇ FIX: el parámetro correcto es 'service', no 'wsid'
         result = await runAutomation("auth-web-service-dev", {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
           alias: payload.alias ?? "plano",
-          wsid: "wsfe",
+          service: payload.service ?? "wsfe",
         });
         break;
       }
-
-      // ═══════════════════════════════════════════════════════
-      // USO NORMAL (requiere cert + key + wsfe autorizado)
-      // ═══════════════════════════════════════════════════════
 
       case "estado": {
         result = await callArca("wsfe", "FEDummy", {});
