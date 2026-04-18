@@ -2,11 +2,16 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-type Action = "facturar" | "consultar-padron" | "constatar" | "ultimo-comprobante";
+type Action =
+  | "estado"
+  | "ultimo-comprobante"
+  | "tipos-comprobante"
+  | "facturar"
+  | "consultar-padron";
 
 export default function ArcaTester() {
-  const [action, setAction] = useState<Action>("facturar");
-  const [payload, setPayload] = useState<string>(presets.facturar);
+  const [action, setAction] = useState<Action>("estado");
+  const [payload, setPayload] = useState<string>(presets.estado);
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -15,9 +20,16 @@ export default function ArcaTester() {
     setResponse(null);
     try {
       const { data, error } = await supabase.functions.invoke("arca-handler", {
-        body: { action, payload: JSON.parse(payload) },
+        body: { action, payload: JSON.parse(payload || "{}") },
       });
-      setResponse(error ? { error: error.message } : data);
+      // Si la function devuelve 500, Supabase mete el cuerpo en error.context
+      if (error) {
+        const ctx = (error as any).context;
+        const body = ctx ? await ctx.text?.() : null;
+        setResponse({ error: error.message, body });
+      } else {
+        setResponse(data);
+      }
     } catch (e: any) {
       setResponse({ error: e.message });
     } finally {
@@ -35,7 +47,8 @@ export default function ArcaTester() {
     <div className="max-w-3xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-bold">ARCA · Tester</h1>
       <p className="text-sm text-gray-500">
-        Banco de pruebas para web services de ARCA (ex AFIP) vía AFIP SDK.
+        Banco de pruebas para web services de ARCA (ex AFIP) vía AFIP SDK. Empezá por
+        <strong> estado</strong>.
       </p>
 
       <div className="flex gap-2 flex-wrap">
@@ -55,7 +68,7 @@ export default function ArcaTester() {
       <textarea
         value={payload}
         onChange={(e) => setPayload(e.target.value)}
-        className="w-full h-48 font-mono text-sm p-3 border rounded"
+        className="w-full h-40 font-mono text-sm p-3 border rounded"
       />
 
       <button
@@ -76,24 +89,13 @@ export default function ArcaTester() {
 }
 
 const presets: Record<Action, string> = {
+  estado: "{}",
+  "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
+  "tipos-comprobante": "{}",
   facturar: JSON.stringify(
-    { puntoVenta: 1, tipoCbte: 11, importe: 1000, docTipo: 99, docNro: 0 },
+    { puntoVenta: 1, tipoCbte: 11, importe: 100, docTipo: 99, docNro: 0 },
     null,
     2
   ),
   "consultar-padron": JSON.stringify({ cuitConsultado: "20111111112" }, null, 2),
-  constatar: JSON.stringify(
-    {
-      cuitEmisor: 20111111112,
-      puntoVenta: 1,
-      tipoCbte: 11,
-      cbteNro: 1,
-      fecha: "20260418",
-      importe: 1000,
-      cae: "70000000000000",
-    },
-    null,
-    2
-  ),
-  "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
 };
