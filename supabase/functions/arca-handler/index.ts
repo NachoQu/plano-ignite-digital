@@ -1,5 +1,5 @@
 // supabase/functions/arca-handler/index.ts
-// v4: fix en autorizar-wsfe (parámetro correcto es 'service', no 'wsid')
+// v5: normaliza saltos de línea en CERT/KEY automáticamente
 
 const AFIPSDK_URL = "https://app.afipsdk.com/api/v1";
 const TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN")!;
@@ -7,8 +7,14 @@ const CUIT = Deno.env.get("ARCA_CUIT")!;
 const PRODUCTION = Deno.env.get("ARCA_PRODUCTION") === "true";
 const ENV = PRODUCTION ? "prod" : "dev";
 
-const CERT = Deno.env.get("ARCA_CERT") ?? "";
-const KEY = Deno.env.get("ARCA_KEY") ?? "";
+// Normaliza PEM: convierte \n literal a salto de línea real
+// Soluciona el problema de pegar certs como vienen del JSON
+function normalizePEM(pem: string): string {
+  return pem.replace(/\\n/g, "\n").replace(/\\r/g, "\r").trim();
+}
+
+const CERT = normalizePEM(Deno.env.get("ARCA_CERT") ?? "");
+const KEY = normalizePEM(Deno.env.get("ARCA_KEY") ?? "");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,7 +25,19 @@ const corsHeaders = {
 async function getTA(wsid: string) {
   if (!CERT || !KEY) {
     throw new Error(
-      "Faltan ARCA_CERT y/o ARCA_KEY en secrets. Ejecutá primero la acción 'crear-certificado'."
+      "Faltan ARCA_CERT y/o ARCA_KEY en secrets. Ejecutá primero 'crear-certificado'."
+    );
+  }
+
+  // Validación rápida de formato PEM
+  if (!CERT.startsWith("-----BEGIN")) {
+    throw new Error(
+      "ARCA_CERT no tiene formato PEM válido. Debe empezar con -----BEGIN CERTIFICATE-----"
+    );
+  }
+  if (!KEY.startsWith("-----BEGIN")) {
+    throw new Error(
+      "ARCA_KEY no tiene formato PEM válido. Debe empezar con -----BEGIN RSA PRIVATE KEY-----"
     );
   }
 
@@ -136,9 +154,9 @@ Deno.serve(async (req) => {
           result = {
             ...result,
             _instrucciones:
-              "Copiá 'data.cert' y 'data.key' (incluyendo los -----BEGIN...----- y -----END...-----) " +
-              "y guardalos como secrets ARCA_CERT y ARCA_KEY en Supabase. " +
-              "Después redesplegá la Edge Function.",
+              "Copiá 'data.cert' y 'data.key' tal cual vienen (con \\n literales) y " +
+              "guardalos como secrets ARCA_CERT y ARCA_KEY en Supabase. " +
+              "La Edge Function los convierte automáticamente. Redesplegá después de guardar.",
           };
         }
         break;
@@ -149,7 +167,6 @@ Deno.serve(async (req) => {
           throw new Error("Falta 'password' en payload (clave fiscal de ARCA)");
         }
 
-        // ⬇ FIX: el parámetro correcto es 'service', no 'wsid'
         result = await runAutomation("auth-web-service-dev", {
           cuit: CUIT,
           username: payload.username ?? CUIT,
@@ -157,6 +174,23 @@ Deno.serve(async (req) => {
           alias: payload.alias ?? "plano",
           service: payload.service ?? "wsfe",
         });
+        break;
+      }
+
+      // Debug: verificar que cert/key están bien cargados (sin mostrar contenido)
+      case "verificar-cert": {
+        result = {
+          cert_cargado: !!CERT,
+          cert_longitud: CERT.length,
+          cert_empieza_con: CERT.slice(0, 30),
+          cert_termina_con: CERT.slice(-30),
+          cert_tiene_saltos_reales: CERT.includes("\n"),
+          key_cargada: !!KEY,
+          key_longitud: KEY.length,
+          key_empieza_con: KEY.slice(0, 30),
+          key_termina_con: KEY.slice(-30),
+          key_tiene_saltos_reales: KEY.includes("\n"),
+        };
         break;
       }
 

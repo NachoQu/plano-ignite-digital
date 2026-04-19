@@ -6,6 +6,7 @@ type Action =
   | "estado"
   | "crear-certificado"
   | "autorizar-wsfe"
+  | "verificar-cert"
   | "ultimo-comprobante"
   | "facturar";
 
@@ -48,9 +49,8 @@ export default function ArcaTester() {
     <div className="max-w-3xl mx-auto p-6 space-y-4">
       <h1 className="text-2xl font-bold">ARCA · Tester</h1>
       <p className="text-sm text-gray-500">
-        Orden recomendado: <strong>estado</strong> → <strong>crear-certificado</strong> →
-        (guardar cert+key en secrets) → <strong>autorizar-wsfe</strong> →
-        <strong> ultimo-comprobante</strong> → <strong>facturar</strong>.
+        Setup: estado → crear-certificado → (guardar secrets) → autorizar-wsfe → verificar-cert →
+        ultimo-comprobante → facturar
       </p>
 
       <div className="flex gap-2 flex-wrap">
@@ -69,8 +69,7 @@ export default function ArcaTester() {
 
       {isSetupAction && (
         <div className="bg-yellow-50 border border-yellow-300 rounded p-3 text-sm text-yellow-900">
-          ⚠️ Esta acción requiere tu <strong>clave fiscal de ARCA</strong>. Se envía directo a AFIP
-          SDK por HTTPS. Después de usarla, considerá rotar tu clave fiscal en arca.gob.ar.
+          ⚠️ Requiere tu clave fiscal de ARCA. Después considerá rotarla en arca.gob.ar.
         </div>
       )}
 
@@ -87,7 +86,7 @@ export default function ArcaTester() {
       >
         {loading
           ? isSetupAction
-            ? "Ejecutando automatización (puede tardar hasta 2 min)..."
+            ? "Ejecutando automatización (hasta 2 min)..."
             : "Enviando a ARCA..."
           : "Ejecutar"}
       </button>
@@ -113,6 +112,7 @@ const presets: Record<Action, string> = {
     null,
     2
   ),
+  "verificar-cert": "{}",
   "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
   facturar: JSON.stringify(
     { puntoVenta: 1, tipoCbte: 11, importe: 100, docTipo: 99, docNro: 0 },
