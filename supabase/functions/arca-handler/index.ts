@@ -1,5 +1,5 @@
 // supabase/functions/arca-handler/index.ts
-// v6: cert y key en base64 (evita corrupción de saltos de línea en Supabase Secrets)
+// v7: normaliza PEM decodificado y re-emite base64 canónico para evitar errores de parseo en AFIPSDK
 
 const AFIPSDK_URL = "https://app.afipsdk.com/api/v1";
 const TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN")!;
