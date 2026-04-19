@@ -1,5 +1,5 @@
 // supabase/functions/arca-handler/index.ts
-// v5: normaliza saltos de línea en CERT/KEY automáticamente
+// v6: cert y key en base64 (evita corrupción de saltos de línea en Supabase Secrets)
 
 const AFIPSDK_URL = "https://app.afipsdk.com/api/v1";
 const TOKEN = Deno.env.get("ARCA_ACCESS_TOKEN")!;
@@ -7,14 +7,19 @@ const CUIT = Deno.env.get("ARCA_CUIT")!;
 const PRODUCTION = Deno.env.get("ARCA_PRODUCTION") === "true";
 const ENV = PRODUCTION ? "prod" : "dev";
 
-// Normaliza PEM: convierte \n literal a salto de línea real
-// Soluciona el problema de pegar certs como vienen del JSON
-function normalizePEM(pem: string): string {
-  return pem.replace(/\\n/g, "\n").replace(/\\r/g, "\r").trim();
+// Decodifica base64 a string UTF-8 (el PEM original)
+function decodeB64(b64: string): string {
+  if (!b64) return "";
+  try {
+    return atob(b64.trim());
+  } catch (e) {
+    console.error("Error decodificando base64:", e);
+    return "";
+  }
 }
 
-const CERT = normalizePEM(Deno.env.get("ARCA_CERT") ?? "");
-const KEY = normalizePEM(Deno.env.get("ARCA_KEY") ?? "");
+const CERT = decodeB64(Deno.env.get("ARCA_CERT_B64") ?? "");
+const KEY = decodeB64(Deno.env.get("ARCA_KEY_B64") ?? "");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -25,20 +30,14 @@ const corsHeaders = {
 async function getTA(wsid: string) {
   if (!CERT || !KEY) {
     throw new Error(
-      "Faltan ARCA_CERT y/o ARCA_KEY en secrets. Ejecutá primero 'crear-certificado'."
+      "Faltan ARCA_CERT_B64 y/o ARCA_KEY_B64 en secrets. Corré 'crear-certificado' y seguí las instrucciones."
     );
   }
-
-  // Validación rápida de formato PEM
   if (!CERT.startsWith("-----BEGIN")) {
-    throw new Error(
-      "ARCA_CERT no tiene formato PEM válido. Debe empezar con -----BEGIN CERTIFICATE-----"
-    );
+    throw new Error("ARCA_CERT_B64 decodeado no empieza con -----BEGIN. Reviselo.");
   }
   if (!KEY.startsWith("-----BEGIN")) {
-    throw new Error(
-      "ARCA_KEY no tiene formato PEM válido. Debe empezar con -----BEGIN RSA PRIVATE KEY-----"
-    );
+    throw new Error("ARCA_KEY_B64 decodeado no empieza con -----BEGIN. Reviselo.");
   }
 
   const res = await fetch(`${AFIPSDK_URL}/afip/auth`, {
@@ -143,21 +142,32 @@ Deno.serve(async (req) => {
           throw new Error("Falta 'password' en payload (clave fiscal de ARCA)");
         }
 
-        result = await runAutomation("create-cert-dev", {
+        const automationResult = await runAutomation("create-cert-dev", {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
           alias: payload.alias ?? "plano",
         });
 
-        if (result.data?.cert && result.data?.key) {
+        // Convertir cert y key a base64 automáticamente, así el usuario solo copia-pega
+        if (automationResult.data?.cert && automationResult.data?.key) {
+          const cert_b64 = btoa(automationResult.data.cert);
+          const key_b64 = btoa(automationResult.data.key);
+
           result = {
-            ...result,
+            status: automationResult.status,
             _instrucciones:
-              "Copiá 'data.cert' y 'data.key' tal cual vienen (con \\n literales) y " +
-              "guardalos como secrets ARCA_CERT y ARCA_KEY en Supabase. " +
-              "La Edge Function los convierte automáticamente. Redesplegá después de guardar.",
+              "Copiá los strings cert_b64 y key_b64 de abajo y pegalos como secrets " +
+              "ARCA_CERT_B64 y ARCA_KEY_B64 en Supabase. Son base64, una sola línea, " +
+              "no tienen saltos ni caracteres raros. Redesplegá después de guardar.",
+            cert_b64,
+            key_b64,
+            // Los PEM originales también por si querés verlos
+            _cert_original_para_verificar: automationResult.data.cert.slice(0, 50) + "...",
+            _key_original_para_verificar: automationResult.data.key.slice(0, 50) + "...",
           };
+        } else {
+          result = automationResult;
         }
         break;
       }
@@ -177,19 +187,20 @@ Deno.serve(async (req) => {
         break;
       }
 
-      // Debug: verificar que cert/key están bien cargados (sin mostrar contenido)
       case "verificar-cert": {
         result = {
           cert_cargado: !!CERT,
           cert_longitud: CERT.length,
-          cert_empieza_con: CERT.slice(0, 30),
-          cert_termina_con: CERT.slice(-30),
+          cert_empieza_con: CERT.slice(0, 40),
+          cert_termina_con: CERT.slice(-40),
           cert_tiene_saltos_reales: CERT.includes("\n"),
+          cert_cantidad_saltos: (CERT.match(/\n/g) || []).length,
           key_cargada: !!KEY,
           key_longitud: KEY.length,
-          key_empieza_con: KEY.slice(0, 30),
-          key_termina_con: KEY.slice(-30),
+          key_empieza_con: KEY.slice(0, 40),
+          key_termina_con: KEY.slice(-40),
           key_tiene_saltos_reales: KEY.includes("\n"),
+          key_cantidad_saltos: (KEY.match(/\n/g) || []).length,
         };
         break;
       }
