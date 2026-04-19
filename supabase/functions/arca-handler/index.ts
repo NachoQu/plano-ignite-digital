@@ -11,15 +11,27 @@ const ENV = PRODUCTION ? "prod" : "dev";
 function decodeB64(b64: string): string {
   if (!b64) return "";
   try {
-    return atob(b64.trim());
+    const binary = atob(b64.trim());
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
   } catch (e) {
     console.error("Error decodificando base64:", e);
     return "";
   }
 }
 
-const CERT = decodeB64(Deno.env.get("ARCA_CERT_B64") ?? "");
-const KEY = decodeB64(Deno.env.get("ARCA_KEY_B64") ?? "");
+function normalizePem(pem: string): string {
+  if (!pem) return "";
+
+  return `${pem
+    .replace(/\u0000/g, "")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .trim()}\n`;
+}
+
+const CERT = normalizePem(decodeB64(Deno.env.get("ARCA_CERT_B64") ?? ""));
+const KEY = normalizePem(decodeB64(Deno.env.get("ARCA_KEY_B64") ?? ""));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,6 +51,10 @@ async function getTA(wsid: string) {
   if (!KEY.startsWith("-----BEGIN")) {
     throw new Error("ARCA_KEY_B64 decodeado no empieza con -----BEGIN. Reviselo.");
   }
+
+  console.log(
+    `[getTA] wsid=${wsid} certLen=${CERT.length} keyLen=${KEY.length} certCR=${CERT.includes("\r")} keyCR=${KEY.includes("\r")}`
+  );
 
   const res = await fetch(`${AFIPSDK_URL}/afip/auth`, {
     method: "POST",
@@ -151,8 +167,10 @@ Deno.serve(async (req) => {
 
         // Convertir cert y key a base64 automáticamente, así el usuario solo copia-pega
         if (automationResult.data?.cert && automationResult.data?.key) {
-          const cert_b64 = btoa(automationResult.data.cert);
-          const key_b64 = btoa(automationResult.data.key);
+          const normalizedCert = normalizePem(automationResult.data.cert);
+          const normalizedKey = normalizePem(automationResult.data.key);
+          const cert_b64 = btoa(normalizedCert);
+          const key_b64 = btoa(normalizedKey);
 
           result = {
             status: automationResult.status,
@@ -163,8 +181,8 @@ Deno.serve(async (req) => {
             cert_b64,
             key_b64,
             // Los PEM originales también por si querés verlos
-            _cert_original_para_verificar: automationResult.data.cert.slice(0, 50) + "...",
-            _key_original_para_verificar: automationResult.data.key.slice(0, 50) + "...",
+            _cert_original_para_verificar: normalizedCert.slice(0, 50) + "...",
+            _key_original_para_verificar: normalizedKey.slice(0, 50) + "...",
           };
         } else {
           result = automationResult;
