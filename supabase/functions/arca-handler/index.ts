@@ -52,8 +52,16 @@ async function getTA(wsid: string) {
     throw new Error("ARCA_KEY_B64 decodeado no empieza con -----BEGIN. Reviselo.");
   }
 
+  const authPayload = {
+    environment: ENV,
+    tax_id: CUIT,
+    wsid,
+    cert: CERT,
+    key: KEY,
+  };
+
   console.log(
-    `[getTA] wsid=${wsid} certLen=${CERT.length} keyLen=${KEY.length} certCR=${CERT.includes("\r")} keyCR=${KEY.includes("\r")}`
+    `[getTA] wsid=${wsid} certLen=${CERT.length} keyLen=${KEY.length} certCR=${CERT.includes("\r")} keyCR=${KEY.includes("\r")} certB64Len=${btoa(CERT).length} keyB64Len=${btoa(KEY).length}`
   );
 
   const res = await fetch(`${AFIPSDK_URL}/afip/auth`, {
@@ -62,13 +70,7 @@ async function getTA(wsid: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${TOKEN}`,
     },
-    body: JSON.stringify({
-      environment: ENV,
-      tax_id: CUIT,
-      wsid,
-      cert: CERT,
-      key: KEY,
-    }),
+    body: JSON.stringify(authPayload),
   });
 
   const data = await res.json();
