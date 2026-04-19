@@ -52,10 +52,6 @@ async function getTA(wsid: string) {
     throw new Error("ARCA_KEY_B64 decodeado no empieza con -----BEGIN. Reviselo.");
   }
 
-  console.log(
-    `[getTA] wsid=${wsid} certLen=${CERT.length} keyLen=${KEY.length} certCR=${CERT.includes("\r")} keyCR=${KEY.includes("\r")}`
-  );
-
   const res = await fetch(`${AFIPSDK_URL}/afip/auth`, {
     method: "POST",
     headers: {
