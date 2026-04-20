@@ -60,6 +60,8 @@ const descriptions: Record<Action, string> = {
   "habilitar-admin-certs": "Habilita el servicio admin de certs en prod.",
   "crear-certificado-prod": "Genera cert/key reales de producción.",
   "autorizar-wsfe-prod": "Vincula el alias al WSFE en producción.",
+  "listar-puntos-venta": "Lista los puntos de venta habilitados en ARCA.",
+  "crear-punto-venta": "Da de alta un nuevo punto de venta para Web Services.",
   "ultimo-comprobante": "Consulta el último N° autorizado.",
   facturar: "Emite un comprobante de prueba.",
 };
