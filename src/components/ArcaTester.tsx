@@ -60,6 +60,39 @@ const descriptions: Record<Action, string> = {
   facturar: "Emite un comprobante de prueba.",
 };
 
+const presets: Record<Action, string> = {
+  estado: "{}",
+  "info-ambiente": "{}",
+  "verificar-cert": "{}",
+  "crear-certificado": JSON.stringify(
+    { password: "TU_CLAVE_FISCAL", alias: "plano" },
+    null,
+    2
+  ),
+  "autorizar-wsfe": JSON.stringify(
+    { password: "TU_CLAVE_FISCAL", alias: "plano" },
+    null,
+    2
+  ),
+  "habilitar-admin-certs": JSON.stringify({ password: "TU_CLAVE_FISCAL" }, null, 2),
+  "crear-certificado-prod": JSON.stringify(
+    { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
+    null,
+    2
+  ),
+  "autorizar-wsfe-prod": JSON.stringify(
+    { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
+    null,
+    2
+  ),
+  "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
+  facturar: JSON.stringify(
+    { puntoVenta: 1, tipoCbte: 11, importe: 1, docTipo: 99, docNro: 0 },
+    null,
+    2
+  ),
+};
+
 export default function ArcaTester() {
   const [action, setAction] = useState<Action>("info-ambiente");
   const [payload, setPayload] = useState<string>(presets["info-ambiente"]);
@@ -310,36 +343,3 @@ export default function ArcaTester() {
     </div>
   );
 }
-
-const presets: Record<Action, string> = {
-  estado: "{}",
-  "info-ambiente": "{}",
-  "verificar-cert": "{}",
-  "crear-certificado": JSON.stringify(
-    { password: "TU_CLAVE_FISCAL", alias: "plano" },
-    null,
-    2
-  ),
-  "autorizar-wsfe": JSON.stringify(
-    { password: "TU_CLAVE_FISCAL", alias: "plano" },
-    null,
-    2
-  ),
-  "habilitar-admin-certs": JSON.stringify({ password: "TU_CLAVE_FISCAL" }, null, 2),
-  "crear-certificado-prod": JSON.stringify(
-    { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
-    null,
-    2
-  ),
-  "autorizar-wsfe-prod": JSON.stringify(
-    { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
-    null,
-    2
-  ),
-  "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
-  facturar: JSON.stringify(
-    { puntoVenta: 1, tipoCbte: 11, importe: 1, docTipo: 99, docNro: 0 },
-    null,
-    2
-  ),
-};
