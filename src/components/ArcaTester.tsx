@@ -91,6 +91,17 @@ const presets: Record<Action, string> = {
     null,
     2
   ),
+  "listar-puntos-venta": JSON.stringify({ password: "TU_CLAVE_FISCAL" }, null, 2),
+  "crear-punto-venta": JSON.stringify(
+    {
+      password: "TU_CLAVE_FISCAL",
+      numero: 2,
+      nombreFantasia: "Plano Web",
+      sistema: "Factura Electrónica - Web Services",
+    },
+    null,
+    2
+  ),
   "ultimo-comprobante": JSON.stringify({ puntoVenta: 1, tipoCbte: 11 }, null, 2),
   facturar: JSON.stringify(
     { puntoVenta: 1, tipoCbte: 11, importe: 1, docTipo: 99, docNro: 0 },
