@@ -45,6 +45,8 @@ const labels: Record<Action, string> = {
   "habilitar-admin-certs": "Habilitar admin certs",
   "crear-certificado-prod": "Crear certificado (prod)",
   "autorizar-wsfe-prod": "Autorizar WSFE (prod)",
+  "listar-puntos-venta": "Listar puntos de venta",
+  "crear-punto-venta": "Crear punto de venta",
   "ultimo-comprobante": "Último comprobante",
   facturar: "Emitir factura",
 };
