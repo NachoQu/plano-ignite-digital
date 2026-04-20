@@ -27,10 +27,6 @@ const KEY_PROD = decodeB64(Deno.env.get("ARCA_KEY_PROD_B64") ?? "");
 const CERT = PRODUCTION ? CERT_PROD : CERT_DEV;
 const KEY = PRODUCTION ? KEY_PROD : KEY_DEV;
 
-function sanitizeAlias(alias: string): string {
-  return (alias ?? "").replace(/[^a-zA-Z0-9]/g, "");
-}
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -156,7 +152,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: sanitizeAlias(payload.alias ?? "plano"),
+          alias: payload.alias ?? "plano",
         });
 
         if (automationResult.data?.cert && automationResult.data?.key) {
@@ -180,7 +176,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: sanitizeAlias(payload.alias ?? "plano"),
+          alias: payload.alias ?? "plano",
           service: payload.service ?? "wsfe",
         });
         break;
@@ -196,7 +192,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: sanitizeAlias(payload.alias ?? "planoprod"),
+          alias: payload.alias ?? "plano-prod",
         });
 
         if (automationResult.data?.cert && automationResult.data?.key) {
@@ -221,7 +217,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: sanitizeAlias(payload.alias ?? "planoprod"),
+          alias: payload.alias ?? "plano-prod",
           service: payload.service ?? "wsfe",
         });
         break;
@@ -235,6 +231,35 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
+        });
+        break;
+      }
+
+      // ═══════════════════════════════════════════════════════
+      // PUNTOS DE VENTA
+      // ═══════════════════════════════════════════════════════
+      case "listar-puntos-venta": {
+        if (!payload.password) throw new Error("Falta 'password' (clave fiscal)");
+        result = await runAutomation("list-sales-points", {
+          cuit: CUIT,
+          username: payload.username ?? CUIT,
+          password: payload.password,
+        });
+        break;
+      }
+
+      case "crear-punto-venta": {
+        if (!payload.password) throw new Error("Falta 'password' (clave fiscal)");
+        if (!payload.numero) throw new Error("Falta 'numero' (número del nuevo punto de venta)");
+        if (!payload.nombreFantasia) throw new Error("Falta 'nombreFantasia'");
+
+        result = await runAutomation("create-sales-point", {
+          cuit: CUIT,
+          username: payload.username ?? CUIT,
+          password: payload.password,
+          number: payload.numero,
+          name: payload.nombreFantasia,
+          system: payload.sistema ?? "Factura Electrónica - Web Services",
         });
         break;
       }
