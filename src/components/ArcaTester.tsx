@@ -327,12 +327,12 @@ const presets: Record<Action, string> = {
   ),
   "habilitar-admin-certs": JSON.stringify({ password: "TU_CLAVE_FISCAL" }, null, 2),
   "crear-certificado-prod": JSON.stringify(
-    { password: "TU_CLAVE_FISCAL", alias: "plano-prod" },
+    { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
     null,
     2
   ),
   "autorizar-wsfe-prod": JSON.stringify(
-    { password: "TU_CLAVE_FISCAL", alias: "plano-prod" },
+    { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
     null,
     2
   ),

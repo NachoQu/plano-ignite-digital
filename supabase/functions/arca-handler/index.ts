@@ -27,6 +27,10 @@ const KEY_PROD = decodeB64(Deno.env.get("ARCA_KEY_PROD_B64") ?? "");
 const CERT = PRODUCTION ? CERT_PROD : CERT_DEV;
 const KEY = PRODUCTION ? KEY_PROD : KEY_DEV;
 
+function sanitizeAlias(alias: string): string {
+  return (alias ?? "").replace(/[^a-zA-Z0-9]/g, "");
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -152,7 +156,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano",
+          alias: sanitizeAlias(payload.alias ?? "plano"),
         });
 
         if (automationResult.data?.cert && automationResult.data?.key) {
@@ -176,7 +180,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano",
+          alias: sanitizeAlias(payload.alias ?? "plano"),
           service: payload.service ?? "wsfe",
         });
         break;
@@ -192,7 +196,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano-prod",
+          alias: sanitizeAlias(payload.alias ?? "planoprod"),
         });
 
         if (automationResult.data?.cert && automationResult.data?.key) {
@@ -217,7 +221,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano-prod",
+          alias: sanitizeAlias(payload.alias ?? "planoprod"),
           service: payload.service ?? "wsfe",
         });
         break;
