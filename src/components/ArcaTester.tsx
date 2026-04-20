@@ -31,6 +31,8 @@ type Action =
   | "habilitar-admin-certs"
   | "crear-certificado-prod"
   | "autorizar-wsfe-prod"
+  | "listar-puntos-venta"
+  | "crear-punto-venta"
   | "ultimo-comprobante"
   | "facturar";
 
