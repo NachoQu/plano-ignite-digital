@@ -149,6 +149,8 @@ export default function ArcaTester() {
     "crear-certificado-prod",
     "autorizar-wsfe-prod",
     "habilitar-admin-certs",
+    "listar-puntos-venta",
+    "crear-punto-venta",
   ].includes(action);
 
   const isProdAction = action.includes("prod");
