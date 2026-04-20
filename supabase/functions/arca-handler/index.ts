@@ -27,6 +27,10 @@ const KEY_PROD = decodeB64(Deno.env.get("ARCA_KEY_PROD_B64") ?? "");
 const CERT = PRODUCTION ? CERT_PROD : CERT_DEV;
 const KEY = PRODUCTION ? KEY_PROD : KEY_DEV;
 
+function sanitizeAlias(alias: string): string {
+  return (alias ?? "").replace(/[^a-zA-Z0-9]/g, "");
+}
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
