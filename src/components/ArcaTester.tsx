@@ -180,6 +180,12 @@ export default function ArcaTester() {
       accent: "destructive",
     },
     {
+      title: "Puntos de Venta",
+      icon: Wrench,
+      actions: ["listar-puntos-venta", "crear-punto-venta"],
+      accent: "secondary",
+    },
+    {
       title: "Uso",
       icon: ShieldCheck,
       actions: ["ultimo-comprobante", "facturar"],
