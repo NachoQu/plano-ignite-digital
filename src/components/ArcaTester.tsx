@@ -139,6 +139,21 @@ export default function ArcaTester() {
     }
   };
 
+  const descargarPdf = async () => {
+    try {
+      const parsedPayload = JSON.parse(payload || "{}");
+      const datos = extraerDatosFacturar(response, parsedPayload);
+      if (!datos) {
+        alert("No se pudieron extraer los datos de la factura del response.");
+        return;
+      }
+      const doc = await generarFacturaPdf(datos);
+      doc.save(`factura-${String(datos.ptoVta).padStart(4, "0")}-${String(datos.cbteNro).padStart(8, "0")}.pdf`);
+    } catch (e: any) {
+      alert(`Error generando PDF: ${e.message}`);
+    }
+  };
+
   const changeAction = (a: Action) => {
     setAction(a);
     setPayload(presets[a]);
