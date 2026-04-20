@@ -76,7 +76,7 @@ export default function ArcaTester() {
       <textarea
         value={payload}
         onChange={(e) => setPayload(e.target.value)}
-        className="w-full h-40 font-mono text-sm p-3 border rounded"
+        className="w-full h-40 font-mono text-sm p-3 border border-gray-700 rounded bg-gray-900 text-gray-100 placeholder-gray-500"
       />
 
       <button
