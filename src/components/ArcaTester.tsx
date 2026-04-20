@@ -31,6 +31,8 @@ type Action =
   | "habilitar-admin-certs"
   | "crear-certificado-prod"
   | "autorizar-wsfe-prod"
+  | "listar-puntos-venta"
+  | "crear-punto-venta"
   | "ultimo-comprobante"
   | "facturar";
 
@@ -43,6 +45,8 @@ const labels: Record<Action, string> = {
   "habilitar-admin-certs": "Habilitar admin certs",
   "crear-certificado-prod": "Crear certificado (prod)",
   "autorizar-wsfe-prod": "Autorizar WSFE (prod)",
+  "listar-puntos-venta": "Listar puntos de venta",
+  "crear-punto-venta": "Crear punto de venta",
   "ultimo-comprobante": "Último comprobante",
   facturar: "Emitir factura",
 };
@@ -56,6 +60,8 @@ const descriptions: Record<Action, string> = {
   "habilitar-admin-certs": "Habilita el servicio admin de certs en prod.",
   "crear-certificado-prod": "Genera cert/key reales de producción.",
   "autorizar-wsfe-prod": "Vincula el alias al WSFE en producción.",
+  "listar-puntos-venta": "Lista los puntos de venta habilitados en ARCA.",
+  "crear-punto-venta": "Da de alta un nuevo punto de venta para Web Services.",
   "ultimo-comprobante": "Consulta el último N° autorizado.",
   facturar: "Emite un comprobante de prueba.",
 };
@@ -82,6 +88,17 @@ const presets: Record<Action, string> = {
   ),
   "autorizar-wsfe-prod": JSON.stringify(
     { password: "TU_CLAVE_FISCAL", alias: "planoprod" },
+    null,
+    2
+  ),
+  "listar-puntos-venta": JSON.stringify({ password: "TU_CLAVE_FISCAL" }, null, 2),
+  "crear-punto-venta": JSON.stringify(
+    {
+      password: "TU_CLAVE_FISCAL",
+      numero: 2,
+      nombreFantasia: "Plano Web",
+      sistema: "Factura Electrónica - Web Services",
+    },
     null,
     2
   ),
@@ -132,6 +149,8 @@ export default function ArcaTester() {
     "crear-certificado-prod",
     "autorizar-wsfe-prod",
     "habilitar-admin-certs",
+    "listar-puntos-venta",
+    "crear-punto-venta",
   ].includes(action);
 
   const isProdAction = action.includes("prod");
@@ -159,6 +178,12 @@ export default function ArcaTester() {
       icon: Rocket,
       actions: ["habilitar-admin-certs", "crear-certificado-prod", "autorizar-wsfe-prod"],
       accent: "destructive",
+    },
+    {
+      title: "Puntos de Venta",
+      icon: Wrench,
+      actions: ["listar-puntos-venta", "crear-punto-venta"],
+      accent: "secondary",
     },
     {
       title: "Uso",
