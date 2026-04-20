@@ -156,7 +156,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano",
+          alias: sanitizeAlias(payload.alias ?? "plano"),
         });
 
         if (automationResult.data?.cert && automationResult.data?.key) {
@@ -180,7 +180,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano",
+          alias: sanitizeAlias(payload.alias ?? "plano"),
           service: payload.service ?? "wsfe",
         });
         break;
@@ -196,7 +196,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano-prod",
+          alias: sanitizeAlias(payload.alias ?? "planoprod"),
         });
 
         if (automationResult.data?.cert && automationResult.data?.key) {
@@ -221,7 +221,7 @@ Deno.serve(async (req) => {
           cuit: CUIT,
           username: payload.username ?? CUIT,
           password: payload.password,
-          alias: payload.alias ?? "plano-prod",
+          alias: sanitizeAlias(payload.alias ?? "planoprod"),
           service: payload.service ?? "wsfe",
         });
         break;
