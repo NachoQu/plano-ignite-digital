@@ -15,7 +15,9 @@ import {
   Play,
   CheckCircle2,
   XCircle,
+  FileDown,
 } from "lucide-react";
+import { generarFacturaPdf, extraerDatosFacturar, type FacturaPdfData } from "@/lib/arca-pdf";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
