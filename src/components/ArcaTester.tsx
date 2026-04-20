@@ -361,20 +361,33 @@ export default function ArcaTester() {
                 : "border-border/50 bg-card/50"
             }`}
           >
-            <div className="flex items-center gap-2 mb-3">
-              {isOk ? (
-                <>
-                  <CheckCircle2 className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-primary">Respuesta exitosa</h3>
-                </>
-              ) : isErr ? (
-                <>
-                  <XCircle className="w-5 h-5 text-destructive" />
-                  <h3 className="font-semibold text-destructive">Error</h3>
-                </>
-              ) : (
-                <h3 className="font-semibold">Respuesta</h3>
-              )}
+            <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+              <div className="flex items-center gap-2">
+                {isOk ? (
+                  <>
+                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                    <h3 className="font-semibold text-primary">Respuesta exitosa</h3>
+                  </>
+                ) : isErr ? (
+                  <>
+                    <XCircle className="w-5 h-5 text-destructive" />
+                    <h3 className="font-semibold text-destructive">Error</h3>
+                  </>
+                ) : (
+                  <h3 className="font-semibold">Respuesta</h3>
+                )}
+              </div>
+              {isOk && action === "facturar" &&
+                response?.result?.FECAESolicitarResult?.FeDetResp?.FECAEDetResponse?.[0]?.Resultado === "A" && (
+                  <Button
+                    onClick={descargarPdf}
+                    size="sm"
+                    className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    <FileDown className="w-4 h-4" />
+                    Descargar PDF
+                  </Button>
+                )}
             </div>
             <pre className="bg-background/80 border border-border/50 rounded-lg p-4 text-xs overflow-auto max-h-[500px] text-foreground/90 font-mono">
               {JSON.stringify(response, null, 2)}
