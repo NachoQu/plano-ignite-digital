@@ -19,10 +19,6 @@ import {
 } from "lucide-react";
 import { generarFacturaPdf, extraerDatosFacturar, type FacturaPdfData } from "@/lib/arca-pdf";
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 type Action =
   | "estado"

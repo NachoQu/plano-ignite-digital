@@ -13,8 +13,10 @@ import Reportes from "./pages/Reportes";
 import Login from "./pages/Login";
 import Facturacion from "./pages/Facturacion";
 import Prospeccion from "./pages/Prospeccion";
-import ArcaTester from "./components/ArcaTester";
+import { lazy, Suspense } from "react";
 import '@/i18n/config';
+
+const ArcaTester = lazy(() => import("./components/ArcaTester"));
 
 const queryClient = new QueryClient();
 
