@@ -36,7 +36,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/facturacion" element={<Facturacion />} />
             <Route path="/prospeccion" element={<Prospeccion />} />
-            <Route path="/arca-test" element={<ArcaTester />} />
+            <Route path="/arca-test" element={<Suspense fallback={null}><ArcaTester /></Suspense>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
