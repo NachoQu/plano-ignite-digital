@@ -13,8 +13,10 @@ import Reportes from "./pages/Reportes";
 import Login from "./pages/Login";
 import Facturacion from "./pages/Facturacion";
 import Prospeccion from "./pages/Prospeccion";
-import ArcaTester from "./components/ArcaTester";
+import { lazy, Suspense } from "react";
 import '@/i18n/config';
+
+const ArcaTester = lazy(() => import("./components/ArcaTester"));
 
 const queryClient = new QueryClient();
 
@@ -34,7 +36,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/facturacion" element={<Facturacion />} />
             <Route path="/prospeccion" element={<Prospeccion />} />
-            <Route path="/arca-test" element={<ArcaTester />} />
+            <Route path="/arca-test" element={<Suspense fallback={null}><ArcaTester /></Suspense>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

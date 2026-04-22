@@ -1,6 +1,6 @@
 // src/components/ArcaTester.tsx
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,10 +19,6 @@ import {
 } from "lucide-react";
 import { generarFacturaPdf, extraerDatosFacturar, type FacturaPdfData } from "@/lib/arca-pdf";
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 type Action =
   | "estado"
