@@ -6,10 +6,13 @@ import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 import BlogPostCard from "@/components/blog/BlogPostCard";
 import BlogPostSkeleton from "@/components/blog/BlogPostSkeleton";
 import { useLatestBlogPosts } from "@/hooks/useBlogPosts";
+import { isBackendConfigured } from "@/lib/backend";
 
 const BlogPreview = () => {
   const { t } = useTranslation();
   const { data: posts, isLoading } = useLatestBlogPosts(3);
+
+  if (!isBackendConfigured) return null;
 
   if (!isLoading && (!posts || posts.length === 0)) return null;
 

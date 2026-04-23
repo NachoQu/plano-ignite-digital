@@ -1,6 +1,6 @@
 // src/components/ArcaTester.tsx
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { backendConfigError, supabase } from "@/lib/backend";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -212,6 +212,11 @@ export default function ArcaTester() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-8">
+        {backendConfigError && (
+          <Card className="p-4 border-border/50 bg-card/50 text-sm text-muted-foreground">
+            {backendConfigError}
+          </Card>
+        )}
         {/* Header */}
         <header className="flex items-start justify-between gap-4 flex-wrap">
           <div>
