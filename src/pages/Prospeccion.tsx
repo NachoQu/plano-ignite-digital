@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { backendConfigError, supabase } from "@/lib/backend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -446,6 +446,13 @@ const Prospeccion = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {backendConfigError && (
+        <div className="container mx-auto px-4 pt-6">
+          <div className="rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+            {backendConfigError}
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">

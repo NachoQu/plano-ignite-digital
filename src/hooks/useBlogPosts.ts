@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { isBackendConfigured, supabase } from '@/lib/backend';
 import type { BlogPost, BlogTopic } from '@/types/blog';
 
 export function useBlogPosts(topic?: BlogTopic, page: number = 1, pageSize: number = 9) {
@@ -22,6 +22,7 @@ export function useBlogPosts(topic?: BlogTopic, page: number = 1, pageSize: numb
       return { posts: (data || []) as BlogPost[], totalCount: count ?? 0 };
     },
     staleTime: 5 * 60 * 1000,
+    enabled: isBackendConfigured,
   });
 }
 
@@ -40,7 +41,7 @@ export function useBlogPost(slug: string) {
       return data as BlogPost;
     },
     staleTime: 10 * 60 * 1000,
-    enabled: !!slug,
+    enabled: !!slug && isBackendConfigured,
   });
 }
 
@@ -59,5 +60,6 @@ export function useLatestBlogPosts(limit: number = 3) {
       return (data || []) as BlogPost[];
     },
     staleTime: 5 * 60 * 1000,
+    enabled: isBackendConfigured,
   });
 }

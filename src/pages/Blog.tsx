@@ -9,6 +9,7 @@ import BlogPagination from "@/components/blog/BlogPagination";
 import BlogSEO from "@/components/blog/BlogSEO";
 import { ScrollAnimationWrapper } from "@/components/ScrollAnimationWrapper";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
+import { backendConfigError } from "@/lib/backend";
 import { Newspaper } from "lucide-react";
 import type { BlogTopic } from "@/types/blog";
 
@@ -39,6 +40,9 @@ const Blog = () => {
       {/* Hero */}
       <section className="pt-28 pb-16 bg-background">
         <div className="container mx-auto px-6">
+          {backendConfigError && (
+            <p className="mb-8 text-sm text-muted-foreground">{backendConfigError}</p>
+          )}
           <ScrollAnimationWrapper animationType="fade-in">
             <div className="text-center mb-12">
               <h1 className="text-4xl md:text-6xl font-bold mb-6">

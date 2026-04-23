@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/backend";
 import type { User } from "@supabase/supabase-js";
 
 export const useAuth = (redirectTo = "/login") => {
