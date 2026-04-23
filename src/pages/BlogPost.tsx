@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Clock, ExternalLink, Calendar } from "lucide-react";
 import { useBlogPost } from "@/hooks/useBlogPosts";
+import { backendConfigError } from "@/lib/backend";
 import { localized, formatBlogDate, getTopicLabel, TOPIC_CONFIG } from "@/lib/blog-utils";
 
 const BlogPostPage = () => {
@@ -32,6 +33,20 @@ const BlogPostPage = () => {
             <Skeleton className="h-4 w-full mb-2" />
             <Skeleton className="h-4 w-full mb-2" />
             <Skeleton className="h-4 w-2/3" />
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (backendConfigError) {
+    return (
+      <>
+        <Navbar />
+        <div className="pt-28 pb-16 bg-background min-h-screen">
+          <div className="container mx-auto px-6 text-center">
+            <p className="text-sm text-muted-foreground">{backendConfigError}</p>
           </div>
         </div>
         <Footer />

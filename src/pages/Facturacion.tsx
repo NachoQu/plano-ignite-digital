@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { backendConfigError, backendPublishableKey, backendUrl, supabase } from "@/lib/backend";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -82,13 +82,13 @@ const Facturacion = () => {
     }
 
     const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/arca-facturacion`,
+      `${backendUrl}/functions/v1/arca-facturacion`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionData.session.access_token}`,
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          apikey: backendPublishableKey,
         },
         body: JSON.stringify({ action, ...body }),
       }
@@ -211,6 +211,12 @@ const Facturacion = () => {
           <div className="mb-6 p-4 rounded-lg border border-destructive/50 bg-destructive/10 flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
             <p className="text-sm text-destructive">{error}</p>
+          </div>
+        )}
+        {backendConfigError && !error && (
+          <div className="mb-6 p-4 rounded-lg border border-border bg-card flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
+            <p className="text-sm text-muted-foreground">{backendConfigError}</p>
           </div>
         )}
 
