@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -9,9 +9,10 @@ import Testimonials from "@/components/Testimonials";
 import Methodology from "@/components/Methodology";
 import Team from "@/components/Team";
 import WorkTogether from "@/components/WorkTogether";
-import BlogPreview from "@/components/BlogPreview";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+
+const BlogPreview = lazy(() => import("@/components/BlogPreview"));
 
 const Index = () => {
   const location = useLocation();
@@ -40,7 +41,9 @@ const Index = () => {
       <Methodology />
       <Team />
       <WorkTogether />
-      <BlogPreview />
+      <Suspense fallback={null}>
+        <BlogPreview />
+      </Suspense>
       <FinalCTA />
       <Footer />
     </>
