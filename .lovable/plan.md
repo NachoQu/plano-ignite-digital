@@ -1,42 +1,67 @@
 
-Objetivo: eliminar el error `supabaseUrl is required` para que el Home vuelva a cargar y dejar una sola forma segura de inicializar el backend en frontend.
+Objetivo: hacer que el Home vuelva a renderizar aunque la configuración pública del backend no llegue al bundle, y evitar que cualquier ruta interna vuelva a tirar abajo toda la app.
 
-1. Unificar la inicialización del cliente
-- Reemplazar cualquier `createClient(...)` manual en componentes por el cliente compartido de `src/integrations/supabase/client.ts`.
-- En particular, actualizar `src/components/ArcaTester.tsx`, que hoy crea un cliente propio en el nivel del módulo usando `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`.
-- Esto evita que una ruta interna de testing rompa toda la app apenas se importa `App.tsx`.
+1. Blindar el cliente compartido del backend
+- Reemplazar la inicialización “siempre al importar” de `src/integrations/supabase/client.ts` por una inicialización segura.
+- El cliente debe:
+  - leer `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` cuando existan
+  - tener fallback con valores públicos seguros del proyecto si el preview no inyecta esas variables
+  - exponer un flag tipo `isBackendConfigured` / `backendConfigError` para que la UI pueda decidir qué renderizar
+- Resultado: desaparece el crash global `supabaseUrl is required`.
 
-2. Eliminar la dependencia de `VITE_SUPABASE_ANON_KEY` en frontend
-- Estandarizar todo el proyecto en `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY`.
-- Revisar llamadas directas como la de `src/pages/Facturacion.tsx` para que usen las mismas variables esperadas por el proyecto.
-- Resultado: no habrá mezcla entre `ANON_KEY` y `PUBLISHABLE_KEY`, que hoy es una fuente clara de fallos.
+2. Evitar imports eager de páginas que dependen del backend
+- Convertir en lazy imports las rutas que hoy arrastran el cliente al bundle principal:
+  - `Blog`
+  - `BlogPost`
+  - `Login`
+  - `Facturacion`
+  - `Prospeccion`
+  - `ArcaTester`
+- En `src/App.tsx`, envolver esas rutas en `Suspense`.
+- Resultado: entrar a `/` no ejecuta código de autenticación, blog o testing antes de tiempo.
 
-3. Evitar fallos globales por imports eager
-- Cambiar la ruta de testing (`/arca-test`) para que no ejecute lógica sensible al cargar el bundle principal.
-- La opción preferida es importar `ArcaTester` de forma diferida o encapsular cualquier acceso al backend dentro del componente, no en el tope del archivo.
-- Así, aunque esa pantalla tenga un problema, el Home (`/`) no queda en blanco.
+3. Aislar el bloque del blog dentro del Home
+- `src/pages/Index.tsx` hoy importa `BlogPreview`, y `BlogPreview` usa hooks que pegan al backend.
+- Pasar `BlogPreview` a carga diferida o agregar un wrapper que solo lo monte cuando la configuración pública esté disponible.
+- Si no hay backend disponible, mostrar fallback liviano:
+  - ocultar la sección
+  - o renderizar un estado neutro sin consulta
+- Resultado: el Home puede cargar incluso si el blog no puede consultar datos.
 
-4. Agregar una validación explícita de configuración
-- Incorporar un guard simple antes de crear o usar el cliente para detectar si faltan variables públicas.
-- En vez de un crash minificado en consola, mostrar un error claro de configuración en desarrollo/preview.
-- Esto hará mucho más rápido diagnosticar si el problema vuelve a ser de entorno y no de código.
+4. Hacer que los hooks del blog fallen de forma controlada
+- Ajustar `src/hooks/useBlogPosts.ts` para no ejecutar queries cuando `isBackendConfigured` sea false.
+- Devolver estados vacíos/controlados en vez de lanzar excepción desde el import chain.
+- Resultado: `Blog`, `BlogPost` y `BlogPreview` dejan de ser puntos de quiebre del arranque.
 
-5. Verificar la configuración administrada del backend
-- Si después del refactor las variables siguen llegando vacías en preview, refrescar la conexión de Lovable Cloud para regenerar la configuración pública del proyecto.
-- No se deben hardcodear URL ni keys en el código.
+5. Proteger páginas privadas y formularios con mensajes claros
+- En `Login`, `Facturacion`, `Prospeccion` y cualquier pantalla que use backend al renderizar:
+  - mostrar un mensaje explícito de configuración si el backend público no está disponible
+  - evitar llamadas inmediatas a `auth` / `functions` / `from(...)` sin config válida
+- Resultado: si falla la config, se ve una pantalla entendible en lugar de un error minificado.
 
-6. Validación final
-- Confirmar que `/` renderiza correctamente.
-- Confirmar que `/login`, `/facturacion` y `/prospeccion` siguen iniciando sesión y llamando funciones sin romper.
-- Confirmar que `/arca-test` funciona de forma aislada y ya no puede derribar toda la app.
+6. Mantener compatibilidad con el resto del proyecto
+- Conservar el cliente compartido como única fuente de acceso al backend.
+- No volver a introducir `createClient(...)` manual en componentes.
+- Mantener `Facturacion.tsx` alineado con el mismo origen de URL/key pública que use el cliente compartido.
+
+Validación final
+- `/` renderiza sin pantalla en blanco.
+- La sección Blog del Home no rompe el render, aun si no puede consultar.
+- `/blog`, `/login`, `/facturacion`, `/prospeccion` y `/arca-test` dejan de romper el bundle principal.
+- Si falta configuración, la app muestra estados controlados en vez de `supabaseUrl is required`.
 
 Detalles técnicos
 - Archivos a tocar:
-  - `src/components/ArcaTester.tsx`
+  - `src/integrations/supabase/client.ts`
   - `src/App.tsx`
+  - `src/pages/Index.tsx`
+  - `src/components/BlogPreview.tsx`
+  - `src/hooks/useBlogPosts.ts`
+  - `src/pages/Login.tsx`
   - `src/pages/Facturacion.tsx`
-  - opcionalmente una pequeña utilidad de validación para envs públicas
-- Causa probable detectada en el código actual:
-  - `ArcaTester.tsx` crea un cliente manual con `VITE_SUPABASE_ANON_KEY`.
-  - `App.tsx` importa `ArcaTester` de forma directa, por lo que ese código se evalúa aunque el usuario esté en `/`.
-  - El proyecto ya tiene un cliente central en `src/integrations/supabase/client.ts`, así que ese patrón manual está duplicando riesgo innecesario.
+  - `src/pages/Prospeccion.tsx`
+- Causa raíz más probable en el código actual:
+  - `client.ts` crea el cliente en el nivel del módulo
+  - `App.tsx` importa varias páginas con backend de forma directa
+  - `Index.tsx` importa `BlogPreview`, que también termina importando el cliente
+  - si el preview no inyecta las variables públicas, toda la app cae antes de elegir la ruta
