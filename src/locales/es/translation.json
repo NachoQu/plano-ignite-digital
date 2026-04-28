@@ -9,18 +9,21 @@
     "contact": "Contactar"
   },
   "hero": {
+    "badge": "Agencia especializada en web y app web para PyMEs",
     "title": {
       "part1": "Desarrollo web",
-      "part2": "herramientas internas",
-      "part3": "al servicio de tu PyME o Startup."
+      "connector": "y",
+      "part2": "app web a medida",
+      "part3": "para tu PyME o Startup."
     },
-    "subtitle": "En Plano combinamos diseño, no-code e inteligencia artificial para crear marcas sólidas, webs que generan clientes y soluciones digitales que ordenan tu negocio.",
-    "cta": "Quiero impulsar mi negocio",
-    "whatsappMessage": "Hola! Quiero impulsar mi negocio con Plano",
+    "subtitle": "En Plano creamos páginas web que atraen clientes y aplicaciones web que ordenan tu operación — combinando no-code, IA y diseño profesional.",
+    "cta": "Quiero mi presupuesto gratis",
+    "ctaSecondary": "Escribir por email",
+    "whatsappMessage": "Hola! Quiero un presupuesto para desarrollo web o app web para mi empresa",
     "stats": {
-      "projects": "Proyectos Finalizados",
-      "satisfaction": "Satisfacción",
-      "hours": "Horas Ahorradas"
+      "projects": "Proyectos Entregados",
+      "satisfaction": "Clientes Satisfechos",
+      "hours": "Horas Ahorradas a Clientes"
     }
   },
   "services": {
@@ -30,27 +33,33 @@
     "items": {
       "branding": {
         "title": "Identidad de marca que inspira confianza",
-        "description": "Logotipos, manuales y piezas gráficas que posicionan a tu empresa como referente."
+        "description": "Logotipos, manuales y piezas gráficas que posicionan a tu empresa como referente.",
+        "cta": "Quiero mi branding"
       },
       "web": {
-        "title": "Webs que convierten visitas en clientes",
-        "description": "Sitios modernos, rápidos y optimizados para SEO, pensados en ventas reales."
+        "title": "Páginas web que convierten visitas en clientes",
+        "description": "Sitios modernos, rápidos y optimizados para SEO pensados en ventas reales. Desde landing pages hasta sitios corporativos completos.",
+        "cta": "Quiero mi web"
       },
       "tools": {
-        "title": "Herramientas internas para tu PyME",
-        "description": "ERP para venta de productos, tableros de resultados, sistemas de reservas y gestión de stock para ordenar tu operación."
+        "title": "App web a medida para tu operación",
+        "description": "ERP, dashboards de ventas, sistemas de reservas, gestión de stock y cualquier herramienta interna que necesite tu empresa.",
+        "cta": "Quiero mi app web"
       },
       "mvp": {
         "title": "MVPs rápidos para Startups",
-        "description": "Prototipos funcionales en semanas, listos para validar."
+        "description": "Prototipos funcionales en semanas, listos para validar tu idea con usuarios reales antes de invertir más.",
+        "cta": "Quiero mi MVP"
       },
       "edtech": {
         "title": "EdTech probado en colegios",
-        "description": "Digitalizamos la comunicación con familias y automatizamos informes para docentes."
+        "description": "Digitalizamos la comunicación con familias y automatizamos informes para docentes.",
+        "cta": "Conocer más"
       },
       "social": {
         "title": "Contenido para redes",
-        "description": "Diseño de piezas visuales que transmiten tu marca y atraen a tu audiencia."
+        "description": "Diseño de piezas visuales que transmiten tu marca y atraen a tu audiencia.",
+        "cta": "Quiero contenido"
       }
     }
   },

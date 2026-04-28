@@ -9,6 +9,7 @@ import Testimonials from "@/components/Testimonials";
 import Methodology from "@/components/Methodology";
 import Team from "@/components/Team";
 import WorkTogether from "@/components/WorkTogether";
+import FAQ from "@/components/FAQ";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -44,6 +45,7 @@ const Index = () => {
       <Suspense fallback={null}>
         <BlogPreview />
       </Suspense>
+      <FAQ />
       <FinalCTA />
       <Footer />
     </>
