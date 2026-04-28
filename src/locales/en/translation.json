@@ -9,18 +9,21 @@
     "contact": "Contact Us"
   },
   "hero": {
+    "badge": "Agency specialized in web & web app for SMEs",
     "title": {
       "part1": "Web development",
-      "part2": "internal tools",
-      "part3": "at the service of your SME or Startup."
+      "connector": "&",
+      "part2": "custom web apps",
+      "part3": "for your SME or Startup."
     },
-    "subtitle": "At Plano we combine design, no-code, and artificial intelligence to create solid brands, websites that generate clients, and digital solutions that organize your business.",
-    "cta": "I want to boost my business",
-    "whatsappMessage": "Hi! I want to boost my business with Plano",
+    "subtitle": "At Plano we build websites that attract clients and web applications that organize your operation — combining no-code, AI, and professional design.",
+    "cta": "Get a free quote",
+    "ctaSecondary": "Send an email",
+    "whatsappMessage": "Hi! I want a quote for web development or a web app for my business",
     "stats": {
-      "projects": "Completed Projects",
-      "satisfaction": "Satisfaction",
-      "hours": "Hours Saved"
+      "projects": "Projects Delivered",
+      "satisfaction": "Satisfied Clients",
+      "hours": "Hours Saved for Clients"
     }
   },
   "services": {
@@ -30,27 +33,33 @@
     "items": {
       "branding": {
         "title": "Brand identity that inspires trust",
-        "description": "Logos, manuals, and graphic pieces that position your company as a reference."
+        "description": "Logos, manuals, and graphic pieces that position your company as a reference.",
+        "cta": "I want my branding"
       },
       "web": {
         "title": "Websites that convert visits into clients",
-        "description": "Modern, fast, and SEO-optimized sites, designed for real sales."
+        "description": "Modern, fast, and SEO-optimized sites designed for real sales. From landing pages to full corporate websites.",
+        "cta": "I want my website"
       },
       "tools": {
-        "title": "Internal tools for your SME",
-        "description": "ERP for product sales, performance dashboards, booking systems, and inventory management to organize your operation."
+        "title": "Custom web app for your operation",
+        "description": "ERP, sales dashboards, booking systems, inventory management — any internal tool your business needs.",
+        "cta": "I want my web app"
       },
       "mvp": {
         "title": "Fast MVPs for Startups",
-        "description": "Functional prototypes in weeks, ready to validate."
+        "description": "Functional prototypes in weeks, ready to validate your idea with real users before investing more.",
+        "cta": "I want my MVP"
       },
       "edtech": {
         "title": "EdTech proven in schools",
-        "description": "We digitize communication with families and automate reports for teachers."
+        "description": "We digitize communication with families and automate reports for teachers.",
+        "cta": "Learn more"
       },
       "social": {
         "title": "Social media content",
-        "description": "Visual piece design that conveys your brand and attracts your audience."
+        "description": "Visual piece design that conveys your brand and attracts your audience.",
+        "cta": "I want content"
       }
     }
   },
