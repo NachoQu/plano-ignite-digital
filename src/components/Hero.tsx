@@ -29,8 +29,8 @@ const Hero = () => {
 
       <div className="container mx-auto px-6 text-center relative z-10">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary text-sm font-medium px-4 py-1.5 rounded-full mb-6 animate-fade-up">
-          <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+        <div className="inline-flex items-center gap-2 bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium px-4 py-1.5 rounded-full mb-6 animate-fade-up">
+          <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
           {t('hero.badge')}
         </div>
 
